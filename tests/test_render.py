@@ -38,7 +38,9 @@ def test_status_file_reports_real_progress(tmp_path):
     p = tmp_path / "status.json"
     render.write_status(p, "rendering", 3.25, 10.0)
     s = json.loads(p.read_text())
-    assert s == {"state": "rendering", "done": 3.25, "total": 10.0, "percent": 32, "unit": "seconds"}
+    assert s == {"state": "rendering", "stage": "composite", "done": 3.25, "total": 10.0, "percent": 32, "unit": "seconds"}
+    render.write_status(p, "rendering", 2, 4, stage="layers", weight=(0, 40), unit="shots")
+    assert json.loads(p.read_text())["percent"] == 20
 
 
 @pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="needs ffmpeg")

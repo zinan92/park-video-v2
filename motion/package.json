@@ -1,0 +1,19 @@
+{
+  "name": "park-video-v2-motion",
+  "private": true,
+  "description": "口播动效组件：每个镜头的画布就是它要放的那块区域，透明背景渲染，再由 scripts/render.py 叠到原画面上",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.484",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "remotion": "4.0.484"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "typescript": "^5.6.0"
+  }
+}

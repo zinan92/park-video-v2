@@ -49,16 +49,21 @@ def filtergraph(shots: list[dict[str, Any]]) -> str:
     return ";".join(parts)
 
 
-def write_status(path: Path | None, state: str, done: float, total: float) -> None:
+def write_status(path: Path | None, state: str, done: float, total: float, *, stage: str = "composite",
+                 weight: tuple[int, int] = (0, 100), unit: str = "seconds") -> None:
+    """status.json：state = rendering / done / failed；percent 是整条流程的总进度（本阶段占 weight 这一段）。"""
     if path is None:
         return
-    pct = 100 if state == "done" else int(100 * done / total) if total else 0
+    lo, hi = weight
+    pct = hi if state == "done" else int(lo + (hi - lo) * done / total) if total else lo
     tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps({"state": state, "done": round(done, 2), "total": round(total, 2), "percent": pct, "unit": "seconds"}))
+    tmp.write_text(json.dumps({"state": state, "stage": stage, "done": round(done, 2), "total": round(total, 2),
+                               "unit": unit, "percent": pct}, ensure_ascii=False))
     os.replace(tmp, path)
 
 
-def render(plan: dict[str, Any], out: Path, status: Path | None, *, start: float = 0.0, end: float | None = None) -> None:
+def render(plan: dict[str, Any], out: Path, status: Path | None, *, start: float = 0.0, end: float | None = None,
+           weight: tuple[int, int] = (0, 100)) -> None:
     base = plan["base"]
     if end is None:
         probe = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", base],
@@ -79,17 +84,17 @@ def render(plan: dict[str, Any], out: Path, status: Path | None, *, start: float
     cmd += ["-filter_complex", graph + f";{last}null[out]", "-map", "[out]", "-map", "0:a?",
             "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
             "-movflags", "+faststart", "-progress", "pipe:1", "-nostats", str(out)]
-    write_status(status, "rendering", 0.0, total)
+    write_status(status, "rendering", 0.0, total, weight=weight)
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     assert proc.stdout is not None
     for line in proc.stdout:
         if line.startswith("out_time_us=") and line.strip().split("=")[1].isdigit():
-            write_status(status, "rendering", min(int(line.split("=")[1]) / 1e6, total), total)
+            write_status(status, "rendering", min(int(line.split("=")[1]) / 1e6, total), total, weight=weight)
     err = proc.stderr.read() if proc.stderr else ""
     if proc.wait() != 0:
-        write_status(status, "failed", 0.0, total)
+        write_status(status, "failed", 0.0, total, weight=weight)
         raise RuntimeError(f"ffmpeg 失败：{err[-1500:]}")
-    write_status(status, "done", total, total)
+    write_status(status, "rendering" if weight[1] < 100 else "done", total, total, weight=weight)
 
 
 def main(argv: list[str]) -> int:
