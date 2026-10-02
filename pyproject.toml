@@ -1,0 +1,12 @@
+[project]
+name = "park-video-v2"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["pyyaml"]
+
+[project.optional-dependencies]
+align = ["mlx-whisper"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["scripts"]
