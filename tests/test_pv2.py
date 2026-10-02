@@ -98,3 +98,14 @@ def test_find_returns_every_time_a_phrase_is_spoken():
     assert pv2.find(words, "流量") == [1.0, 9.0]
     assert pv2.find(words, "流量只是") == [9.0]
     assert pv2.find(words, "没说过") == []
+
+
+def test_qa_rerun_updates_status(proj, monkeypatch):
+    (v2(proj) / "brief.yaml").write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8"), encoding="utf-8")
+    (v2(proj) / "plan.json").write_text('{"duration": 10, "shots": []}')
+    (v2(proj) / "render-plan.json").write_text('{"base": "x", "canvas": [1920, 1080], "shots": []}')
+    (v2(proj) / "final.mp4").write_text("x")
+    (v2(proj) / "status.json").write_text(json.dumps({"state": "failed", "stage": "qa", "percent": 100}))
+    monkeypatch.setattr(pv2.qa_mod, "run", lambda *a, **k: {"status": "pass", "placement": [], "hold_static": []})
+    assert pv2.do_qa(proj)["status"] == "pass"
+    assert json.loads((v2(proj) / "status.json").read_text())["state"] == "done"

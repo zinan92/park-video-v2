@@ -59,7 +59,10 @@ def video_checks(path: Path, *, expected_duration: float | None = None) -> dict[
 
 
 def _frame_md5(path: Path, t: float) -> str:
-    r = _ff(["-v", "error", "-ss", f"{t:.3f}", "-i", str(path), "-frames:v", "1", "-f", "framemd5", "-"])
+    # 按画面上实际显示的 8 位 RGBA 比：ProRes 4444 的 12 位里有编码噪声，像素相同的两帧原生校验值也会不同
+    # 只看画面：Remotion 的层里带一条静音音轨，framemd5 也会输出它的包
+    r = _ff(["-v", "error", "-ss", f"{t:.3f}", "-i", str(path), "-map", "0:v:0", "-an", "-frames:v", "1", "-vf", "format=rgba",
+             "-f", "framemd5", "-"])
     lines = [ln for ln in r.stdout.splitlines() if ln and not ln.startswith("#")]
     return lines[-1].split(",")[-1].strip() if lines else ""
 

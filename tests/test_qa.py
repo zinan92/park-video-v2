@@ -49,7 +49,12 @@ def test_duration_mismatch_fails(clean):
 def test_hold_is_static_for_a_still_layer_and_not_for_a_moving_one(tmp_path):
     still, moving = tmp_path / "still.mov", tmp_path / "moving.mov"
     ff("-f", "lavfi", "-i", "color=c=red@0.9:size=160x90:rate=30:duration=2,format=rgba", "-c:v", "qtrle", str(still))
-    ff("-f", "lavfi", "-i", "testsrc=size=160x90:rate=30:duration=2,format=rgba", "-c:v", "qtrle", str(moving))
+    ff("-f", "lavfi", "-i", "testsrc=size=160x90:rate=30:duration=2,format=rgba", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo",
+       "-t", "2", "-c:v", "qtrle", str(moving))
+    with_audio = tmp_path / "still_audio.mov"
+    ff("-f", "lavfi", "-i", "color=c=red@0.9:size=160x90:rate=30:duration=2,format=rgba", "-f", "lavfi", "-i", "sine=duration=2",
+       "-t", "2", "-c:v", "qtrle", str(with_audio))
+    assert qa.hold_is_static(with_audio, hold_offset=0.5, end_offset=1.8) is True
     assert qa.hold_is_static(still, hold_offset=0.5, end_offset=1.8) is True
     assert qa.hold_is_static(moving, hold_offset=0.5, end_offset=1.8) is False
 
@@ -78,3 +83,12 @@ def test_run_writes_qa_json(tmp_path, clean):
     out = tmp_path / "qa.json"
     report = qa.run(clean, plan, brief, out, expected_duration=4.0)
     assert json.loads(out.read_text())["status"] == report["status"] == "pass"
+
+
+@needs_ffmpeg
+def test_hold_ignores_12_bit_prores_noise(tmp_path):
+    # 同一张静止画面编成 ProRes 4444：12 位里每帧有编码噪声，按显示像素比应当判为静止
+    still = tmp_path / "still4444.mov"
+    ff("-f", "lavfi", "-i", "testsrc2=size=320x180:rate=30:duration=0.04,format=rgba,loop=loop=60:size=1:start=0",
+       "-c:v", "prores_ks", "-profile:v", "4444", "-pix_fmt", "yuva444p10le", "-t", "2", str(still))
+    assert qa.hold_is_static(still, hold_offset=0.5, end_offset=1.5) is True

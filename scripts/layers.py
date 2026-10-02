@@ -30,7 +30,7 @@ def remotion_cmd(shot: dict[str, Any], zone: dict[str, int], out: Path) -> list[
     props = {"component": shot["component"], "zone": {"w": zone["w"], "h": zone["h"]}, "start": shot["start"],
              "end": shot["end"], "props": shot.get("props") or {}}
     return ["npx", "remotion", "render", "src/index.ts", "Shot", str(out), "--codec=prores", "--prores-profile=4444",
-            "--pixel-format=yuva444p10le", "--image-format=png", "--log=error",
+            "--pixel-format=yuva444p10le", "--image-format=png", "--muted", "--log=error",
             "--props=" + json.dumps(props, ensure_ascii=False)]
 
 

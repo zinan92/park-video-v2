@@ -7,6 +7,7 @@
   pv2.py sample  <项目> [--detach]      渲染一段 10 秒样片 → sample.mp4（和整条同一个渲染函数）
   pv2.py approve <项目> sample|final -m "Park 原话"
   pv2.py render  <项目> [--detach]      全部镜头 + 整条合成 + 终检 → final.mp4、qa.json、contact.jpg
+  pv2.py qa      <项目>                 只重跑终检（不重渲）
   pv2.py status  <项目>                 现在在哪一步、进度多少、在等谁
 
 进度：样片写 v2/sample-status.json，整条写 v2/status.json，都是 {state, stage, done, total, unit, percent}。
@@ -196,10 +197,21 @@ def do_render(project: Path) -> Path:
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "final.mp4"
     render_mod.render(rp, out, status, weight=(45, 90))
-    render_mod.write_status(status, "rendering", 0, 1, stage="qa", weight=(90, 100), unit="checks")
-    report = qa_mod.run(out, rp, b, d / "qa.json", expected_duration=plan["duration"], contact=d / "contact.jpg")
-    render_mod.write_status(status, "done" if report["status"] == "pass" else "failed", 1, 1, stage="qa", weight=(90, 100), unit="checks")
+    do_qa(project)
     return out
+
+
+def do_qa(project: Path) -> dict[str, Any]:
+    """终检（render 末尾自动跑；修了检查本身之后也可以单独重跑，不用重渲）。"""
+    d, b, plan, _meta = _load(project)
+    status = d / "status.json"
+    rp = _json(d / "render-plan.json")
+    if rp is None or not (d / "final.mp4").is_file():
+        raise SystemExit("还没有整条成片，先 render")
+    render_mod.write_status(status, "rendering", 0, 1, stage="qa", weight=(90, 100), unit="checks")
+    report = qa_mod.run(d / "final.mp4", rp, b, d / "qa.json", expected_duration=plan["duration"], contact=d / "contact.jpg")
+    render_mod.write_status(status, "done" if report["status"] == "pass" else "failed", 1, 1, stage="qa", weight=(90, 100), unit="checks")
+    return report
 
 
 def _detach(argv: list[str], project: Path) -> None:
@@ -211,7 +223,7 @@ def _detach(argv: list[str], project: Path) -> None:
 
 def main(argv: list[str]) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=("init", "prep", "check", "find", "sample", "approve", "render", "status"))
+    ap.add_argument("cmd", choices=("init", "prep", "check", "find", "sample", "approve", "render", "qa", "status"))
     ap.add_argument("project")
     ap.add_argument("gate", nargs="?")
     ap.add_argument("--video")
@@ -237,6 +249,10 @@ def main(argv: list[str]) -> int:
             _detach(argv, project)
             return 0
         print((do_sample if a.cmd == "sample" else do_render)(project))
+    elif a.cmd == "qa":
+        report = do_qa(project)
+        print(json.dumps({k: report[k] for k in ("status", "placement", "hold_static")}, ensure_ascii=False, indent=2))
+        return 0 if report["status"] == "pass" else 1
     elif a.cmd == "approve":
         print(json.dumps(approve(project, a.gate or "", message=a.message), ensure_ascii=False))
     elif a.cmd == "status":
