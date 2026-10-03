@@ -13,6 +13,7 @@
   pv2.py set <项目>|default --json '{"density": "low"}'   改设置：写进项目 brief.yaml，或 Park 的默认值
   pv2.py catalog                        动效图鉴：每个组件的中文名、形式、努力程度、演示片段，JSON
   pv2.py gallery                        重新渲染图鉴里每个组件的演示片段（gallery/）
+  pv2.py shotcraft                      Video-ShotCraft 全部样式卡的名字、一句话、分类、预览：Park 叫不出名字时翻它挑
 
 进度：样片写 v2/sample-status.json，整条写 v2/status.json，都是 {state, stage, done, total, unit, percent}。
 --detach 在独立进程组里跑：调它的 agent 退出也不会把渲染带走。
@@ -188,6 +189,30 @@ def catalog() -> list[dict[str, Any]]:
     return out
 
 
+SHOTCRAFT_ENV = "PV2_SHOTCRAFT"
+
+
+def shotcraft() -> list[dict[str, Any]]:
+    """Video-ShotCraft 的全部样式卡（它自己的 gallery/api/library.json）：名字、一句话、适用、分类、
+    本地有就给海报图路径（它的公开图鉴网站已经下线，演示视频本机没有）。改编成我们的组件时按 name 找源码。"""
+    home = Path(os.environ.get(SHOTCRAFT_ENV) or Path.home() / ".agents" / "skills" / "video-shotcraft")
+    lib = _json(home / "gallery" / "api" / "library.json") or {}
+    cats = lib.get("categories") or {}
+    adapted = {}
+    for c in catalog():
+        for name in c.get("shotcraft") or []:
+            adapted.setdefault(name, []).append(c["key"])
+    out = []
+    for card in lib.get("cards") or []:
+        poster = home / "gallery" / "media" / "poster" / f"{card['name']}.jpg"
+        out.append({"name": card["name"], "summary": card.get("summary", ""), "use": card.get("use", ""),
+                    "category": card.get("category", ""), "category_zh": (cats.get(card.get("category"), {}) or {}).get("zh", ""),
+                    "poster": str(poster) if poster.is_file() else None,
+                    "source": card.get("source", ""),
+                    "adapted_as": adapted.get(card["name"], [])})
+    return out
+
+
 def _motion_mtime() -> float:
     """组件代码最近一次修改的时间：改了组件，旧的层就过期。"""
     src = ROOT / "motion" / "src"
@@ -302,7 +327,7 @@ def _detach(argv: list[str], project: Path) -> None:
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) > 1 and argv[1] in ("settings", "set", "catalog", "gallery"):
+    if len(argv) > 1 and argv[1] in ("settings", "set", "catalog", "gallery", "shotcraft"):
         return _main_settings(argv)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=("init", "prep", "check", "find", "sample", "approve", "render", "qa", "status"))
@@ -350,6 +375,8 @@ def _main_settings(argv: list[str]) -> int:
         print(json.dumps(settings(Path(rest[0]).expanduser() if rest else None), ensure_ascii=False, indent=2))
     elif cmd == "catalog":
         print(json.dumps(catalog(), ensure_ascii=False, indent=2))
+    elif cmd == "shotcraft":
+        print(json.dumps(shotcraft(), ensure_ascii=False, indent=2))
     elif cmd == "gallery":
         import gallery
         for path in gallery.render_all():
