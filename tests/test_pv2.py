@@ -200,3 +200,14 @@ def test_shotcraft_cards_are_listed_with_what_we_already_adapted(tmp_path, monke
     assert cards["cycle-glass-node-morph"]["video"]
     assert cards["aurora-bloom-bg-flip"]["adapted_as"] == [] and cards["aurora-bloom-bg-flip"]["poster"] is None
     assert cards["aurora-bloom-bg-flip"]["video"] is None
+
+
+
+def test_sample_uses_marked_shots_otherwise_the_first_ten_seconds():
+    plan = {"duration": 100.0, "shots": [{"id": "A", "start": 2.0, "end": 8.0, "hold": 5.0},
+                                         {"id": "B", "start": 30.0, "end": 40.0, "hold": 34.0, "sample": True},
+                                         {"id": "C", "start": 60.0, "end": 70.0, "hold": 63.0, "sample": True}]}
+    assert pv2.sample_windows(plan) == [(29.6, 35.0), (59.6, 64.0)]
+    for s in plan["shots"]:
+        s.pop("sample", None)
+    assert pv2.sample_windows(plan) == [(1.5, 11.5)]

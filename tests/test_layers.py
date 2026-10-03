@@ -84,7 +84,8 @@ def test_every_new_component_renders(tmp_path, component):
     assert out[0].is_file()
 
 
-C_COMPONENTS = ["HaloNumber", "HatchBars", "GlassCycle", "RingCore", "StackPress", "QuoteMarker", "IconBloom"]
+C_COMPONENTS = ["HaloNumber", "HatchBars", "GlassCycle", "RingCore", "StackPress", "QuoteMarker", "IconBloom",
+                "TimeCompress", "CrowdSplit", "PickOne", "Accumulate", "Quadrant", "Journey", "BrokenPath"]
 
 
 @pytest.mark.skipif(not os.environ.get("PV2_REMOTION") or shutil.which("npx") is None, reason="set PV2_REMOTION=1 to run a real render")

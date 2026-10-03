@@ -595,5 +595,272 @@
         1
       ]
     }
+  },
+  "TimeCompress": {
+    "effort": "c",
+    "form": "number",
+    "name": "时间换算",
+    "keywords": [
+      "反差",
+      "小投入大回报",
+      "几小时等于一个月"
+    ],
+    "use": "小投入换大回报：钟扫过几小时 ≈ 月历一格格填满",
+    "shotcraft": [],
+    "settle": 1.2,
+    "min_zone_w": 600,
+    "limits": {
+      "small.text": 10,
+      "clock.text": 5,
+      "month.text": 8
+    },
+    "example": {
+      "small": {
+        "text": "只有6000粉丝",
+        "at": 0.3
+      },
+      "clock": {
+        "text": "3个小时",
+        "at": 0.8,
+        "hours": 3
+      },
+      "month": {
+        "text": "一个月的工资",
+        "at": 1.6
+      }
+    }
+  },
+  "CrowdSplit": {
+    "effort": "c",
+    "form": "chart",
+    "name": "少数派",
+    "keywords": [
+      "大多数",
+      "少数",
+      "占比",
+      "我和别人不一样"
+    ],
+    "use": "大多数挤在一边、我在另一边：一群小人，一个走过分界线",
+    "shotcraft": [
+      "avatar-grid-radial-build-colorize"
+    ],
+    "settle": 1.3,
+    "min_zone_w": 500,
+    "limits": {
+      "crowd.text": 9,
+      "minority.text": 9
+    },
+    "example": {
+      "crowd": {
+        "text": "90%人在前端",
+        "at": 0.3
+      },
+      "minority": {
+        "text": "我在终端和后端",
+        "at": 1.4
+      }
+    }
+  },
+  "PickOne": {
+    "effort": "c",
+    "form": "diagram",
+    "name": "抓重点",
+    "keywords": [
+      "主要矛盾",
+      "抓重点",
+      "只有一个关键",
+      "筛选聚焦"
+    ],
+    "use": "一堆并列的东西里只有一个是关键：点阵铺开，其余变暗，一颗点亮",
+    "shotcraft": [
+      "avatar-grid-radial-build-colorize"
+    ],
+    "settle": 1.2,
+    "min_zone_w": 500,
+    "limits": {
+      "stages.label": 8,
+      "focus.text": 9
+    },
+    "example": {
+      "stages": [
+        {
+          "count": 10,
+          "label": "10个因素",
+          "at": 0.3
+        },
+        {
+          "count": 20,
+          "label": "20个因素",
+          "at": 1.0
+        }
+      ],
+      "focus": {
+        "text": "真正的主要矛盾",
+        "at": 1.9
+      }
+    }
+  },
+  "Accumulate": {
+    "effort": "c",
+    "form": "diagram",
+    "name": "积累成结论",
+    "keywords": [
+      "越来越多",
+      "积累",
+      "所以是",
+      "盖章"
+    ],
+    "use": "东西越来越多、每一份都具体，所以结论成立：纸一张张叠高、逐条打勾、盖章",
+    "shotcraft": [
+      "list-stack-press"
+    ],
+    "settle": 0.9,
+    "min_zone_w": 600,
+    "limits": {
+      "counts.text": 3,
+      "details.text": 8,
+      "verdict.text": 4
+    },
+    "example": {
+      "counts": [
+        {
+          "text": "五六",
+          "at": 0.3,
+          "sheets": 6
+        },
+        {
+          "text": "七八",
+          "at": 0.9,
+          "sheets": 8
+        }
+      ],
+      "unit": "封",
+      "details": [
+        {
+          "text": "真实的问题",
+          "at": 1.4
+        },
+        {
+          "text": "真实的诉求",
+          "at": 1.7
+        }
+      ],
+      "verdict": {
+        "text": "强需求",
+        "at": 2.2
+      }
+    }
+  },
+  "Quadrant": {
+    "effort": "c",
+    "form": "chart",
+    "name": "两个条件",
+    "keywords": [
+      "两个条件",
+      "两个维度",
+      "既要又要",
+      "四象限"
+    ],
+    "use": "两个条件都满足才成立：两根轴亮起，光点飞进右上角那一格",
+    "shotcraft": [],
+    "settle": 0.9,
+    "min_zone_w": 600,
+    "limits": {
+      "x.text": 7,
+      "y.text": 7,
+      "result.text": 5
+    },
+    "example": {
+      "x": {
+        "text": "认可专业技能",
+        "at": 0.3
+      },
+      "y": {
+        "text": "价格可以接受",
+        "at": 0.9
+      },
+      "both": {
+        "at": 1.5
+      },
+      "result": {
+        "text": "成交一单",
+        "at": 2.1
+      }
+    }
+  },
+  "Journey": {
+    "effort": "c",
+    "form": "diagram",
+    "name": "生意链路",
+    "keywords": [
+      "链路",
+      "一步步",
+      "流程走到结果"
+    ],
+    "use": "一条有先后的链路走到结果：S 形路上一颗球一站站走，终点长出结果",
+    "shotcraft": [
+      "timeline-travel"
+    ],
+    "settle": 1.25,
+    "min_zone_w": 600,
+    "limits": {
+      "title.text": 9,
+      "stops.text": 7,
+      "result.text": 6
+    },
+    "example": {
+      "title": {
+        "text": "做手机壳打印的",
+        "at": 0.2
+      },
+      "stops": [
+        {
+          "text": "画完这张图",
+          "at": 0.6
+        },
+        {
+          "text": "十分钟打印好",
+          "at": 1.1
+        },
+        {
+          "text": "寄到你家",
+          "at": 1.6
+        }
+      ],
+      "result": {
+        "text": "一年200万",
+        "at": 2.1
+      }
+    }
+  },
+  "BrokenPath": {
+    "effort": "c",
+    "form": "diagram",
+    "name": "断裂",
+    "keywords": [
+      "不能延续",
+      "过去不等于未来",
+      "断掉"
+    ],
+    "use": "过去走通的路延伸不到未来：线从过去伸出去，中途裂开、后半截掉落变灰",
+    "shotcraft": [
+      "transition-hidden-cut"
+    ],
+    "settle": 1.0,
+    "min_zone_w": 600,
+    "limits": {
+      "from.text": 6,
+      "to.text": 8
+    },
+    "example": {
+      "from": {
+        "text": "过去的成功",
+        "at": 0.3
+      },
+      "to": {
+        "text": "未来的成功要素",
+        "at": 1.8
+      }
+    }
   }
 }

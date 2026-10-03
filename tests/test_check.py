@@ -248,3 +248,28 @@ def test_c_component_label_limit():
     s = card(component="GlassCycle", reveals=[], end=14.0, hold=12.3,
              props={"nodes": [{"text": "两件非常重要", "at": 10.3}, {"text": "问题", "at": 11.3}]})
     assert "label-too-long" in rules(s, effort="c", rewrite="summarize")
+
+
+
+# —— 精品档（C / D）的流程规则 ——
+def _premium(**kw):
+    base = card(intent={"means": "两件事里有一件最重要", "picture": "两颗点里一颗变红"}, sample=True)
+    base.update(kw)
+    return base
+
+
+def test_premium_cards_need_meaning_and_picture():
+    assert "no-intent" in rules(card(sample=True), effort="c", rewrite="summarize")
+    assert "no-intent" not in rules(_premium(), effort="c", rewrite="summarize")
+    assert "no-intent" not in rules(card(), effort="b")  # 快出 / 标准不要求
+
+
+def test_premium_never_repeats_a_component():
+    a = _premium()
+    b2 = _premium(id="V09", start=18.0, end=21.0, hold=18.5, zone="left", reveals=[], sample=False,
+                  props={"lines": ["一年200万"], "ats": [18.0]})
+    assert "repeated-component" in rules(a, b2, effort="c", rewrite="summarize")
+
+
+def test_premium_marks_two_or_three_sample_shots():
+    assert "no-sample-shots" in rules(_premium(sample=False), effort="c", rewrite="summarize")

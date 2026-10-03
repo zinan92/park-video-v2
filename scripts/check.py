@@ -99,7 +99,7 @@ def _texts(props: Any) -> list[str]:
     if isinstance(props, str):
         return [props]
     if isinstance(props, dict):
-        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon", "symbol") for t in _texts(v)]
+        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon", "symbol", "arc", "pick", "hours", "days", "sheets", "count") for t in _texts(v)]
     if isinstance(props, list):
         return [t for v in props for t in _texts(v)]
     return []
@@ -226,6 +226,25 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any]) -> list[
             if a["start"] < c["end"] and c["start"] < a["end"] and _overlap(_zone(a, b), _zone(c, b)):
                 add("zone-overlap", c, f"和 {a['id']} 在同一区域、时间重叠")
     by_time = sorted(shots, key=lambda x: x["start"])
+    premium = b.get("effort") in ("c", "d")
+    if premium:
+        # 精品：先想清楚这句话要观众明白什么、用什么画面讲，再挑 / 做镜头；同一个组件整条只用一次
+        for x in shots:
+            it = x.get("intent") or {}
+            if not (str(it.get("means", "")).strip() and str(it.get("picture", "")).strip()):
+                add("no-intent", x, "精品档每张卡要写 intent.means（这句话要观众明白什么）和 intent.picture（用什么画面讲出来）")
+        seen: dict[str, str] = {}
+        for x in by_time:
+            comp = x.get("component", "")
+            if comp in seen:
+                add("repeated-component", x, f"{comp} 已经在 {seen[comp]} 用过，精品档整条每个组件只用一次")
+            else:
+                seen[comp] = x["id"]
+        marked = [x["id"] for x in shots if x.get("sample")]
+        if not marked:
+            out.append({"rule": "no-sample-shots", "shot": "plan", "detail": "精品档在最难、最有代表性的 2–3 个镜头上标 \"sample\": true，样片就渲它们"})
+        elif len(marked) > 3:
+            out.append({"rule": "too-many-sample-shots", "shot": "plan", "detail": f"样片镜头最多 3 个，现在标了 {len(marked)} 个"})
     if b.get("effort", "a") != "a":
         for a, c in zip(by_time, by_time[1:]):
             if _form(a) and _form(a) == _form(c):
@@ -259,7 +278,8 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
     for key in LISTS:
         if isinstance(props.get(key), list) and len(props[key]) > b.get("max_items", 99):
             add("too-many-items", s, f"{key} 有 {len(props[key])} 条，一张卡最多 {b['max_items']} 条")
-    if b.get("text_amount") == "one-point":
+    entry_limits = _catalog().get(s.get("component", ""), {}).get("limits")
+    if b.get("text_amount") == "one-point" and not entry_limits:  # 讲过程的组件有自己每段字数的上限（limits），不再套总字数
         n = sum(len(_clean(t)) for t in _texts(props))
         if n > ONE_POINT_CHARS:
             add("not-one-point", s, f"卡上一共 {n} 个字，一张卡一个重点最多 {ONE_POINT_CHARS} 个")

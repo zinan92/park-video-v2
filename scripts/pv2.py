@@ -294,16 +294,39 @@ def do_prep(project: Path) -> None:
                     str(d / "words.json")], check=True)
 
 
+def sample_windows(plan: dict[str, Any]) -> list[tuple[float, float]]:
+    """样片要渲的时间段：方案里标了 sample 的镜头各取「出现前 0.4s 到停住后 1s」；没标就取开头 10 秒。"""
+    marked = [s for s in plan["shots"] if s.get("sample")]
+    if not marked:
+        return [layers_mod.sample_window(plan)]
+    return [(round(max(0.0, s["start"] - 0.4), 3), round(min(s["end"], s.get("hold", s["end"]) + 1.0), 3)) for s in sorted(marked, key=lambda x: x["start"])]
+
+
 def do_sample(project: Path) -> Path:
     d, b, plan, meta = _checked(project)
     status = d / "sample-status.json"
-    a, z = layers_mod.sample_window(plan)
-    need = [s for s in layers_mod.shots_between(plan, a, z) if s in layers_to_render(project, plan["shots"], b)]
+    windows = sample_windows(plan)
+    stale = layers_to_render(project, plan["shots"], b)
+    need = [s for s in stale if any(s["start"] < z and a < s["end"] for a, z in windows)]
     layers_mod.render_layers(plan, b, d / "layers", status=status, only=need, weight=(0, 60))
     rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "sample.mp4"
-    render_mod.render(rp, out, status, start=a, end=z, weight=(60, 100))
+    if len(windows) == 1:
+        render_mod.render(rp, out, status, start=windows[0][0], end=windows[0][1], weight=(60, 100))
+        return out
+    parts = []
+    step = 40 / len(windows)
+    for i, (a, z) in enumerate(windows):
+        part = d / f".sample-part-{i}.mp4"
+        render_mod.render(rp, part, status, start=a, end=z, weight=(int(60 + step * i), int(60 + step * (i + 1))))
+        parts.append(part)
+    lst = d / ".sample-parts.txt"
+    lst.write_text("".join(f"file '{p}'\n" for p in parts), encoding="utf-8")
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", str(out)], check=True)
+    for p in parts + [lst]:
+        p.unlink(missing_ok=True)
+    render_mod.write_status(status, "done", 1, 1, stage="composite", weight=(60, 100))
     return out
 
 

@@ -22,8 +22,16 @@ import { IconBloom } from './IconBloom';
 import { QuoteMarker } from './QuoteMarker';
 import { RingCore } from './RingCore';
 import { StackPress } from './StackPress';
+import { Accumulate } from './Accumulate';
+import { BrokenPath } from './BrokenPath';
+import { CrowdSplit } from './CrowdSplit';
+import { Journey } from './Journey';
+import { PickOne } from './PickOne';
+import { Quadrant } from './Quadrant';
+import { TimeCompress } from './TimeCompress';
 
 export const LIBRARY: Record<string, React.FC<any>> = {
   TextLines, Quote, ListSteps, BigNumber, NumberRoll, Ratio, Bars, Gauge, Cycle, Funnel, Flow, Compare, IconPoint, IconList,
   HaloNumber, HatchBars, GlassCycle, RingCore, StackPress, QuoteMarker, IconBloom,
+  TimeCompress, CrowdSplit, PickOne, Accumulate, Quadrant, Journey, BrokenPath,
 };

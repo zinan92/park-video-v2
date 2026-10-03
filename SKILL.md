@@ -23,6 +23,17 @@ description: 给口播视频加动效（Remotion 透明层叠到原画面）。P
 
 Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要估。
 
+## 精品档（effort c / d）的流程：先意思、再画面、关键时刻专门做
+
+Park 的判断：组件做得再细，表达错了就是 10–20 分。所以精品档按这个顺序做，不能跳：
+
+1. **逐个时刻写意思和画面**：每张候选卡先写 `intent.means`（这句话要观众明白什么，用他的原意，不用关键词）和 `intent.picture`（用什么画面讲出来）。时刻按「意思能不能画出来」挑，不按关键词挑。旧流程项目里 visual-plan 的 `design.relation` 是很好的底子。
+2. **关键时刻用比喻组件或新做**：一条挑 5–6 个最有画面感的时刻，用「画面比喻」组件（抓重点、积累成结论、两个条件、断裂、生意链路、少数派、时间换算……），库里没有合适的就照意思新写一个（写成通用组件，放进库）。普通时刻才用现成的卡片组件。
+3. **整条不重复**：同一个组件、同一种画面比喻整条只用一次（check 拦 `repeated-component`）。两个时刻的意思像（都是「筛选」），只留一个。
+4. **自己先核对意思**：出样片前逐张问「这张卡有没有讲出 intent.means」。讲不出的重做或删，不拿去给 Park 看。他不看文字规格表，只看画面。
+5. **样片挑最难的**：在最难、最能代表这一版水平的 2–3 张卡上标 `"sample": true`，`pv2 sample` 只渲它们（拼成一段）。
+6. **看动作不看截图**：用连续帧（从出现到停住均匀取帧）检查，不只看停住后的样子。
+
 ## 写 plan.json 的原则
 
 先读 brief（含 defaults.yaml 合并后的值），照着规则写，**一次写对，不要靠 check 报错再改**。check 会拦下所有违反下面规则的镜头。
@@ -84,6 +95,18 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 | `StackPress` | text | c | 2–3 条要点一张张压进来 | `kicker?`, `items[]`, `ats[]` |
 | `QuoteMarker` | text | c | 一句原话，关键行马克笔涂一下 | `lines[]`, `ats[]`, `accent?[]` |
 | `IconBloom` | icon | c | 概念配图标：玻璃圆盘擦出 + 三圈涟漪 | `icon`, `iconAt`, `lines[]`, `ats[]`, `accent?[]` |
+
+画面比喻组件（effort c，精品档的关键时刻用，都可以加 `arc: "hero"` / `"light"` 选进场方式）：
+
+| 组件 | 形式 | 意思 | props |
+|---|---|---|---|
+| `PickOne` | diagram | 一堆并列的东西里只有一个是关键 | `stages[{count, label, at}]`, `focus{text, at}`, `spread?{at}`, `pick?` |
+| `Accumulate` | diagram | 越来越多、每份都具体，所以结论成立 | `counts[{text, at, sheets}]`, `unit?`, `details[{text, at}]`, `verdict{text, at}` |
+| `Quadrant` | chart | 两个条件都满足才成立 | `x{text, at}`, `y{text, at}`, `both{at}`, `result{text, at}` |
+| `BrokenPath` | diagram | 过去走通的路延伸不到未来 | `from{text, at}`, `to{text, at}`, `breakAt?` |
+| `Journey` | diagram | 一条有先后的链路走到结果 | `title?{text, at}`, `stops[{text, at}]`, `result?{text, at}` |
+| `CrowdSplit` | chart | 大多数在一边，我在另一边 | `total?`, `crowd{text, at}`, `minority{text, at}` |
+| `TimeCompress` | number | 小投入换大回报（几小时 ≈ 一个月） | `small?{text, at}`, `clock{text, at, hours}`, `month{text, at, days?}` |
 
 effort c 的组件动作多：`catalog.json` 里写了 `settle`（最后一次出现后几秒做完）、`min_zone_w`（最窄区域）、`limits`（每段字最多几个字），check 会拦。`hold` 写成「最后一次出现 + settle」之后；`effort: c` 时至少 60% 的卡要用 c 组件，其余可以用 a / b。
 

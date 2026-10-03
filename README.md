@@ -51,6 +51,10 @@ python3 scripts/pv2.py status <项目>            # 在哪一步、百分之多�
 - 不加动效的时间段里没有镜头
 - defaults.yaml 里的每一条规则：动效占比在密度区间内、组件不超过努力程度且低档卡不超过 40%、不能出现的词、只能删减原话、每张卡最多几条、一张卡一个重点、字号不小于 56px、相邻两张形式不同、图标存在、每张至少停 2.5 秒、什么时候走、两张卡之间的间隔
 
+## 精品档
+
+先写每张卡的意思（`intent.means`）和画面（`intent.picture`），关键时刻用画面比喻组件或照意思新做，整条不重复，样片只渲标了 `sample` 的 2–3 个最难镜头。见 SKILL.md。
+
 ## 镜头库
 
 - **Video-ShotCraft**（主库，按路径引用，不复制）：Park 的私有快照 `~/work/video-shotcraft-snapshot`（github.com/zinan92/video-shotcraft-snapshot，2026-09-07 版；原仓库已下线），`PV2_SHOTCRAFT` 可改
