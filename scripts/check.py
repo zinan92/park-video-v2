@@ -105,6 +105,36 @@ def _texts(props: Any) -> list[str]:
     return []
 
 
+TIME_KEYS = ("at", "ats", "lockAt", "symbolAt", "iconAt", "captionAt", "centerAt", "coreAt")
+
+
+def _times(props: Any) -> list[float]:
+    """props 里所有出现时刻（秒）。"""
+    if isinstance(props, dict):
+        out = []
+        for k, v in props.items():
+            if k in TIME_KEYS:
+                out += [float(x) for x in (v if isinstance(v, list) else [v]) if isinstance(x, (int, float)) and not isinstance(x, bool)]
+            else:
+                out += _times(v)
+        return out
+    if isinstance(props, list):
+        return [t for v in props for t in _times(v)]
+    return []
+
+
+def _at_path(props: Any, path: str) -> list[str]:
+    """props 里某条路径上的字，如 nodes.text → 每个节点的 text；items → 每条。"""
+    head, _, rest = path.partition(".")
+    v = props.get(head) if isinstance(props, dict) else None
+    if v is None:
+        return []
+    vals = v if isinstance(v, list) else [v]
+    if rest:
+        return [t for x in vals for t in _at_path(x, rest)]
+    return [x for x in vals if isinstance(x, str)]
+
+
 def _catalog() -> dict[str, dict[str, str]]:
     return {k: v for k, v in json.loads(CATALOG_FILE.read_text(encoding="utf-8")).items() if not k.startswith("_")}
 
@@ -243,6 +273,18 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
         add("avoided-component", s, f"{s.get('component')}（{entry.get('name', '')}）在「不用的样式」里")
     if not entry:
         add("unknown-component", s, f"组件库里没有 {s.get('component')}（见 motion/src/library/catalog.json）")
+    if entry.get("settle") is not None and (_times(props) or s.get("reveals")):
+        done = max(_times(props) + [r["at"] for r in s.get("reveals") or []]) + entry["settle"]
+        if s["hold"] + 1e-9 < done:
+            add("hold-before-settle", s, f"{s.get('component')} 要到 {round(done, 2)}s 才做完动作，hold 写的是 {s['hold']}s")
+        if s["end"] < done + 0.5:
+            add("too-short", s, f"{s.get('component')} 动作做完（{round(done, 2)}s）后至少再停 0.5s，镜头到 {s['end']}s 就走了")
+    if entry.get("min_zone_w") and _zone(s, b)["w"] < entry["min_zone_w"]:
+        add("zone-too-narrow", s, f"{s.get('component')} 至少要 {entry['min_zone_w']}px 宽的区域，这块只有 {_zone(s, b)['w']}px（换到另一侧，或换组件）")
+    for path, limit in (entry.get("limits") or {}).items():
+        for t in _at_path(props, path):
+            if len(_clean(t)) > limit:
+                add("label-too-long", s, f"「{t}」{len(_clean(t))} 个字，{s.get('component')} 的 {path} 最多 {limit} 个字")
     for name in _icons(props):
         if ICON_DIR.is_dir() and not (ICON_DIR / f"{name}.mjs").is_file():
             add("unknown-icon", s, f"图标库里没有「{name}」（lucide 的短横线名字，见 https://lucide.dev/icons）")

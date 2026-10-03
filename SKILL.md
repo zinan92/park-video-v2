@@ -77,6 +77,15 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 | `Compare` | diagram | b | 两件事对照（≠ / → / +） | `kicker?`, `top{title, sub?, at}`, `bottom{…}`, `symbol`, `symbolAt` |
 | `IconPoint` | icon | b | 一个概念配一个图标 | `icon`, `iconAt`, `lines[]`, `ats[]`, `accent?[]` |
 | `IconList` | icon | b | 2–3 条，每条配图标 | `kicker?`, `items[{icon, text, at}]`, `accent?[]` |
+| `HaloNumber` | number | c | 关键数字：滚动锁定 + 光晕 + 下划线 + 高光扫过 | `value`, `unit?`, `at`, `caption?`, `captionAt?` |
+| `HatchBars` | chart | c | 2–3 个数量对比：斜纹草稿擦出再蜕变实色 | `kicker?`, `bars[{label, value, display?, at}]`, `accent?[]` |
+| `GlassCycle` | diagram | c | 飞轮：玻璃球托起、弧线箭头走一圈、整组推近 | `nodes[{text, at}]`, `center?`, `centerAt?`, `accent?[]` |
+| `RingCore` | diagram | c | 一个核心概念向心收拢 + 1–3 条注释 | `core`, `coreAt`, `notes?[{text, at}]` |
+| `StackPress` | text | c | 2–3 条要点一张张压进来 | `kicker?`, `items[]`, `ats[]` |
+| `QuoteMarker` | text | c | 一句原话，关键行马克笔涂一下 | `lines[]`, `ats[]`, `accent?[]` |
+| `IconBloom` | icon | c | 概念配图标：玻璃圆盘擦出 + 三圈涟漪 | `icon`, `iconAt`, `lines[]`, `ats[]`, `accent?[]` |
+
+effort c 的组件动作多：`catalog.json` 里写了 `settle`（最后一次出现后几秒做完）、`min_zone_w`（最窄区域）、`limits`（每段字最多几个字），check 会拦。`hold` 写成「最后一次出现 + settle」之后；`effort: c` 时至少 60% 的卡要用 c 组件，其余可以用 a / b。
 
 Park 说的样式名对不上组件时，查 `pv2.py catalog`：每个组件有中文名、他可能的叫法（keywords）和形态来源的 ShotCraft 卡；图鉴演示片段在 `gallery/`（改了组件或加了组件后跑 `pv2.py gallery` 重渲）。
 
@@ -84,4 +93,4 @@ Park 说的样式名对不上组件时，查 `pv2.py catalog`：每个组件有�
 
 卡片外观（毛玻璃 / 纸卡 / 深色 / 无卡片、强调色、能不能冲过头）由 brief 决定，组件里用 `useLook()` 取颜色和弹出曲线，不要写死颜色。毛玻璃的模糊在合成时由 `render.py` 用原画面做。
 
-需要新样式：从 Video-ShotCraft（主库，Park 的私有快照 `~/work/video-shotcraft-snapshot`，`pv2.py shotcraft` 列全部卡）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记努力程度和形式（ShotCraft 级的多层镜头是 `c`，先用 Codex 画图再做动画的是 `d`；这两档的组件还没有）。
+需要新样式：从 Video-ShotCraft（主库，Park 的私有快照 `~/work/video-shotcraft-snapshot`，`pv2.py shotcraft` 列全部卡）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记努力程度和形式（ShotCraft 级的多层质感是 `c`，先用 Codex 画图再做动画的是 `d`，`d` 的组件还没有）。新的 c 组件：所有光晕、阴影收在卡片里，动作在 settle 内做完后一帧不动（`tests/test_layers.py` 的 still_after 测试会实测）。

@@ -82,3 +82,20 @@ def test_every_new_component_renders(tmp_path, component):
     shot = {"id": component, "start": 0.5, "end": 3.0, "zone": "right", "component": component, "props": SAMPLES[component]}
     out = layers.render_layers({"duration": 60, "shots": [shot]}, {**BRIEF, "card": "glass"}, tmp_path, status=None)
     assert out[0].is_file()
+
+
+C_COMPONENTS = ["HaloNumber", "HatchBars", "GlassCycle", "RingCore", "StackPress", "QuoteMarker", "IconBloom"]
+
+
+@pytest.mark.skipif(not os.environ.get("PV2_REMOTION") or shutil.which("npx") is None, reason="set PV2_REMOTION=1 to run a real render")
+@pytest.mark.parametrize("component", C_COMPONENTS)
+def test_c_component_is_still_after_it_settles(tmp_path, component):
+    # 「像专业 AE」那档动作多：做完（最后一次出现 + settle）之后必须一帧不变，终检靠这个判断「停住」
+    import check
+    import qa
+    entry = check._catalog()[component]
+    props = entry["example"]
+    done = max(check._times(props)) + entry["settle"]
+    shot = {"id": component, "start": 0.0, "end": done + 2.0, "zone": "left", "component": component, "props": props}
+    out = layers.render_layers({"duration": 60, "shots": [shot]}, {**BRIEF, "card": "glass"}, tmp_path, status=None)[0]
+    assert qa.hold_is_static(out, hold_offset=done + 0.05, end_offset=shot["end"] - 0.4), f"{component} 在 {done}s 之后还在动"

@@ -225,3 +225,26 @@ def test_card_too_short_to_read():
 
 def test_avoided_component_is_caught():
     assert rules(card(), avoid=["TextLines"]) == ["avoided-component"]
+
+
+
+# —— effort c 组件：动作做完才能停住、区域够宽、字不超长 ——
+def test_hold_cannot_come_before_the_component_finishes_moving():
+    s = card(component="GlassCycle", effort="c", reveals=[], end=14.0, hold=11.0,
+             props={"nodes": [{"text": "两件", "at": 10.3}, {"text": "问题", "at": 11.3}]})
+    f = rules(s, effort="c", rewrite="summarize")
+    assert "hold-before-settle" in f
+    assert "hold-before-settle" not in rules({**s, "hold": 12.3}, effort="c", rewrite="summarize")
+
+
+def test_c_component_needs_a_wide_enough_zone():
+    narrow = {"x": 1320, "y": 40, "w": 480, "h": 788}
+    s = card(component="GlassCycle", zone=narrow, reveals=[], end=14.0, hold=12.3,
+             props={"nodes": [{"text": "两件", "at": 10.3}, {"text": "问题", "at": 11.3}]})
+    assert "zone-too-narrow" in rules(s, effort="c", rewrite="summarize")
+
+
+def test_c_component_label_limit():
+    s = card(component="GlassCycle", reveals=[], end=14.0, hold=12.3,
+             props={"nodes": [{"text": "两件非常重要", "at": 10.3}, {"text": "问题", "at": 11.3}]})
+    assert "label-too-long" in rules(s, effort="c", rewrite="summarize")

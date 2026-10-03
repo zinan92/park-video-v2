@@ -37,7 +37,7 @@ export const Card: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     <AbsoluteFill style={{ justifyContent: 'center', alignItems: 'center', padding: SHADOW_MARGIN }}>
       <div
         style={{
-          maxWidth: '100%', maxHeight: '100%', boxSizing: 'border-box', padding: `${36 * k}px ${PAD_X * k}px`,
+          position: 'relative', maxWidth: '100%', maxHeight: '100%', boxSizing: 'border-box', padding: `${36 * k}px ${PAD_X * k}px`,
           background: look.fill, borderRadius: 30 * k, border: `${1.5 * k}px solid ${look.border}`,
           boxShadow: look.shadow ? `0 ${10 * k}px ${SHADOW_MARGIN * 0.8}px rgba(0,0,0,0.28)` : 'none',
           textShadow: look.textShadow, fontFamily: FONT, color: look.ink, overflow: 'hidden', display: 'flex', flexDirection: 'column',

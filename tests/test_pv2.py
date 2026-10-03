@@ -139,9 +139,9 @@ def test_settings_lists_every_slider_with_values_and_where_they_come_from(proj):
     assert keys == ["density", "effort", "evidence", "edit", "sound", "review"]
     assert s["values"]["density"] == "medium" and s["source"]["density"] == "repo"
     effort = next(x for x in s["schema"]["sliders"] if x["key"] == "effort")
-    assert [lv.get("available", True) for lv in effort["levels"]] == [True, True, False, False]
+    assert [lv.get("available", True) for lv in effort["levels"]] == [True, True, True, False]
     presets = {p["name"]: p["available"] for p in s["schema"]["presets"]}
-    assert presets == {"快出": True, "标准": True, "精品": False}
+    assert presets == {"快出": True, "标准": True, "精品": True}
     assert {c["key"] for c in s["components"]} >= {"TextLines", "Cycle", "IconList"}
 
 
@@ -168,7 +168,7 @@ def test_setting_a_default_goes_to_parks_own_file_not_the_repo(proj, tmp_path):
 
 def test_unbuilt_level_or_bad_value_is_refused_before_writing(proj):
     with pytest.raises(ValueError, match="还没做"):
-        pv2.set_values(str(proj), {"effort": "c"})
+        pv2.set_values(str(proj), {"effort": "d"})
     with pytest.raises(ValueError, match="density"):
         pv2.set_values(str(proj), {"density": "huge"})
     with pytest.raises(ValueError, match="数字"):
@@ -195,7 +195,7 @@ def test_shotcraft_cards_are_listed_with_what_we_already_adapted(tmp_path, monke
                   {"name": "aurora-bloom-bg-flip", "summary": "极光", "use": "开场", "category": "opening"}]}), encoding="utf-8")
     monkeypatch.setenv(pv2.SHOTCRAFT_ENV, str(home))
     cards = {c["name"]: c for c in pv2.shotcraft()}
-    assert cards["cycle-glass-node-morph"]["adapted_as"] == ["Cycle"] and cards["cycle-glass-node-morph"]["poster"]
+    assert cards["cycle-glass-node-morph"]["adapted_as"] == ["Cycle", "GlassCycle"] and cards["cycle-glass-node-morph"]["poster"]
     assert cards["cycle-glass-node-morph"]["category_zh"] == "数据与图表"
     assert cards["cycle-glass-node-morph"]["video"]
     assert cards["aurora-bloom-bg-flip"]["adapted_as"] == [] and cards["aurora-bloom-bg-flip"]["poster"] is None
