@@ -60,3 +60,25 @@ def test_real_layer_render(tmp_path):
     for card in ("glass", "paper", "dark", "none"):
         out = layers.render_layers({"duration": 60, "shots": [PLAN["shots"][1]]}, {**BRIEF, "card": card}, tmp_path / card, status=None)
         assert out[0].is_file() and layers.props_file(out[0]).is_file()
+
+
+SAMPLES = {
+    "TextLines": {"lines": ["只有6000粉丝"], "ats": [1.0]},
+    "Quote": {"lines": ["过去的成功", "不能变成未来的成功要素"], "ats": [1.0, 1.0]},
+    "BigNumber": {"value": "6000", "unit": "粉丝", "at": 1.0, "caption": "3个小时", "captionAt": 1.2},
+    "Ratio": {"value": 90, "at": 1.0, "caption": "人在前端"},
+    "Bars": {"bars": [{"label": "前端", "value": 90, "display": "90%", "at": 1.0}, {"label": "后端", "value": 10, "at": 1.2}], "accent": [1]},
+    "Cycle": {"nodes": [{"text": "自媒体", "at": 1.0}, {"text": "后端", "at": 1.1}, {"text": "成交", "at": 1.2}], "center": "飞轮"},
+    "Funnel": {"layers": [{"text": "填问卷", "at": 1.0}, {"text": "强需求", "at": 1.2}]},
+    "Flow": {"steps": [{"text": "画完这张图", "at": 1.0}, {"text": "十分钟打印好", "at": 1.2}], "accent": [1]},
+    "IconPoint": {"icon": "users", "iconAt": 1.0, "lines": ["只有6000粉丝"], "ats": [1.0]},
+    "IconList": {"items": [{"icon": "factory", "text": "有供应链", "at": 1.0}, {"icon": "coins", "text": "试错成本", "at": 1.2}]},
+}
+
+
+@pytest.mark.skipif(not os.environ.get("PV2_REMOTION") or shutil.which("npx") is None, reason="set PV2_REMOTION=1 to run a real render")
+@pytest.mark.parametrize("component", sorted(SAMPLES))
+def test_every_new_component_renders(tmp_path, component):
+    shot = {"id": component, "start": 0.5, "end": 3.0, "zone": "right", "component": component, "props": SAMPLES[component]}
+    out = layers.render_layers({"duration": 60, "shots": [shot]}, {**BRIEF, "card": "glass"}, tmp_path, status=None)
+    assert out[0].is_file()

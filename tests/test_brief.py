@@ -75,3 +75,11 @@ def test_sfx_and_bgm_are_no_longer_asked_but_old_briefs_still_load(tmp_path):
 
 def test_banned_words_never_ship_in_the_public_defaults():
     assert "banned_words" not in brief.defaults()
+
+
+def test_forms_default_to_all_five_and_unknown_forms_are_rejected(tmp_path):
+    assert brief.load(ROOT / "brief.example.yaml")["forms"] == ["text", "number", "chart", "diagram", "icon"]
+    p = tmp_path / "brief.yaml"
+    p.write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8") + "forms: [text, photo]\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="forms"):
+        brief.load(p)

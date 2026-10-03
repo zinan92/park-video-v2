@@ -32,7 +32,8 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 - `banned_words`：一个都不能出现在卡上。
 - `max_items`：lines / items / notes 每样不超过这么多条。`text_amount: one-point`：一张卡一个重点，卡上字加起来不超过 24 个。
 - **一行要短**：TextLines 每行不折行、按区域宽度定字号，字号低于 56px 会被拦下。右侧窄区一行大约 7 个字以内，长句拆成两三行。
-- `intensity`：组件力度见 `motion/src/library/levels.json`，不能超过 brief 的力度。`restrained` 时只能用 TextLines，且一张卡上的字要在 1.5 秒内全部出来（整张卡一起出，不逐条出）。
+- `intensity`：管**怎么动**，不管长什么样。组件力度见 `motion/src/library/catalog.json`，不能超过 brief 的力度。`restrained` 时一张卡上的东西要在 1.5 秒内全部出来（整张卡一起出、停住，不逐条出、不滚数字）。
+- `forms`：管**长什么样**。相邻两张卡不能同一种形式。
 - `exit: after-sentence`：卡片在最后一句说完后 1.5 秒内退场。
 - `min_gap`：两张卡之间至少留这么多秒纯人脸。
 - `density`：low 只放关键数字和结论 / medium / high 每个论点都配。check 会报覆盖率，只做参考，不写死数量。
@@ -53,14 +54,27 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 
 ## 组件（`motion/src/library/`）
 
-| 组件 | 力度 | 用在 | props |
-|---|---|---|---|
-| `TextLines` | restrained | 一个重点（大字），或要点逐行出现 | `kicker?`, `lines[]`, `ats[]`, `accent?[]`（用强调色的行号） |
-| `NumberRoll` | medium | 一个关键数字 | `value`, `unit?`, `lockAt`, `notes?[{text, at}]` |
-| `ListSteps` | medium | 先后步骤 | `kicker?`, `items[]`, `ats[]` |
-| `Compare` | medium | 两件事对照（≠ / → / +） | `kicker?`, `top{title, sub?, at}`, `bottom{…}`, `symbol`, `symbolAt` |
-| `Gauge` | medium | 一个比例 | `kicker?`, `value`(0–100), `at`, `label?` |
+组件的力度和表达形式登记在 `motion/src/library/catalog.json`。`forms` 是这条视频允许的形式，**相邻两张卡不能是同一种形式**；按内容挑最贴的形式（数字就用数字卡，比例用图表，先后/因果用流程，循环用飞轮，筛选用漏斗，对照用对照，概念配图标），不要全用文字。
+
+| 组件 | 形式 | 力度 | 用在 | props |
+|---|---|---|---|---|
+| `TextLines` | text | restrained | 一个重点（大字） | `kicker?`, `lines[]`, `ats[]`, `accent?[]` |
+| `Quote` | text | restrained | 他问的一句话、一句原话金句 | `lines[]`, `ats[]`, `accent?[]` |
+| `ListSteps` | text | restrained | 编号要点 | `kicker?`, `items[]`, `ats[]` |
+| `BigNumber` | number | restrained | 一个关键数字整块出现 | `value`, `unit?`, `at`, `caption?`, `captionAt?` |
+| `NumberRoll` | number | medium | 数字滚动锁定 | `value`, `unit?`, `lockAt`, `notes?[{text, at}]` |
+| `Ratio` | chart | restrained | 一个百分比（环形） | `value`(0–100), `at`, `caption?`, `captionAt?` |
+| `Bars` | chart | restrained | 2–3 个数量对比（横条） | `kicker?`, `bars[{label, value, display?, at}]`, `accent?[]` |
+| `Gauge` | chart | medium | 仪表指针 | `kicker?`, `value`(0–100), `at`, `label?` |
+| `Flow` | diagram | restrained | 先后、因果（A ↓ B） | `kicker?`, `steps[{text, at}]`, `accent?[]` |
+| `Cycle` | diagram | restrained | 飞轮、循环 | `nodes[{text, at}]`, `center?`, `centerAt?`, `accent?[]` |
+| `Funnel` | diagram | restrained | 层层筛选，最后一层是结论 | `kicker?`, `layers[{text, at}]` |
+| `Compare` | diagram | restrained | 两件事对照（≠ / → / +） | `kicker?`, `top{title, sub?, at}`, `bottom{…}`, `symbol`, `symbolAt` |
+| `IconPoint` | icon | restrained | 一个概念配一个图标 | `icon`, `iconAt`, `lines[]`, `ats[]`, `accent?[]` |
+| `IconList` | icon | restrained | 2–3 条，每条配图标 | `kicker?`, `items[{icon, text, at}]`, `accent?[]` |
+
+图标用 lucide 的短横线名字（`users`、`clock`、`wallet`、`trending-up`…，全表见 https://lucide.dev/icons ），check 会核对图标存在。图表里的数值（`value`）必须是他说出口的数，不要编比例。真实图片暂不在这个流程里。
 
 卡片外观（毛玻璃 / 纸卡 / 深色 / 无卡片、强调色、能不能冲过头）由 brief 决定，组件里用 `useLook()` 取颜色和弹出曲线，不要写死颜色。毛玻璃的模糊在合成时由 `render.py` 用原画面做。
 
-需要新样式：从 Video-ShotCraft（`~/.agents/skills/video-shotcraft`，主库）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `levels.json` 登记力度（ShotCraft 的复杂运镜是 `rich`）。
+需要新样式：从 Video-ShotCraft（`~/.agents/skills/video-shotcraft`，主库）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记力度和形式（ShotCraft 的复杂运镜是 `rich`）。

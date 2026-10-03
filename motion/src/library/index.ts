@@ -6,5 +6,16 @@ import { Gauge } from './Gauge';
 import { ListSteps } from './ListSteps';
 import { NumberRoll } from './NumberRoll';
 import { TextLines } from './TextLines';
+import { BigNumber } from './BigNumber';
+import { Bars } from './Bars';
+import { Cycle } from './Cycle';
+import { Flow } from './Flow';
+import { Funnel } from './Funnel';
+import { IconList } from './IconList';
+import { IconPoint } from './IconPoint';
+import { Quote } from './Quote';
+import { Ratio } from './Ratio';
 
-export const LIBRARY: Record<string, React.FC<any>> = { TextLines, NumberRoll, ListSteps, Compare, Gauge };
+export const LIBRARY: Record<string, React.FC<any>> = {
+  TextLines, Quote, ListSteps, BigNumber, NumberRoll, Ratio, Bars, Gauge, Cycle, Funnel, Flow, Compare, IconPoint, IconList,
+};

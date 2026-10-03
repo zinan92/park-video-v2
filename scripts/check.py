@@ -26,9 +26,11 @@ SEARCH = 5.0  # 在镜头前后多少秒内找原话
 ONE_POINT_CHARS = 24  # text_amount: one-point 时一张卡上所有字加起来最多几个
 RESTRAINED_SPREAD = 1.5  # intensity: restrained 时一张卡上的字要在这么多秒内全部出来（再长就是逐条出现）
 EXIT_GRACE = 1.5  # exit: after-sentence 时最后一个字说完后最多再停几秒
-LEVELS_FILE = Path(__file__).resolve().parents[1] / "motion" / "src" / "library" / "levels.json"
+MOTION = Path(__file__).resolve().parents[1] / "motion"
+CATALOG_FILE = MOTION / "src" / "library" / "catalog.json"
+ICON_DIR = MOTION / "node_modules" / "lucide-react" / "dist" / "esm" / "icons"
 RANK = {"restrained": 0, "medium": 1, "rich": 2}
-LISTS = ("lines", "items", "notes")
+LISTS = ("lines", "items", "notes", "nodes", "layers", "bars", "steps")
 MIN_TEXT_PX = 56  # TextLines 每行不折行、按卡片宽度定字号；比这小就看不清，要拆行
 SHADOW_MARGIN, PAD_X = 28, 42  # 和 motion/src/kit/Card.tsx 一致
 
@@ -94,14 +96,26 @@ def _texts(props: Any) -> list[str]:
     if isinstance(props, str):
         return [props]
     if isinstance(props, dict):
-        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent") for t in _texts(v)]
+        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon") for t in _texts(v)]
     if isinstance(props, list):
         return [t for v in props for t in _texts(v)]
     return []
 
 
-def _levels() -> dict[str, str]:
-    return {k: v for k, v in json.loads(LEVELS_FILE.read_text(encoding="utf-8")).items() if not k.startswith("_")}
+def _catalog() -> dict[str, dict[str, str]]:
+    return {k: v for k, v in json.loads(CATALOG_FILE.read_text(encoding="utf-8")).items() if not k.startswith("_")}
+
+
+def _icons(props: Any) -> list[str]:
+    if isinstance(props, dict):
+        return [v for k, v in props.items() if k == "icon" and isinstance(v, str)] + [i for v in props.values() for i in _icons(v)]
+    if isinstance(props, list):
+        return [i for v in props for i in _icons(v)]
+    return []
+
+
+def _form(shot: dict[str, Any]) -> str | None:
+    return _catalog().get(shot.get("component", ""), {}).get("form")
 
 
 def _em_width(text: str) -> float:
@@ -176,6 +190,12 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any]) -> list[
         for c in shots[i + 1:]:
             if a["start"] < c["end"] and c["start"] < a["end"] and _overlap(_zone(a, b), _zone(c, b)):
                 add("zone-overlap", c, f"和 {a['id']} 在同一区域、时间重叠")
+    forms = b.get("forms") or []
+    by_time = sorted(shots, key=lambda x: x["start"])
+    if len(forms) > 1:
+        for a, c in zip(by_time, by_time[1:]):
+            if _form(a) and _form(a) == _form(c):
+                add("same-form", c, f"和前一张 {a['id']} 都是「{_form(c)}」形式，相邻两张换一种")
     gap = b.get("min_gap") or 0
     ordered = sorted(shots, key=lambda x: x["start"])
     for a, c in zip(ordered, ordered[1:]):
@@ -203,8 +223,16 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
         for i, line in enumerate(props.get("lines") or []):
             if line_px(line, w, i) < MIN_TEXT_PX:
                 add("text-too-small", s, f"「{line}」在这块区域里只能用 {line_px(line, w, i)}px 字号，拆短一点（至少 {MIN_TEXT_PX}px）")
-    level = _levels().get(s.get("component", ""), "rich")
-    if RANK[level] > RANK[b.get("intensity", "rich")]:
+    entry = _catalog().get(s.get("component", ""), {})
+    if b.get("forms") and entry.get("form") and entry["form"] not in b["forms"]:
+        add("form-not-allowed", s, f"{s.get('component')} 是「{entry['form']}」形式，这条视频只用 {'/'.join(b['forms'])}")
+    if not entry:
+        add("unknown-component", s, f"组件库里没有 {s.get('component')}（见 motion/src/library/catalog.json）")
+    for name in _icons(props):
+        if ICON_DIR.is_dir() and not (ICON_DIR / f"{name}.mjs").is_file():
+            add("unknown-icon", s, f"图标库里没有「{name}」（lucide 的短横线名字，见 https://lucide.dev/icons）")
+    level = entry.get("level", "rich")
+    if entry and RANK[level] > RANK[b.get("intensity", "rich")]:
         add("intensity", s, f"{s.get('component')} 属于「{level}」，超过了这条视频的力度「{b['intensity']}」")
     ats = [r["at"] for r in s.get("reveals") or []]
     if b.get("intensity") == "restrained" and ats and max(ats) - min(ats) > RESTRAINED_SPREAD:

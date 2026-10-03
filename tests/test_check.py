@@ -13,7 +13,7 @@ BRIEF = {"canvas": [1920, 1080], "caption_band": [868, 1000], "no_motion": [[312
 
 
 def shot(**kw):
-    s = {"id": "V02", "start": 21.0, "end": 33.0, "zone": "right", "component": "PillSlot",
+    s = {"id": "V02", "start": 21.0, "end": 33.0, "zone": "right", "component": "TextLines",
          "reveals": [{"at": 21.4, "text": "流量只是渠道"}], "hold": 31.5}
     s.update(kw)
     return s
@@ -177,3 +177,29 @@ def test_line_too_long_for_the_zone_gets_tiny_text():
     assert check.line_px("赚一年200万", 560, 1) >= check.MIN_TEXT_PX
     s = card(zone=narrow, props={"lines": ["这是两件非常重要的问题一年200万"], "ats": [10.3]}, reveals=[])
     assert "text-too-small" in rules(s, rewrite="summarize")
+
+
+# —— 表达形式和图标 ——
+def test_two_cards_in_a_row_with_the_same_form():
+    later = card(id="V09", start=18.0, end=19.0, hold=18.5, zone="left", reveals=[], component="Quote",
+                 props={"lines": ["一年200万"], "ats": [18.0]})
+    forms = ["text", "number", "chart", "diagram", "icon"]
+    assert rules(card(), later, forms=forms, rewrite="summarize") == ["same-form"]
+    assert rules(card(), {**later, "component": "BigNumber", "props": {"value": "200万", "at": 18.0}}, forms=forms, rewrite="summarize") == []
+
+
+def test_form_left_out_of_this_video():
+    s = card(component="BigNumber", props={"value": "200万", "at": 12.8}, reveals=[], start=12.8, end=13.5, hold=13.0)
+    assert rules(s, forms=["text"]) == ["form-not-allowed"]
+
+
+def test_icon_must_exist_and_its_name_is_not_checked_as_speech():
+    ok = card(component="IconPoint", props={"icon": "users", "iconAt": 10.3, "lines": ["两件重要的问题"], "ats": [10.3]})
+    assert rules(ok) == []
+    if check.ICON_DIR.is_dir():
+        bad = {**ok, "props": {**ok["props"], "icon": "no-such-icon-xyz"}}
+        assert rules(bad) == ["unknown-icon"]
+
+
+def test_component_that_does_not_exist():
+    assert rules(card(component="PillSlot")) == ["unknown-component"]

@@ -1,8 +1,0 @@
-{
-  "_说明": "每个组件的动效力度。brief 的 intensity 是上限：restrained 只能用 restrained 的组件，medium 能用 restrained + medium，rich 都能用。新组件注册进 index.ts 时在这里登记。",
-  "TextLines": "restrained",
-  "ListSteps": "medium",
-  "Compare": "medium",
-  "NumberRoll": "medium",
-  "Gauge": "medium"
-}

@@ -12,6 +12,7 @@ import yaml
 DEFAULTS = Path(__file__).resolve().parents[1] / "defaults.yaml"
 REQUIRED = ("video_type", "canvas", "motion_placement", "no_motion", "captions_burned_in")
 PLACEMENTS = ("overlay-sides", "broll", "fullscreen")
+FORMS = ("text", "number", "chart", "diagram", "icon")
 CHOICES = {
     "card": ("glass", "paper", "dark", "none"),
     "text_amount": ("one-point", "points"),
@@ -46,6 +47,9 @@ def load(path: Path) -> dict[str, Any]:
         raise NeedsPark(missing)
     if data["motion_placement"] not in PLACEMENTS:
         raise ValueError(f"motion_placement 只能是 {' / '.join(PLACEMENTS)}，收到 {data['motion_placement']!r}")
+    bad = [f for f in data.get("forms") or [] if f not in FORMS]
+    if bad:
+        raise ValueError(f"forms 只能从 {' / '.join(FORMS)} 里选，收到 {bad}")
     for key, allowed in CHOICES.items():
         if data.get(key) not in allowed:
             raise ValueError(f"{key} 只能是 {' / '.join(allowed)}，收到 {data.get(key)!r}")
