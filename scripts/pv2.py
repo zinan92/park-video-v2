@@ -215,8 +215,10 @@ def shotcraft() -> list[dict[str, Any]]:
     out = []
     for card in lib.get("cards") or []:
         poster = home / "gallery" / "media" / "poster" / f"{card['name']}.jpg"
-        style = ((card.get("styles") or [{}])[0]).get("key") or card["name"]
-        video = home / "gallery" / "media" / f"{style}.mp4"
+        # 一张卡有几个样式时，取第一个有预览的
+        keys = [st.get("key") for st in card.get("styles") or [] if st.get("key")] or [card["name"]]
+        video = next((v for v in (home / "gallery" / "media" / f"{k}.mp4" for k in keys) if v.is_file()),
+                     home / "gallery" / "media" / f"{keys[0]}.mp4")
         out.append({"name": card["name"], "summary": card.get("summary", ""), "use": card.get("use", ""),
                     "category": card.get("category", ""), "category_zh": (cats.get(card.get("category"), {}) or {}).get("zh", ""),
                     "poster": str(poster) if poster.is_file() else None,
