@@ -80,7 +80,7 @@ def summary(project: Path) -> dict[str, Any]:
             out["failed"], out["detail"] = True, f"{name} 在 {st.get('stage')} 阶段失败"
     try:
         brief_mod.load(d / "brief.yaml")
-    except (brief_mod.NeedsPark, OSError) as e:
+    except (brief_mod.NeedsPark, OSError, ValueError) as e:  # ValueError：brief 里写了不认识的选项，比如 card: 毛玻璃
         out.update(waiting_for="Park 确认 brief", detail=out["detail"] or str(e))
         return out
     if not (d / "words.json").is_file():

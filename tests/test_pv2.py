@@ -51,6 +51,12 @@ def test_summary_walks_through_the_four_steps(proj):
     assert pv2.summary(proj)["step"] == "已交付"
 
 
+def test_bad_style_choice_waits_for_park_instead_of_crashing(proj):
+    (v2(proj) / "brief.yaml").write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8") + "card: 毛玻璃\n", encoding="utf-8")
+    s = pv2.summary(proj)
+    assert s["waiting_for"] == "Park 确认 brief" and "card" in s["detail"]
+
+
 def test_failed_render_is_shown_not_hidden(proj):
     (v2(proj) / "brief.yaml").write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8"), encoding="utf-8")
     (v2(proj) / "words.json").write_text('{"words": []}')
