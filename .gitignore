@@ -6,3 +6,6 @@ node_modules/
 *.wav
 out/
 .DS_Store
+
+# 图鉴演示片段（合成背景渲的，很小）要进库
+!gallery/*.mp4
