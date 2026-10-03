@@ -1,6 +1,7 @@
 import json
 import shutil
 import subprocess
+import sys
 
 import pytest
 
@@ -92,13 +93,13 @@ def test_sample_starting_mid_shot_seeks_into_the_layer(tmp_path):
     assert not (pixel(1.5)[0] > 180 and pixel(1.5)[1] < 80)  # 3.0s 之后镜头结束
 
 
-def test_glass_shot_blurs_the_picture_under_the_card_only():
-    shots = [{"id": "A", "start": 1.0, "end": 2.0, "src_rect": [0, 0, 100, 60], "place": {"x": 20, "y": 20, "w": 100, "h": 60},
-              "glass": 0.45}]
-    f = render.filtergraph(shots)
-    assert "trim=start=1.0:end=2.0" in f and "crop=100:60:20:20" in f and "gblur" in f
-    assert "lut=c0='min(255,val*2.2222)'" in f and "alphamerge" in f
-    assert f.rstrip().endswith("[v1]")
+def test_glass_shot_is_baked_from_just_its_own_seconds():
+    shot = {"id": "A", "start": 1.0, "end": 2.0, "layer": "/l/A.mov", "src_rect": [0, 0, 100, 60],
+            "zone": {"x": 20, "y": 20, "w": 100, "h": 60}, "glass": 0.45}
+    cmd = render.glass_cmd("/v/base.mov", shot, render.Path("/l/A.glass.mov"))
+    assert cmd[cmd.index("-ss") + 1] == "1.000" and cmd[cmd.index("-t") + 1] == "1.000"
+    graph = cmd[cmd.index("-filter_complex") + 1]
+    assert "crop=100:60:20:20,gblur" in graph and "lut=c0='min(255,val*2.2222)'" in graph and "alphamerge" in graph
 
 
 def _sharpness(path, t, crop):
@@ -122,6 +123,7 @@ def test_glass_card_on_a_real_render(tmp_path):
             "zone": {"x": 100, "y": 50, "w": 120, "h": 80}}
     glass, plain = tmp_path / "glass.mp4", tmp_path / "plain.mp4"
     render.render({"base": str(base), "canvas": [320, 180], "shots": [{**shot, "glass": 0.45}]}, glass, None)
+    assert (tmp_path / "card.glass.mov").is_file()
     render.render({"base": str(base), "canvas": [320, 180], "shots": [shot]}, plain, None)
     inside, outside = "80:50:120:65", "60:40:10:120"
     # 卡片底下：毛玻璃把细节糊掉，比只盖一层半透明白平滑得多
@@ -129,3 +131,20 @@ def test_glass_card_on_a_real_render(tmp_path):
     # 卡片外面、镜头前后：和原画面一样
     assert _sharpness(glass, 1.5, outside) > 0.8 * _sharpness(base, 1.5, outside)
     assert _sharpness(glass, 0.5, inside) > 0.8 * _sharpness(base, 0.5, inside)
+
+
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="needs ffmpeg")
+def test_glass_shots_spread_across_a_video_render_in_one_pass(tmp_path):
+    # 毛玻璃先逐个镜头烤好，整条合成里只剩普通叠加（这个小例子复现不了真片 20 个镜头时的卡死，只保证烤层这条路走得通）
+    base, layer = tmp_path / "base.mp4", tmp_path / "card.mov"
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=30:duration=40",
+                    "-pix_fmt", "yuv420p", str(base)], check=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=white@0.45:size=120x80:rate=30:duration=2,format=rgba",
+                    "-c:v", "qtrle", str(layer)], check=True)
+    shots = [{"id": f"S{i}", "start": t, "end": t + 2.0, "layer": str(layer), "src_rect": [0, 0, 120, 80],
+              "zone": {"x": 100, "y": 50, "w": 120, "h": 80}, "glass": 0.45} for i, t in enumerate((2.0, 35.0))]
+    out = tmp_path / "out.mp4"
+    proc = subprocess.run([sys.executable, "-c", f"import sys; sys.path.insert(0, {str(render.Path(render.__file__).parent)!r}); import render, json;"
+                           f"render.render(json.loads({json.dumps(json.dumps({'base': str(base), 'canvas': [320, 180], 'shots': shots}))}), render.Path({str(out)!r}), None)"],
+                          timeout=60)
+    assert proc.returncode == 0 and out.stat().st_size > 10000

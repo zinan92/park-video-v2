@@ -9,8 +9,10 @@ render-plan.json：
    "shots": [{"id", "start", "end", "layer": 透明动效层(.mov), "src_rect": [x, y, w, h] 层里要裁出的那块,
               "zone": {x, y, w, h} 放到画面哪里, "glass": 毛玻璃那层白的不透明度或 null}]}
 
-毛玻璃：Remotion 单独渲染层时背后没有东西可模糊，所以在这里做——把卡片底下那块原画面裁出来模糊，
-用层的 alpha（放大 1/glass 倍，淡入淡出时跟着变）当蒙版贴回去，再把层叠上去。只在镜头时间内做。
+毛玻璃：Remotion 单独渲染层时背后没有东西可模糊，所以合成前先把每个镜头「烤」成一个新层：
+把卡片底下那块原画面（只取镜头那几秒）裁出来模糊，叠上动效层，再用层的 alpha（放大 1/glass 倍，
+淡入淡出时跟着变）当整块的透明度。烤好的层和普通层一样叠到原画面上。
+（不在整条合成的一张滤镜图里做：那样每个镜头都要等原画面播到它才有画面，整条会卡死。）
 
 status.json 实时写 {state, done, total, percent, unit}：state 是 rendering / done / failed。
 --detach 在独立进程组里跑（调它的 agent 退出也不会把渲染带走），立刻返回。
@@ -47,25 +49,47 @@ def filtergraph(shots: list[dict[str, Any]]) -> str:
     for i, s in enumerate(shots, start=1):
         x, y, w, h = s["src_rect"]
         p = s["place"]
-        on = f"enable='between(t,{s['start']},{s['end']})':eof_action=pass"
-        layer = f"[{i}:v]crop={w}:{h}:{x}:{y},scale={p['w']}:{p['h']},format=rgba,setpts=PTS-STARTPTS+{s['start']}/TB"
-        if s.get("glass"):
-            k = round(1 / s["glass"], 4)
-            parts.append(f"{layer},split[l{i}][a{i}]")
-            parts.append(f"[a{i}]alphaextract,lut=c0='min(255,val*{k})'[m{i}]")
-            parts.append(f"{prev}split[b{i}][c{i}]")
-            parts.append(f"[c{i}]trim=start={s['start']}:end={s['end']},crop={p['w']}:{p['h']}:{p['x']}:{p['y']},"
-                         f"gblur=sigma={GLASS_BLUR},format=yuva420p[r{i}]")
-            parts.append(f"[r{i}][m{i}]alphamerge[g{i}]")
-            parts.append(f"[b{i}][g{i}]overlay={p['x']}:{p['y']}:{on}[q{i}]")
-            prev = f"[q{i}]"
-        else:
-            parts.append(f"{layer}[l{i}]")
-        parts.append(f"{prev}[l{i}]overlay={p['x']}:{p['y']}:{on}[v{i}]")
+        parts.append(f"[{i}:v]crop={w}:{h}:{x}:{y},scale={p['w']}:{p['h']},format=rgba,setpts=PTS-STARTPTS+{s['start']}/TB[l{i}]")
+        parts.append(f"{prev}[l{i}]overlay={p['x']}:{p['y']}:enable='between(t,{s['start']},{s['end']})':eof_action=pass[v{i}]")
         prev = f"[v{i}]"
     if not shots:
         parts.append("[0:v]null[v1]")
     return ";".join(parts)
+
+
+def glass_cmd(base: str, shot: dict[str, Any], out: Path) -> list[str]:
+    """把一个毛玻璃镜头烤成新层：原画面卡片底下那块（镜头那几秒）模糊 + 动效层，透明度取层的 alpha × 1/glass。"""
+    x, y, w, h = shot["src_rect"]
+    p = fit((w, h), shot["zone"])
+    k = round(1 / shot["glass"], 4)
+    graph = (f"[0:v]crop={p['w']}:{p['h']}:{p['x']}:{p['y']},gblur=sigma={GLASS_BLUR},format=rgba[bl];"
+             f"[1:v]crop={w}:{h}:{x}:{y},scale={p['w']}:{p['h']},format=rgba,split[l][a];"
+             f"[a]alphaextract,lut=c0='min(255,val*{k})'[m];[bl][l]overlay=0:0:shortest=1[c];[c][m]alphamerge,format=yuva444p10le[out]")
+    return ["ffmpeg", "-v", "error", "-y", "-ss", f"{shot['start']:.3f}", "-t", f"{shot['end'] - shot['start']:.3f}", "-i", base,
+            "-i", shot["layer"], "-filter_complex", graph, "-map", "[out]", "-c:v", "prores_ks", "-profile:v", "4444", str(out)]
+
+
+def bake_glass(plan: dict[str, Any], status: Path | None, *, weight: tuple[int, int], shots: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """毛玻璃镜头换成烤好的层（层比烤好的新才重烤）；其余原样。"""
+    out = []
+    todo = [s for s in shots if s.get("glass")]
+    for i, s in enumerate(todo):
+        write_status(status, "rendering", i, len(todo), stage="glass", weight=(weight[0], weight[0]), unit="shots")
+        baked = Path(s["layer"]).with_suffix(".glass.mov")
+        if not baked.is_file() or baked.stat().st_mtime < Path(s["layer"]).stat().st_mtime:
+            r = subprocess.run(glass_cmd(plan["base"], s, baked), capture_output=True, text=True)
+            if r.returncode != 0:
+                write_status(status, "failed", i, len(todo), stage="glass", weight=weight, unit="shots")
+                raise RuntimeError(f"{s['id']} 毛玻璃失败：{r.stderr[-1500:]}")
+    for s in shots:
+        if s.get("glass"):
+            baked = Path(s["layer"]).with_suffix(".glass.mov")
+            x, y, w, h = s["src_rect"]
+            p = fit((w, h), s["zone"])
+            out.append({**s, "layer": str(baked), "src_rect": [0, 0, p["w"], p["h"]], "glass": None})
+        else:
+            out.append(s)
+    return out
 
 
 def write_status(path: Path | None, state: str, done: float, total: float, *, stage: str = "composite",
@@ -89,6 +113,7 @@ def render(plan: dict[str, Any], out: Path, status: Path | None, *, start: float
                                capture_output=True, text=True, check=True)
         end = float(probe.stdout)
     total = end - start
+    plan = {**plan, "shots": bake_glass(plan, status, weight=weight, shots=in_range(plan["shots"], start, end))}
     # 直接跳到 start：原画面和动效层都按输入 seek，镜头时间换成相对样片开头的秒数
     shots, inputs = [], ["-ss", f"{start:.3f}", "-t", f"{total:.3f}", "-i", base]
     for s in in_range(plan["shots"], start, end):
