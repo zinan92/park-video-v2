@@ -1,19 +1,34 @@
 // 抓重点（effort c · 示意图）：一堆并列的东西里只有一个是关键——「他考虑 10 个因素、20 个因素，真正的主要矛盾只有一个」。
-// 画面：点阵。说到第一档（10 个）时点一颗颗铺出来（越铺越快），说到第二档（20 个）再补满，上面的标签跟着滚到新的说法；
-// 说到重点时，所有点暗下去、往里收一点，其中一颗变成强调色放大，脚下一圈光推开，引出一条线连到下面的重点文字。
-// 动作弧：点阵的空位先淡淡铺好（不让卡空着等）→ 铺点 → 补满 → 其余变暗、一颗点亮。
+// 做工基准：客户咨询1 旧流程 V04（Park 认可过），形态取自 ShotCraft data/avatar-grid-radial-build-colorize。
+// 每个因素是一张小卡：圆角白底、细描边、一道灰条（像一行字）、右上角一个状态点、轻投影——不是抽象圆点。
+// 选中那张放大到 1.35（旧版 1.15，这里卡更窄，要让卡里的字够大）。
+// 动作：
+//   顶部小字（谁在考虑）+ 大号计数，计数从第一档翻到第二档（旧数上飞带模糊、新数从下滑入）；
+//   小卡从中心按「环」往外错峰长出来（环号×4f + 随机×3f，只做淡入 + 0.8→1 缩放，不位移），第一档铺内圈、第二档铺外圈；
+//   说「摘开」时网格间距拉开（14f）；说到重点时，选中那张的底色、描边、状态点同一条曲线染成强调色、放大 1.15、
+//   卡里换成重点的字，其余退到 35%。重点后约 0.6s 做完，之后一帧不动。
 import React from 'react';
 import { Card, useInnerWidth, useU } from '../kit/Card';
 import { useLook } from '../kit/look';
 import { E, lerp, rand, seg } from '../kit/Motion';
-import { fit, Kinetic, tint } from '../kit/parts';
+import { fit } from '../kit/parts';
 import { useSec } from '../kit/time';
 
 type Stage = { count: number; label: string; at: number };
-// spread：他说「摘开 / 拆开」时点阵散开一点（每颗朝各自的方向挪一小段），到重点时再收回来
-export type PickOneProps = { t0: number; stages: Stage[]; focus: { text: string; at: number }; spread?: { at: number }; pick?: number; arc?: 'light' | 'hero' };
+export type PickOneProps = {
+  t0: number; who?: { text: string; at: number }; stages: Stage[]; unit?: string;
+  focus: { text: string; at: number }; spread?: { at: number }; pick?: number; arc?: 'light' | 'hero';
+};
 
-export const PickOne: React.FC<PickOneProps> = ({ t0, stages, focus, spread, pick, arc = 'hero' }) => {
+const hex = (h: string): [number, number, number] => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+const mix = (a: string, b: string, t: number) => {
+  const A = hex(a);
+  const B = hex(b);
+  return `rgb(${A.map((v, i) => Math.round(v + (B[i] - v) * t)).join(',')})`;
+};
+const FPS = 30;
+
+export const PickOne: React.FC<PickOneProps> = ({ t0, who, stages, unit, focus, spread, pick, arc = 'hero' }) => {
   const u = useU();
   const look = useLook();
   const now = useSec(t0);
@@ -21,74 +36,85 @@ export const PickOne: React.FC<PickOneProps> = ({ t0, stages, focus, spread, pic
   const total = Math.max(...stages.map((s) => s.count));
   const cols = total > 12 ? 5 : 4;
   const rows = Math.ceil(total / cols);
-  const cellW = inner / cols;
-  const dot = Math.min(cellW * 0.52, u(58));
-  const gridH = rows * cellW * 0.78;
-  const target = pick ?? Math.min(total - 1, cols * Math.floor(rows / 2) + Math.floor(cols / 2));
-  const setup = seg(now, t0 + 0.05, t0 + 0.5, E.outCubic);
-  const appear = (i: number) => {
-    let prev = 0;
+  const accent = /^#[0-9a-fA-F]{6}$/.test(look.accent) ? look.accent : '#C0391B';
+  const sp = spread ? seg(now, spread.at, spread.at + 14 / FPS, E.outCubic) : 0;
+  const gap0 = u(10);
+  const gap = lerp(sp, gap0, u(24));
+  const cw = (inner - (cols - 1) * u(24)) / cols; // 按拉开后的间距定卡宽，拉开时不出界
+  const ch = cw * 0.7;
+  const gw = cols * cw + (cols - 1) * gap;
+  const gh = rows * ch + (rows - 1) * gap;
+  // 每张卡：所在行列、到中心的距离、环号；第一档铺中间几行（内圈），第二档铺外圈
+  const base = Array.from({ length: cols * rows }, (_, i) => {
+    const r = Math.floor(i / cols);
+    const c = i % cols;
+    const dist = Math.hypot(c - (cols - 1) / 2, (r - (rows - 1) / 2) / 0.85);
+    const outer = Math.abs(r - (rows - 1) / 2) > rows / 4 ? 1 : 0;
+    return { i, r, c, dist, ring: Math.round(dist), outer };
+  });
+  const order = [...base].sort((a, b) => a.outer - b.outer || a.dist - b.dist || a.i - b.i).slice(0, total);
+  const target = pick ?? order[Math.min(order.length - 1, 1)].i;
+  const raw = (g: (typeof base)[number]) => g.ring * 4 + rand(g.i + 40) * 3;
+  const startOf = (k: number) => {
+    let lo = 0;
     for (const s of stages) {
-      if (i < s.count) {
-        const k = (i - prev) / Math.max(1, s.count - prev);
-        return s.at + 0.7 * (1 - Math.pow(1 - k, 1.7));
+      if (k < s.count) {
+        const group = order.slice(lo, s.count);
+        return s.at + (raw(order[k]) - Math.min(...group.map(raw))) / FPS;
       }
-      prev = s.count;
+      lo = s.count;
     }
     return Infinity;
   };
-  const current = [...stages].reverse().find((s) => now >= s.at);
-  const f = seg(now, focus.at, focus.at + 0.5, E.outExpo);
-  const pulse = seg(now, focus.at + 0.15, focus.at + 0.9, E.outCubic);
-  const linkP = seg(now, focus.at + 0.35, focus.at + 0.7, E.inOutCubic);
-  const labelSize = Math.min(...stages.map((s) => fit(s.label, u(56), inner)));
-  const cx = (i: number) => (i % cols) * cellW + cellW / 2;
-  const cy = (i: number) => Math.floor(i / cols) * cellW * 0.78 + cellW * 0.39;
-  const shrink = lerp(f, 1, 0.92);
-  const sp = spread ? seg(now, spread.at, spread.at + 0.6, E.outCubic) * (1 - seg(now, focus.at, focus.at + 0.45, E.inOutCubic)) : 0;
-  const off = (i: number) => {
-    const dx = cx(i) - inner / 2;
-    const dy = cy(i) - gridH / 2;
-    return [dx * 0.14 * sp + (rand(i) - 0.5) * u(14) * sp, dy * 0.18 * sp + (rand(i + 50) - 0.5) * u(14) * sp];
-  };
+  const cT = seg(now, focus.at, focus.at + 6 / FPS, E.outQuad);
+  const dim = seg(now, focus.at, focus.at + 6 / FPS, E.outQuad);
+  const counts = stages.map((s) => s.count);
+  const num = u(96);
+  const label = fit(focus.text, u(40), cw * 0.84); // 卡放大 1.35 时字跟着一起放大
   return (
     <Card arc={arc}>
-      <div style={{ height: labelSize * 1.25, overflow: 'hidden', fontSize: labelSize, fontWeight: 900, color: look.ink, whiteSpace: 'nowrap', marginBottom: u(10) }}>
+      {who ? <div style={{ fontSize: u(30), fontWeight: 700, color: look.muted, opacity: seg(now, who.at, who.at + 0.25) }}>{who.text}</div> : null}
+      <div style={{ position: 'relative', height: num * 1.15, marginTop: u(4), marginBottom: u(18), overflow: 'hidden' }}>
         {stages.map((s, i) => {
-          const into = seg(now, s.at + (i ? 0.18 : 0), s.at + (i ? 0.18 : 0) + 0.3, E.outCubic);
-          const next = stages[i + 1];
-          const out = next ? seg(now, next.at, next.at + 0.18, E.inCubic) : 0;
+          const into = i === 0 ? seg(now, s.at, s.at + 8 / FPS, E.outCubic) : seg(now, s.at, s.at + 8 / FPS, E.outCubic);
+          const nx = stages[i + 1];
+          const out = nx ? seg(now, nx.at, nx.at + 8 / FPS, E.outCubic) : 0;
           if (into <= 0 || out >= 1) return null;
-          return <div key={i} style={{ height: 0, transform: `translateY(${lerp(into, labelSize, 0) - out * labelSize}px)`, opacity: into * (1 - out) }}>
-            <div style={{ height: labelSize * 1.25 }}>{s.label}</div>
-          </div>;
-        })}
-      </div>
-      <div style={{ position: 'relative', width: inner, height: gridH, transform: f > 0 && f < 1 ? `scale(${shrink})` : f >= 1 ? `scale(${shrink})` : 'none' }}>
-        {Array.from({ length: total }, (_, i) => {
-          const t = appear(i);
-          const p = seg(now, t, t + 0.28, E.outExpo);
-          const isPick = i === target;
-          const size = isPick ? dot * lerp(f, 1, 1.6) : dot;
+          const show = into * (1 - out);
+          const dy = (1 - into) * num * 0.62 - out * num * 0.62;
           return (
-            <React.Fragment key={i}>
-              <div style={{ position: 'absolute', left: cx(i) - dot / 2, top: cy(i) - dot / 2, width: dot, height: dot, borderRadius: '50%',
-                border: `${u(2)}px dashed ${look.line}`, opacity: setup * (1 - p) }} />
-              {isPick && pulse > 0 ? <div style={{ position: 'absolute', left: cx(i), top: cy(i), width: dot * lerp(pulse, 1.6, 3), height: dot * lerp(pulse, 1.6, 3),
-                borderRadius: '50%', transform: 'translate(-50%, -50%)', border: `${u(4)}px solid ${look.accent}`, opacity: lerp(pulse, 0.9, 0.25) }} /> : null}
-              {p > 0 ? <div style={{ position: 'absolute', left: cx(i) - size / 2 + off(i)[0], top: cy(i) - size / 2 + off(i)[1], width: size, height: size, borderRadius: '50%',
-                background: isPick && f > 0 ? look.accent : look.ink, opacity: isPick ? 1 : lerp(f, 1, 0.22),
-                boxShadow: isPick && f > 0 ? `0 0 ${u(18) * f}px ${tint(look.accent, 0.6)}` : 'none',
-                transform: p < 1 ? `scale(${lerp(p, 0.3, 1)})` : 'none' }} /> : null}
-            </React.Fragment>
+            <div key={i} style={{ position: 'absolute', left: 0, top: 0, whiteSpace: 'nowrap', opacity: show, transform: `translateY(${dy}px)`,
+              filter: show < 1 ? `blur(${(1 - show) * 8}px)` : 'none', lineHeight: `${num * 1.15}px` }}>
+              <span style={{ fontSize: num, fontWeight: 800, color: look.ink, fontFamily: 'Helvetica, Arial, sans-serif', fontVariantNumeric: 'tabular-nums' }}>{counts[i]}</span>
+              <span style={{ fontSize: num * 0.62, fontWeight: 800, color: look.ink, marginLeft: u(10) }}>{unit ?? s.label.replace(/^\d+/, '')}</span>
+            </div>
           );
         })}
-        {linkP > 0 ? <div style={{ position: 'absolute', left: cx(target) - u(2.5), top: cy(target) + dot * 0.8, width: u(5),
-          height: (gridH - cy(target) - dot * 0.8 + u(16)) * linkP, background: look.accent, borderRadius: u(3) }} /> : null}
       </div>
-      <div style={{ fontSize: fit(focus.text, u(64), inner), fontWeight: 900, color: look.accent, whiteSpace: 'nowrap', marginTop: u(18), textAlign: 'center',
-        minHeight: u(64) }}>
-        <Kinetic text={focus.text} now={now} at={focus.at + 0.5} rise={u(18)} />
+      <div style={{ position: 'relative', width: inner, height: rows * ch + (rows - 1) * u(24) }}>
+        {order.map((g, k) => {
+          const st = startOf(k);
+          const o = seg(now, st, st + 3 / FPS);
+          const sc = seg(now, st, st + 5 / FPS, E.outQuad);
+          if (o <= 0) return null;
+          const red = g.i === target;
+          const t = red ? cT : 0;
+          const scale = lerp(sc, 0.8, 1) * (red ? lerp(cT, 1, 1.35) : 1);
+          const x = (inner - gw) / 2 + g.c * (cw + gap);
+          const y = (rows * ch + (rows - 1) * u(24) - gh) / 2 + g.r * (ch + gap);
+          return (
+            <div key={g.i} style={{ position: 'absolute', left: x, top: y, width: cw, height: ch, boxSizing: 'border-box', borderRadius: u(16),
+              background: mix('#FFFFFF', accent, t), border: `${u(2.5)}px solid ${mix('#D6CFC2', accent, t)}`,
+              boxShadow: red ? `0 ${lerp(t, u(2), u(14))}px ${lerp(t, u(6), u(30))}px rgba(120,40,20,${lerp(t, 0.06, 0.3)})` : `0 ${u(3)}px ${u(8)}px rgba(0,0,0,0.14)`,
+              opacity: o * (red ? 1 : lerp(dim, 1, 0.35)), transform: scale === 1 ? 'none' : `scale(${scale})`, zIndex: red ? 2 : 1,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', left: cw * 0.13, top: ch / 2 - ch * 0.07, width: cw * 0.55, height: ch * 0.14, borderRadius: ch * 0.07,
+                background: '#D9D3C7', opacity: 1 - t }} />
+              <div style={{ position: 'absolute', right: cw * 0.1, top: ch * 0.14, width: ch * 0.14, height: ch * 0.14, borderRadius: '50%', background: '#9C958A', opacity: 1 - t }} />
+              {red ? <div style={{ fontSize: label, fontWeight: 900, color: '#FFFFFF', opacity: t, whiteSpace: 'nowrap' }}>{focus.text}</div> : null}
+            </div>
+          );
+        })}
       </div>
     </Card>
   );

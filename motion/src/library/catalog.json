@@ -671,17 +671,22 @@
       "只有一个关键",
       "筛选聚焦"
     ],
-    "use": "一堆并列的东西里只有一个是关键：点阵铺开，其余变暗，一颗点亮",
+    "use": "一堆并列的东西里只有一个是关键：一张张小卡从中心一圈圈长出来，计数翻页，摘开时拉开，选中那张染成强调色写上重点",
     "shotcraft": [
       "avatar-grid-radial-build-colorize"
     ],
-    "settle": 1.2,
+    "settle": 0.7,
     "min_zone_w": 500,
     "limits": {
       "stages.label": 8,
-      "focus.text": 9
+      "focus.text": 4,
+      "who.text": 6
     },
     "example": {
+      "who": {
+        "text": "他考虑",
+        "at": 0.2
+      },
       "stages": [
         {
           "count": 10,
@@ -694,9 +699,13 @@
           "at": 1.0
         }
       ],
+      "unit": "个因素",
+      "spread": {
+        "at": 1.6
+      },
       "focus": {
-        "text": "真正的主要矛盾",
-        "at": 1.9
+        "text": "主要矛盾",
+        "at": 2.3
       }
     }
   },
