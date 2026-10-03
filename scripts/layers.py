@@ -34,8 +34,9 @@ def style(brief: dict[str, Any]) -> dict[str, Any]:
 
 
 def layer_props(shot: dict[str, Any], zone: dict[str, int], look: dict[str, Any] | None = None) -> dict[str, Any]:
+    side = shot["zone"] if shot.get("zone") in ("left", "right") else "left"
     return {"component": shot["component"], "zone": {"w": zone["w"], "h": zone["h"]}, "start": shot["start"],
-            "end": shot["end"], "props": shot.get("props") or {}, "style": look or {}}
+            "end": shot["end"], "props": shot.get("props") or {}, "style": {**(look or {}), "side": side}}
 
 
 def props_file(layer: Path) -> Path:

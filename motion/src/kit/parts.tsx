@@ -60,3 +60,38 @@ export const glassBall = (body: string, size: number): React.CSSProperties => ({
   boxShadow: `inset 0 ${size * 0.03}px ${size * 0.08}px rgba(255,255,255,.35), inset 0 -${size * 0.05}px ${size * 0.1}px rgba(0,0,0,.25)`,
   border: `${Math.max(1, size * 0.012)}px solid rgba(255,255,255,.5)`,
 });
+
+// 按速度加方向模糊（像相机快门拖影）：value(t) 是元素位移随时间的函数（px），速度越快越糊，停下就清。
+// 用 SVG 滤镜只朝运动方向糊，只给卡片里面的元素用（卡片会裁掉溢出的部分，不会糊到卡外）。
+export const speed = (value: (t: number) => number, now: number) => (value(now + 1 / 60) - value(now - 1 / 60)) * 30; // px / s
+export const DirBlur: React.FC<{ id: string; x?: number; y?: number; children: React.ReactNode; style?: React.CSSProperties }> = ({
+  id, x = 0, y = 0, children, style,
+}) => {
+  const sx = Math.min(24, Math.abs(x));
+  const sy = Math.min(24, Math.abs(y));
+  if (sx < 0.3 && sy < 0.3) return <div style={style}>{children}</div>;
+  const fid = `dirblur-${id.replace(/[^A-Za-z0-9_-]/g, '')}`;
+  return (
+    <div style={{ ...style, filter: `url(#${fid})` }}>
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <filter id={fid} x="-20%" y="-40%" width="140%" height="180%"><feGaussianBlur stdDeviation={`${sx.toFixed(2)} ${sy.toFixed(2)}`} /></filter>
+      </svg>
+      {children}
+    </div>
+  );
+};
+
+// 一串字逐字出现：每个字从下方带模糊升起（AE 的 text animator 那种），间隔 gap 秒
+export const Kinetic: React.FC<{ text: string; now: number; at: number; gap?: number; rise: number; dur?: number }> = ({
+  text, now, at, gap = 0.035, rise, dur = 0.38,
+}) => (
+  <>
+    {[...text].map((ch, i) => {
+      const p = seg(now, at + i * gap, at + i * gap + dur, E.outQuart);
+      return (
+        <span key={i} style={{ display: 'inline-block', whiteSpace: 'pre', opacity: seg(now, at + i * gap, at + i * gap + dur * 0.4),
+          transform: `translateY(${lerp(p, rise, 0)}px)`, filter: p < 1 ? `blur(${lerp(p, 5, 0)}px)` : 'none' }}>{ch}</span>
+      );
+    })}
+  </>
+);

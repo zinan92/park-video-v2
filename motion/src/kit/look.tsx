@@ -3,10 +3,11 @@ import React, { createContext, useContext } from 'react';
 import { E } from './Motion';
 import { CardKind, palette, Palette } from './theme';
 
-export type Style = { card: CardKind; accent: string; overshoot: boolean; glassAlpha: number };
-export const DEFAULT_STYLE: Style = { card: 'paper', accent: '#E2461F', overshoot: false, glassAlpha: 0.45 };
+// side：卡片在人脸的哪一侧（left / right），hero 卡从人脸那一侧滑进来
+export type Style = { card: CardKind; accent: string; overshoot: boolean; glassAlpha: number; side: 'left' | 'right' };
+export const DEFAULT_STYLE: Style = { card: 'paper', accent: '#E2461F', overshoot: false, glassAlpha: 0.45, side: 'left' };
 
-type Look = Palette & { card: CardKind; accent: string; glassAlpha: number; pop: (t: number) => number };
+type Look = Palette & { card: CardKind; accent: string; glassAlpha: number; side: 'left' | 'right'; pop: (t: number) => number };
 
 // 毛玻璃是浅灰底，原色朱红字对比度不够：文字用的强调色压暗 30%
 const darken = (hex: string, f: number) => {
@@ -25,6 +26,6 @@ export const useLook = (): Look => {
   const s = useContext(Ctx);
   // 圆点、符号的弹出：overshoot 为 false 时直接落定，不冲过头
   const accent = s.card === 'glass' && /^#[0-9a-fA-F]{6}$/.test(s.accent) ? darken(s.accent, 0.3) : s.accent;
-  return { ...palette(s.card, s.glassAlpha), card: s.card, accent, glassAlpha: s.glassAlpha,
+  return { ...palette(s.card, s.glassAlpha), card: s.card, accent, glassAlpha: s.glassAlpha, side: s.side,
     pop: s.overshoot ? (t: number) => E.outBack(t) : E.outCubic };
 };
