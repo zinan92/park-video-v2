@@ -221,3 +221,7 @@ def test_component_that_does_not_exist():
 
 def test_card_too_short_to_read():
     assert rules(card(end=11.5, hold=11.0)) == ["too-short"]
+
+
+def test_avoided_component_is_caught():
+    assert rules(card(), avoid=["TextLines"]) == ["avoided-component"]

@@ -1,0 +1,77 @@
+# park-video-v2 的全部设置：这里是唯一的清单。
+# 内容工作台读它（python3 scripts/pv2.py settings）自动画出滑杆和选项，自己不写死任何视频设置；
+# brief.py 也用它校验取值。加一个设置只改这里 + defaults.yaml。
+#
+# sliders：有高低，越往右越费时间、效果越重；available: false 的档位还没做，选不了。
+# choices：没有高低，只是口味不同。
+# per_video：每条视频都不一样，没有默认值（Park 每条说一次）。
+# 取值合并顺序：defaults.yaml（仓库）< ~/.config/park-video-v2/defaults.yaml（Park 在工作台点「设为默认」）< 项目 v2/brief.yaml
+
+sliders:
+  - key: density
+    name: 密度
+    help: 动效占可加动效时长（去掉不加动效的段）的比例
+    levels:
+      - {value: low, label: 低, detail: 10–20%, cost: 整条约 3 分钟}
+      - {value: medium, label: 中, detail: 30–40%, cost: 整条约 5 分钟}
+      - {value: high, label: 高, detail: 50% 以上, cost: 整条约 8 分钟}
+  - key: effort
+    name: 动效努力
+    help: 每一张动效花多少功夫
+    levels:
+      - {value: a, label: 文字卡, detail: 大字、引用、编号要点, cost: 最快}
+      - {value: b, label: 图表·示意图·图标, detail: 环形图、条形图、流程、飞轮、漏斗、对照、图标, cost: 和文字卡差不多}
+      - {value: c, label: 像专业 AE, detail: 多层景深、镜头推拉、质感（改编 ShotCraft 卡）, cost: 每张多几分钟, available: false}
+      - {value: d, label: 先画图再做动画, detail: 先用 Codex 画出画面，再让它动起来, cost: 一条可能几小时, available: false}
+  - key: evidence
+    name: 证据与素材
+    help: 画面上放多少证明和真实素材
+    levels:
+      - {value: none, label: 不放, detail: 只用你说的话和数字, cost: 0}
+      - {value: own, label: 你自己的截图和数据, detail: 后台截图、成交记录、你给的图, cost: 要你提供素材, available: false}
+      - {value: search, label: 搜索外部图片和数据, detail: 找真实图片、新闻、数据来源, cost: 要单独的找素材 skill, available: false}
+  - key: edit
+    name: 剪辑
+    help: 动效之外，要不要动粗剪本身
+    levels:
+      - {value: keep, label: 不动粗剪, detail: 剪映粗剪就是成片底子, cost: 0}
+      - {value: tidy, label: 去停顿和口头禅, detail: 自动剪掉长停顿、嗯啊, cost: 加几分钟, available: false}
+      - {value: hook, label: 剪 Hook, detail: 从正文挑片段剪一个开头钩子（旧流程的能力）, cost: 加十几分钟, available: false}
+  - key: sound
+    name: 声音
+    help: 音效和背景音乐（现在在剪映里加）
+    levels:
+      - {value: none, label: 不加, detail: 在剪映里自己加, cost: 0}
+      - {value: sfx, label: 轻音效, detail: 卡片进场时轻轻一声, cost: 加一两分钟, available: false}
+      - {value: sfx-bgm, label: 音效加背景音乐, detail: 音效 + 低音量背景音乐, cost: 加几分钟, available: false}
+  - key: review
+    name: 检查
+    help: 出成片前检查多严
+    levels:
+      - {value: program, label: 程序检查, detail: 时间、挡脸、字幕、字号、规则全部由脚本查, cost: 几秒}
+      - {value: frames, label: 加 AI 看帧, detail: AI 看每张卡的关键帧挑毛病, cost: 加几分钟, available: false}
+      - {value: independent, label: 加独立评审, detail: 另一个 AI 独立评审方案和成片, cost: 加半小时以上, available: false}
+
+choices:
+  - {key: card, name: 卡片底色, options: [{value: glass, label: 毛玻璃半透明}, {value: paper, label: 米白纸卡}, {value: dark, label: 深色卡}, {value: none, label: 无卡片，字直接浮在画面上}]}
+  - {key: accent, name: 强调色, type: color}
+  - {key: exit, name: 什么时候走, options: [{value: until-next, label: 停到下一张出来}, {value: after-sentence, label: 这句话说完就走}]}
+  - {key: rewrite, name: 卡片上的字, options: [{value: trim-only, label: 只能删减原话}, {value: summarize, label: 允许概括}]}
+  - {key: text_amount, name: 文字量, options: [{value: one-point, label: 一张卡一个重点，大字}, {value: points, label: 标题加几条要点}]}
+  - {key: overshoot, name: 数字和指针冲过头再弹回, type: bool}
+  - {key: max_items, name: 一张卡最多几条, type: int, min: 1, max: 5}
+  - {key: min_gap, name: 两张卡之间至少留几秒纯人脸, type: number, min: 0, max: 10}
+  - {key: prefer, name: 偏爱的样式, type: components}
+  - {key: avoid, name: 不用的样式, type: components}
+
+per_video:
+  - {key: video_type, name: 视频类型}
+  - {key: motion_placement, name: 动效放哪, options: [{value: overlay-sides, label: 人脸居中，透明叠在两侧}, {value: broll, label: 切走人脸}, {value: fullscreen, label: 盖满全屏}]}
+  - {key: no_motion, name: 哪些时间段不加动效}
+  - {key: captions_burned_in, name: 字幕已经烧进画面}
+  - {key: banned_words, name: 不能出现在画面上的词}
+
+presets:
+  - {name: 快出, values: {density: low, effort: a}}
+  - {name: 标准, values: {density: medium, effort: b}}
+  - {name: 精品, values: {density: medium, effort: c}}

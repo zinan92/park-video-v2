@@ -1,9 +1,14 @@
 # 风格和规则的默认值：填一次，每条视频沿用。某条视频要不一样，就在它的 v2/brief.yaml 里写同名字段覆盖。
+# 每一项是什么、有哪些档位，见 settings.yaml。Park 在工作台点「设为默认」写的是 ~/.config/park-video-v2/defaults.yaml，不改这里。
 # 不能出现在画面上的词（客户名、地名…）只写在各项目的 brief.yaml 里，不写进这个公开仓库。
 
-# 两把主旋钮
+# 滑杆（从低到高）
 density: medium          # 密度＝动效占可加动效时长的比例：low 10–20% / medium 30–40% / high 50% 以上（出样片前检查）
 effort: b                # 努力程度＝每张动效花多少功夫：a 文字卡 / b 图表、示意图、图标、曲线 / c 层次丰富、像专业 AE / d 先用 Codex 画图再做动画
+evidence: none           # 证据与素材：none 不放 / own 你自己的截图和数据 / search 搜索外部图片和数据
+edit: keep               # 剪辑：keep 不动粗剪 / tidy 去停顿和口头禅 / hook 剪 Hook
+sound: none              # 声音：none 不加（在剪映加）/ sfx 轻音效 / sfx-bgm 音效加背景音乐
+review: program          # 检查：program 程序检查 / frames 加 AI 看帧 / independent 加独立评审
 
 # 长什么样
 card: glass              # glass 毛玻璃半透明 / paper 米白纸卡 / dark 深色卡 / none 无卡片，字直接浮在画面上
@@ -18,3 +23,7 @@ min_gap: 2               # 两张卡之间至少留多少秒纯人脸
 
 # 卡片上的字
 rewrite: trim-only       # trim-only 只能删减你的原话、不能换词 / summarize 允许概括
+
+# 样式偏好（组件名，见 motion/src/library/catalog.json）
+prefer: []               # 偏爱：AI 写方案时优先用
+avoid: []                # 不用：check 会拦下

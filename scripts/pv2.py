@@ -9,6 +9,10 @@
   pv2.py render  <项目> [--detach]      全部镜头 + 整条合成 + 终检 → final.mp4、qa.json、contact.jpg
   pv2.py qa      <项目>                 只重跑终检（不重渲）
   pv2.py status  <项目>                 现在在哪一步、进度多少、在等谁
+  pv2.py settings [<项目>]              全部设置（settings.yaml）+ 当前取值和来源，JSON；工作台用它画滑杆
+  pv2.py set <项目>|default --json '{"density": "low"}'   改设置：写进项目 brief.yaml，或 Park 的默认值
+  pv2.py catalog                        动效图鉴：每个组件的中文名、形式、努力程度、演示片段，JSON
+  pv2.py gallery                        重新渲染图鉴里每个组件的演示片段（gallery/）
 
 进度：样片写 v2/sample-status.json，整条写 v2/status.json，都是 {state, stage, done, total, unit, percent}。
 --detach 在独立进程组里跑：调它的 agent 退出也不会把渲染带走。
@@ -107,6 +111,81 @@ def summary(project: Path) -> dict[str, Any]:
     if st.get("state") == "rendering":
         return {**out, "percent": st.get("percent")}
     return {**out, "waiting_for": "跑 render"}
+
+
+def _raw_brief(project: Path) -> dict[str, Any]:
+    import yaml
+    try:
+        return yaml.safe_load((_v2(project) / "brief.yaml").read_text(encoding="utf-8")) or {}
+    except (OSError, ValueError):
+        return {}
+
+
+def settings(project: Path | None = None) -> dict[str, Any]:
+    """工作台画滑杆用：设置清单 + 每一项现在的值 + 值从哪来（repo / user / project）。"""
+    import yaml
+    sc = brief_mod.schema()
+    repo = yaml.safe_load(brief_mod.DEFAULTS.read_text(encoding="utf-8")) or {}
+    user = brief_mod._yaml(brief_mod.user_defaults_path())
+    own = _raw_brief(project) if project else {}
+    keys = [x["key"] for x in (sc.get("sliders") or []) + (sc.get("choices") or [])]
+    if project:
+        keys += [x["key"] for x in sc.get("per_video") or []]
+    values, source = {}, {}
+    for k in keys:
+        for name, layer in (("project", own), ("user", user), ("repo", repo)):
+            if k in layer:
+                values[k], source[k] = layer[k], name
+                break
+    levels = {sl["key"]: {lv["value"]: lv.get("available", True) for lv in sl["levels"]} for sl in sc.get("sliders") or []}
+    presets = [{**pr, "available": all(levels.get(k, {}).get(v, True) for k, v in pr["values"].items())} for pr in sc.get("presets") or []]
+    return {"schema": {**sc, "presets": presets}, "values": values, "source": source,
+            "components": [{"key": c["key"], "name": c["name"], "form": c["form"], "effort": c["effort"]} for c in catalog()]}
+
+
+def _write_keys(path: Path, updates: dict[str, Any]) -> None:
+    """改 yaml 里几个顶层字段，其余行（含注释）原样保留；没有的字段追加在末尾。"""
+    lines = path.read_text(encoding="utf-8").splitlines() if path.is_file() else []
+    for key, val in updates.items():
+        new = f"{key}: {json.dumps(val, ensure_ascii=False)}"
+        at = next((i for i, ln in enumerate(lines) if ln.split("#")[0].rstrip().startswith(f"{key}:") and not ln.startswith(" ")), None)
+        if at is None:
+            lines.append(new)
+            continue
+        end = at + 1
+        while end < len(lines) and (lines[end].startswith((" ", "\t", "-")) or not lines[end].strip()):
+            if not lines[end].strip() and (end + 1 >= len(lines) or not lines[end + 1].startswith((" ", "-"))):
+                break
+            end += 1
+        lines[at:end] = [new]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def set_values(target: str, updates: dict[str, Any]) -> dict[str, Any]:
+    """target 是项目目录（写进它的 v2/brief.yaml）或 "default"（写进 Park 的默认值）。先全部校验，再写。"""
+    for k, v in updates.items():
+        brief_mod.check_value(k, v)
+    if target == "default":
+        path = brief_mod.user_defaults_path()
+    else:
+        path = _v2(Path(target)) / "brief.yaml"
+        if not path.parent.is_dir():
+            raise ValueError(f"{target} 还没有 v2/，先 init")
+    _write_keys(path, updates)
+    return {"written": str(path), "values": updates}
+
+
+def catalog() -> list[dict[str, Any]]:
+    """动效图鉴：组件库里每个组件（catalog.json）+ 演示片段（gallery/ 里有才给）。"""
+    data = json.loads((ROOT / "motion" / "src" / "library" / "catalog.json").read_text(encoding="utf-8"))
+    out = []
+    for key, c in data.items():
+        if key.startswith("_"):
+            continue
+        video, poster = ROOT / "gallery" / f"{key}.mp4", ROOT / "gallery" / f"{key}.jpg"
+        out.append({"key": key, **c, "video": str(video) if video.is_file() else None, "poster": str(poster) if poster.is_file() else None})
+    return out
 
 
 def _motion_mtime() -> float:
@@ -223,6 +302,8 @@ def _detach(argv: list[str], project: Path) -> None:
 
 
 def main(argv: list[str]) -> int:
+    if len(argv) > 1 and argv[1] in ("settings", "set", "catalog", "gallery"):
+        return _main_settings(argv)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=("init", "prep", "check", "find", "sample", "approve", "render", "qa", "status"))
     ap.add_argument("project")
@@ -260,6 +341,28 @@ def main(argv: list[str]) -> int:
         print(json.dumps(approve(project, a.gate or "", message=a.message), ensure_ascii=False))
     elif a.cmd == "status":
         print(json.dumps(summary(project), ensure_ascii=False, indent=2))
+    return 0
+
+
+def _main_settings(argv: list[str]) -> int:
+    cmd, rest = argv[1], argv[2:]
+    if cmd == "settings":
+        print(json.dumps(settings(Path(rest[0]).expanduser() if rest else None), ensure_ascii=False, indent=2))
+    elif cmd == "catalog":
+        print(json.dumps(catalog(), ensure_ascii=False, indent=2))
+    elif cmd == "gallery":
+        import gallery
+        for path in gallery.render_all():
+            print(path)
+    else:
+        if len(rest) != 3 or rest[1] != "--json":
+            raise SystemExit("用法：pv2.py set <项目>|default --json '{\"density\": \"low\"}'")
+        target = rest[0] if rest[0] == "default" else str(Path(rest[0]).expanduser())
+        try:
+            print(json.dumps(set_values(target, json.loads(rest[2])), ensure_ascii=False))
+        except ValueError as e:
+            print(json.dumps({"error": str(e)}, ensure_ascii=False))
+            return 1
     return 0
 
 

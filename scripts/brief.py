@@ -4,23 +4,19 @@
 brief.yaml 里写同名字段就覆盖这一条视频。"""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-DEFAULTS = Path(__file__).resolve().parents[1] / "defaults.yaml"
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULTS = ROOT / "defaults.yaml"
+SETTINGS = ROOT / "settings.yaml"
+USER_DEFAULTS_ENV = "PV2_USER_DEFAULTS"  # 测试时指到临时文件
 REQUIRED = ("video_type", "canvas", "motion_placement", "no_motion", "captions_burned_in")
 PLACEMENTS = ("overlay-sides", "broll", "fullscreen")
 DENSITY = {"low": (0.10, 0.20), "medium": (0.30, 0.40), "high": (0.50, 1.0)}  # 动效占可加动效时长的比例
-CHOICES = {
-    "card": ("glass", "paper", "dark", "none"),
-    "text_amount": ("one-point", "points"),
-    "effort": ("a", "b", "c", "d"),
-    "exit": ("after-sentence", "until-next"),
-    "rewrite": ("trim-only", "summarize"),
-    "density": ("low", "medium", "high"),
-}
 
 
 class NeedsPark(Exception):
@@ -31,8 +27,55 @@ class NeedsPark(Exception):
         super().__init__("brief 缺这些字段，停下来问 Park：" + "、".join(missing))
 
 
+def schema() -> dict[str, Any]:
+    return yaml.safe_load(SETTINGS.read_text(encoding="utf-8")) or {}
+
+
+def user_defaults_path() -> Path:
+    return Path(os.environ.get(USER_DEFAULTS_ENV) or Path.home() / ".config" / "park-video-v2" / "defaults.yaml")
+
+
+def _yaml(path: Path) -> dict[str, Any]:
+    try:
+        return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    except OSError:
+        return {}
+
+
 def defaults() -> dict[str, Any]:
-    return yaml.safe_load(DEFAULTS.read_text(encoding="utf-8")) or {}
+    """仓库默认值 + Park 在工作台设的默认值（后者覆盖前者）。"""
+    return {**_yaml(DEFAULTS), **_yaml(user_defaults_path())}
+
+
+def check_value(key: str, value: Any) -> None:
+    """按 settings.yaml 校验一个设置的取值；不认识的 key 不管（brief 里还有 face_box 之类）。"""
+    sc = schema()
+    for sl in sc.get("sliders") or []:
+        if sl["key"] == key:
+            level = next((lv for lv in sl["levels"] if lv["value"] == value), None)
+            if level is None:
+                raise ValueError(f"{key}（{sl['name']}）只能是 {' / '.join(lv['value'] for lv in sl['levels'])}，收到 {value!r}")
+            if level.get("available") is False:
+                raise ValueError(f"{sl['name']}「{level['label']}」这一档还没做，先选别的档")
+            return
+    for ch in (sc.get("choices") or []) + (sc.get("per_video") or []):
+        if ch["key"] != key:
+            continue
+        if "options" in ch and value not in [o["value"] for o in ch["options"]]:
+            raise ValueError(f"{key}（{ch['name']}）只能是 {' / '.join(o['value'] for o in ch['options'])}，收到 {value!r}")
+        kind = ch.get("type")
+        if kind == "bool" and not isinstance(value, bool):
+            raise ValueError(f"{key}（{ch['name']}）要写 true / false")
+        if kind in ("int", "number"):
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or (kind == "int" and not isinstance(value, int)):
+                raise ValueError(f"{key}（{ch['name']}）要写数字")
+            if not ch.get("min", value) <= value <= ch.get("max", value):
+                raise ValueError(f"{key}（{ch['name']}）要在 {ch.get('min')}–{ch.get('max')} 之间")
+        if kind == "components" and not (isinstance(value, list) and all(isinstance(v, str) for v in value)):
+            raise ValueError(f"{key}（{ch['name']}）要写组件名列表")
+        if kind == "color" and not (isinstance(value, str) and value.startswith("#")):
+            raise ValueError(f"{key}（{ch['name']}）要写 #rrggbb 颜色")
+        return
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -50,9 +93,8 @@ def load(path: Path) -> dict[str, Any]:
     cov = data.get("coverage")
     if cov is not None and not (isinstance(cov, list) and len(cov) == 2 and 0 <= cov[0] <= cov[1] <= 1):
         raise ValueError(f"coverage 要写成 [下限, 上限]，0–1 之间，收到 {cov!r}")
-    for key, allowed in CHOICES.items():
-        if data.get(key) not in allowed:
-            raise ValueError(f"{key} 只能是 {' / '.join(allowed)}，收到 {data.get(key)!r}")
+    for key, value in data.items():
+        check_value(key, value)
     return data
 
 

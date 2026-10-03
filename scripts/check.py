@@ -239,6 +239,8 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
             if line_px(line, w, i) < MIN_TEXT_PX:
                 add("text-too-small", s, f"「{line}」在这块区域里只能用 {line_px(line, w, i)}px 字号，拆短一点（至少 {MIN_TEXT_PX}px）")
     entry = _catalog().get(s.get("component", ""), {})
+    if s.get("component") in (b.get("avoid") or []):
+        add("avoided-component", s, f"{s.get('component')}（{entry.get('name', '')}）在「不用的样式」里")
     if not entry:
         add("unknown-component", s, f"组件库里没有 {s.get('component')}（见 motion/src/library/catalog.json）")
     for name in _icons(props):

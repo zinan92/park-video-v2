@@ -130,3 +130,53 @@ def test_qa_rerun_updates_status(proj, monkeypatch):
     monkeypatch.setattr(pv2.qa_mod, "run", lambda *a, **k: {"status": "pass", "placement": [], "hold_static": []})
     assert pv2.do_qa(proj)["status"] == "pass"
     assert json.loads((v2(proj) / "status.json").read_text())["state"] == "done"
+
+
+# —— 设置清单（工作台读它画滑杆）——
+def test_settings_lists_every_slider_with_values_and_where_they_come_from(proj):
+    s = pv2.settings(proj)
+    keys = [x["key"] for x in s["schema"]["sliders"]]
+    assert keys == ["density", "effort", "evidence", "edit", "sound", "review"]
+    assert s["values"]["density"] == "medium" and s["source"]["density"] == "repo"
+    effort = next(x for x in s["schema"]["sliders"] if x["key"] == "effort")
+    assert [lv.get("available", True) for lv in effort["levels"]] == [True, True, False, False]
+    presets = {p["name"]: p["available"] for p in s["schema"]["presets"]}
+    assert presets == {"快出": True, "标准": True, "精品": False}
+    assert {c["key"] for c in s["components"]} >= {"TextLines", "Cycle", "IconList"}
+
+
+def test_setting_a_project_value_keeps_the_rest_of_the_brief(proj):
+    brief = v2(proj) / "brief.yaml"
+    brief.write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8"), encoding="utf-8")
+    pv2.set_values(str(proj), {"density": "low", "card": "dark"})
+    text = brief.read_text(encoding="utf-8")
+    assert "face_box: [700, 140, 520, 760]   # 人脸" in text  # 注释和其他字段原样留着
+    s = pv2.settings(proj)
+    assert s["values"]["density"] == "low" and s["source"]["density"] == "project" and s["values"]["card"] == "dark"
+    pv2.set_values(str(proj), {"no_motion": [[1.0, 2.0]]})  # 多行的字段整块换掉
+    import brief as brief_mod
+    b = brief_mod.load(brief)
+    assert b["no_motion"] == [[1.0, 2.0]] and b["density"] == "low"
+
+
+def test_setting_a_default_goes_to_parks_own_file_not_the_repo(proj, tmp_path):
+    before = (ROOT / "defaults.yaml").read_text(encoding="utf-8")
+    pv2.set_values("default", {"effort": "a"})
+    assert (ROOT / "defaults.yaml").read_text(encoding="utf-8") == before
+    assert pv2.settings()["values"]["effort"] == "a" and pv2.settings()["source"]["effort"] == "user"
+
+
+def test_unbuilt_level_or_bad_value_is_refused_before_writing(proj):
+    with pytest.raises(ValueError, match="还没做"):
+        pv2.set_values(str(proj), {"effort": "c"})
+    with pytest.raises(ValueError, match="density"):
+        pv2.set_values(str(proj), {"density": "huge"})
+    with pytest.raises(ValueError, match="数字"):
+        pv2.set_values(str(proj), {"max_items": "three"})
+
+
+def test_catalog_has_a_chinese_name_and_example_for_every_component():
+    items = pv2.catalog()
+    assert len(items) >= 14
+    for c in items:
+        assert c["name"] and c["form"] in ("text", "number", "chart", "diagram", "icon") and c["example"]

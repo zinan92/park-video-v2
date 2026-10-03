@@ -13,7 +13,7 @@ description: 给口播视频加动效（Remotion 透明层叠到原画面）。P
    `python3 scripts/pv2.py init <项目> --video <粗剪> --srt <剪映SRT>`，然后把 Park 的原话填进 `<项目>/v2/brief.yaml`。
    每条视频只问 Park 这几项：视频类型、动效怎么放（`overlay-sides` 人脸居中两侧透明叠加 / `broll` / `fullscreen`）、哪些时间段不加动效、字幕是否已烧进画面、**不能出现在画面上的词**（客户名、地名…，写进项目的 `banned_words`，绝不写进本仓库）。
    人脸位置 `face_box` 和字幕带 `caption_band`：从粗剪的真实画面截两帧量，不要猜。
-   风格和规则（**密度**、**努力程度**、卡片底色、强调色、能不能改写原话……）在仓库根目录 `defaults.yaml`，是 Park 填好的默认值，**不要再问**；他说这条要不一样，才在项目 brief.yaml 里写同名字段覆盖。音效、背景音乐不在这个流程里（Park 在剪映加）。
+   风格和规则（**密度**、**努力程度**、卡片底色、强调色、能不能改写原话……）全部列在 `settings.yaml`，默认值在 `defaults.yaml`（Park 在工作台设的默认值在 `~/.config/park-video-v2/defaults.yaml`，优先），**不要再问**。他说这条要不一样，用 `pv2.py set <项目> --json '{...}'` 改（会先校验、还没做的档位会被拒），不要手改 yaml。`pv2.py settings <项目>` 看当前取值和来源。音效、背景音乐不在这个流程里（Park 在剪映加）。
 2. **prep**：`python3 scripts/pv2.py prep <项目>` → `v2/words.json`（SRT 对齐音频，约 30 秒）。
 3. **写 plan.json**（见下）→ `python3 scripts/pv2.py check <项目>`，输出 `[]` 才算过。
 4. **样片**：`python3 scripts/pv2.py sample <项目> --detach`，用 `status` 看进度。完成后**停下**，把 `v2/sample.mp4` 发给 Park。
@@ -38,6 +38,7 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 - 相邻两张卡不能同一种形式（text / number / chart / diagram / icon）。
 - 每张卡至少停 2.5 秒。`exit: until-next` 时停到下一张出来前（中间留 `min_gap` 秒），但最后一句说完后最多再停 10 秒。
 - 内容多的卡（三条、飞轮、对照、条形图）放左右里更宽的那块区域。
+- `prefer`（偏爱的样式）优先用；`avoid`（不用的样式）check 会拦。
 - `exit: after-sentence`：卡片在最后一句说完后 1.5 秒内退场。
 - `min_gap`：两张卡之间至少留这么多秒纯人脸。
 - `density`：low 只放关键数字和结论 / medium / high 每个论点都配。check 会报覆盖率，只做参考，不写死数量。
@@ -76,6 +77,8 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 | `Compare` | diagram | b | 两件事对照（≠ / → / +） | `kicker?`, `top{title, sub?, at}`, `bottom{…}`, `symbol`, `symbolAt` |
 | `IconPoint` | icon | b | 一个概念配一个图标 | `icon`, `iconAt`, `lines[]`, `ats[]`, `accent?[]` |
 | `IconList` | icon | b | 2–3 条，每条配图标 | `kicker?`, `items[{icon, text, at}]`, `accent?[]` |
+
+Park 说的样式名对不上组件时，查 `pv2.py catalog`：每个组件有中文名、他可能的叫法（keywords）和形态来源的 ShotCraft 卡；图鉴演示片段在 `gallery/`（改了组件或加了组件后跑 `pv2.py gallery` 重渲）。
 
 图标用 lucide 的短横线名字（`users`、`clock`、`wallet`、`trending-up`…，全表见 https://lucide.dev/icons ），check 会核对图标存在。图表里的数值（`value`）必须是他说出口的数，不要编比例。真实图片暂不在这个流程里。
 
