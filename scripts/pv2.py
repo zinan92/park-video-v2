@@ -241,7 +241,8 @@ def main(argv: list[str]) -> int:
         d, b, plan, _ = _load(project)
         found = check_mod.run(plan, _json(d / "words.json", {}), b)
         print(json.dumps(found, ensure_ascii=False, indent=2))
-        print(f"动效覆盖率 {check_mod.coverage(plan, b):.0%}（疏密 {b.get('density')}，只做参考）", file=sys.stderr)
+        lo, hi = brief_mod.coverage_range(b)
+        print(f"动效占 {check_mod.coverage(plan, b):.0%}（密度 {b.get('density')}：{lo:.0%}–{hi:.0%}）", file=sys.stderr)
         return 1 if found else 0
     elif a.cmd == "find":
         words = (_json(_v2(project) / "words.json", {}) or {}).get("words") or []

@@ -1,6 +1,6 @@
 """Park 在开头说清楚的东西（brief.yaml）。缺字段就停下来问他，不让 AI 猜。
 
-风格和规则（卡片底色、动效力度、能不能改写原话……）在仓库根目录 defaults.yaml 里填一次；
+风格和规则（密度、努力程度、卡片底色、能不能改写原话……）在仓库根目录 defaults.yaml 里填一次；
 brief.yaml 里写同名字段就覆盖这一条视频。"""
 from __future__ import annotations
 
@@ -12,11 +12,11 @@ import yaml
 DEFAULTS = Path(__file__).resolve().parents[1] / "defaults.yaml"
 REQUIRED = ("video_type", "canvas", "motion_placement", "no_motion", "captions_burned_in")
 PLACEMENTS = ("overlay-sides", "broll", "fullscreen")
-FORMS = ("text", "number", "chart", "diagram", "icon")
+DENSITY = {"low": (0.10, 0.20), "medium": (0.30, 0.40), "high": (0.50, 1.0)}  # 动效占可加动效时长的比例
 CHOICES = {
     "card": ("glass", "paper", "dark", "none"),
     "text_amount": ("one-point", "points"),
-    "intensity": ("restrained", "medium", "rich"),
+    "effort": ("a", "b", "c", "d"),
     "exit": ("after-sentence", "until-next"),
     "rewrite": ("trim-only", "summarize"),
     "density": ("low", "medium", "high"),
@@ -47,13 +47,21 @@ def load(path: Path) -> dict[str, Any]:
         raise NeedsPark(missing)
     if data["motion_placement"] not in PLACEMENTS:
         raise ValueError(f"motion_placement 只能是 {' / '.join(PLACEMENTS)}，收到 {data['motion_placement']!r}")
-    bad = [f for f in data.get("forms") or [] if f not in FORMS]
-    if bad:
-        raise ValueError(f"forms 只能从 {' / '.join(FORMS)} 里选，收到 {bad}")
+    cov = data.get("coverage")
+    if cov is not None and not (isinstance(cov, list) and len(cov) == 2 and 0 <= cov[0] <= cov[1] <= 1):
+        raise ValueError(f"coverage 要写成 [下限, 上限]，0–1 之间，收到 {cov!r}")
     for key, allowed in CHOICES.items():
         if data.get(key) not in allowed:
             raise ValueError(f"{key} 只能是 {' / '.join(allowed)}，收到 {data.get(key)!r}")
     return data
+
+
+def coverage_range(b: dict[str, Any]) -> tuple[float, float]:
+    """这条视频的动效比例区间：brief 里写了 coverage: [下限, 上限] 就用它，否则按 density 档。"""
+    if b.get("coverage"):
+        lo, hi = b["coverage"]
+        return float(lo), float(hi)
+    return DENSITY[b.get("density", "medium")]
 
 
 def side_zones(b: dict[str, Any], margin: int = 40) -> tuple[dict[str, int], dict[str, int]]:

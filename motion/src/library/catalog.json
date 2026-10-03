@@ -1,17 +1,59 @@
 {
-  "_说明": "每个组件的力度（level）和表达形式（form）。brief 的 intensity 是力度上限：restrained 只能用 restrained 的组件，medium 能用 restrained + medium，rich 都能用。brief 的 forms 是允许的形式，相邻两张卡不用同一种形式。新组件注册进 index.ts 时在这里登记。",
-  "TextLines": {"level": "restrained", "form": "text"},
-  "Quote": {"level": "restrained", "form": "text"},
-  "ListSteps": {"level": "restrained", "form": "text"},
-  "BigNumber": {"level": "restrained", "form": "number"},
-  "NumberRoll": {"level": "medium", "form": "number"},
-  "Ratio": {"level": "restrained", "form": "chart"},
-  "Bars": {"level": "restrained", "form": "chart"},
-  "Gauge": {"level": "medium", "form": "chart"},
-  "Cycle": {"level": "restrained", "form": "diagram"},
-  "Funnel": {"level": "restrained", "form": "diagram"},
-  "Flow": {"level": "restrained", "form": "diagram"},
-  "Compare": {"level": "restrained", "form": "diagram"},
-  "IconPoint": {"level": "restrained", "form": "icon"},
-  "IconList": {"level": "restrained", "form": "icon"}
+  "_说明": "每个组件的努力程度（effort）和表达形式（form）。brief 的 effort 是上限：b 能用 a + b 的组件；低于 effort 的组件最多占 40%。相邻两张卡不用同一种形式。新组件注册进 index.ts 时在这里登记（ShotCraft 级的多层镜头是 c，先用 Codex 画图再做动画的是 d）。",
+  "TextLines": {
+    "effort": "a",
+    "form": "text"
+  },
+  "Quote": {
+    "effort": "a",
+    "form": "text"
+  },
+  "ListSteps": {
+    "effort": "a",
+    "form": "text"
+  },
+  "BigNumber": {
+    "effort": "a",
+    "form": "number"
+  },
+  "NumberRoll": {
+    "effort": "b",
+    "form": "number"
+  },
+  "Ratio": {
+    "effort": "b",
+    "form": "chart"
+  },
+  "Bars": {
+    "effort": "b",
+    "form": "chart"
+  },
+  "Gauge": {
+    "effort": "b",
+    "form": "chart"
+  },
+  "Cycle": {
+    "effort": "b",
+    "form": "diagram"
+  },
+  "Funnel": {
+    "effort": "b",
+    "form": "diagram"
+  },
+  "Flow": {
+    "effort": "b",
+    "form": "diagram"
+  },
+  "Compare": {
+    "effort": "b",
+    "form": "diagram"
+  },
+  "IconPoint": {
+    "effort": "b",
+    "form": "icon"
+  },
+  "IconList": {
+    "effort": "b",
+    "form": "icon"
+  }
 }

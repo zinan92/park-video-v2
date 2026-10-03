@@ -14,7 +14,7 @@ export const Bars: React.FC<BarsProps> = ({ t0, kicker, bars, accent = [] }) => 
   const now = useSec(t0);
   const inner = useInnerWidth();
   const max = Math.max(...bars.map((b) => b.value), 1);
-  const labelSize = Math.min(...bars.map((b) => fit(b.label, u(48), inner)));
+  const labelSize = Math.min(...bars.map((b) => fit(b.label, u(64), inner)));
   return (
     <Card>
       {kicker ? <Kicker>{kicker}</Kicker> : null}
@@ -25,9 +25,9 @@ export const Bars: React.FC<BarsProps> = ({ t0, kicker, bars, accent = [] }) => 
           return (
             <Appear key={i} now={now} at={b.at} rise={u(12)} style={{ marginTop: u(i ? 26 : 0) }}>
               <div style={{ fontSize: labelSize, fontWeight: 700, color: hot ? look.accent : look.ink, whiteSpace: 'nowrap' }}>{b.label}</div>
-              <div style={{ marginTop: u(10), height: u(58), width: w, borderRadius: u(14), background: hot ? look.accent : look.line,
+              <div style={{ marginTop: u(10), height: u(76), width: w, borderRadius: u(14), background: hot ? look.accent : look.line,
                 display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: u(16), boxSizing: 'border-box',
-                fontSize: u(36), fontWeight: 800, color: hot ? '#FFFFFF' : look.ink, whiteSpace: 'nowrap' }}>{b.display ?? ''}</div>
+                fontSize: u(46), fontWeight: 800, color: hot ? '#FFFFFF' : look.ink, whiteSpace: 'nowrap' }}>{b.display ?? ''}</div>
             </Appear>
           );
         })}

@@ -90,7 +90,7 @@ SPEECH = {"words": [
     {"w": "客户甲", "start": 12.0, "end": 12.5}, {"w": "一年", "start": 12.5, "end": 12.8},
     {"w": "200万", "start": 12.8, "end": 13.4},
 ]}
-RULES = {**BRIEF, "banned_words": ["客户甲"], "max_items": 3, "text_amount": "one-point", "intensity": "restrained",
+RULES = {**BRIEF, "banned_words": ["客户甲"], "max_items": 3, "text_amount": "one-point",
          "rewrite": "trim-only", "exit": "after-sentence", "min_gap": 5}
 
 
@@ -142,27 +142,45 @@ def test_one_point_card_cannot_carry_a_paragraph():
     assert "not-one-point" in f
 
 
-def test_component_above_the_chosen_intensity():
-    f = rules(card(component="NumberRoll", props={"value": "200万", "lockAt": 12.8}, reveals=[], end=13.5))
-    assert f == ["intensity"]
-    assert rules(card(component="NumberRoll", props={"value": "200万", "lockAt": 12.8}, reveals=[], end=13.5), intensity="medium") == []
+def test_component_above_the_chosen_effort():
+    s = card(component="Cycle", props={"nodes": [{"text": "两件", "at": 10.3}, {"text": "问题", "at": 11.3}]}, reveals=[])
+    assert rules(s, effort="a") == ["effort-too-high"]
+    assert rules(s, effort="b") == []
 
 
-def test_restrained_card_cannot_reveal_line_by_line():
-    s = card(end=14.0, props={"lines": ["两件重要问题", "一年200万"], "ats": [10.3, 12.5]},
-             reveals=[{"at": 10.3, "text": "两件非常重要的问题"}, {"at": 12.5, "text": "一年200万"}])
-    assert rules(s) == ["intensity"]
+def test_most_cards_cannot_be_plain_text_at_effort_b():
+    t1 = card()
+    t2 = card(id="V09", start=18.0, end=19.0, hold=18.5, zone="left", component="IconPoint", reveals=[],
+              props={"icon": "users", "iconAt": 18.0, "lines": ["一年200万"], "ats": [18.0]})
+    t5 = card(id="V12", start=40.0, end=41.0, hold=40.5, reveals=[], component="Cycle",
+              props={"nodes": [{"text": "一年", "at": 40.0}, {"text": "200万", "at": 40.0}]})
+    assert "effort-too-low" not in rules(t1, t2, t5, effort="b", rewrite="summarize")  # 1/3 是文字卡
+    t3 = card(id="V10", start=25.0, end=26.0, hold=25.5, reveals=[], component="Quote", props={"lines": ["一年"], "ats": [25.0]})
+    t4 = card(id="V11", start=30.0, end=31.0, hold=30.5, reveals=[], component="BigNumber", props={"value": "200万", "at": 30.0})
+    assert "effort-too-low" in rules(t1, t2, t3, t4, t5, effort="b", rewrite="summarize")  # 3/5
+
+
+def test_density_range_is_enforced():
+    plan = {"duration": 100.0, "shots": [card(start=10.0, end=12.5)]}
+    f = check.run(plan, SPEECH, {**RULES, "density": "medium"})
+    assert [x["rule"] for x in f] == ["density"] and "30%" in f[0]["detail"]
+    assert check.run(plan, SPEECH, {**RULES, "coverage": [0.0, 0.05]}) == []
+
+
+def test_until_next_still_has_a_ceiling():
+    assert rules(card(end=20.0), exit="until-next") == []
+    assert rules(card(end=23.0), exit="until-next") == ["stays-too-long"]
 
 
 def test_card_stays_long_after_the_sentence_ends():
     assert rules(card(end=16.0)) == ["stays-too-long"]
-    assert rules(card(end=16.0), exit="until-next") == []
+    assert rules(card(end=16.0), exit="until-next") == []  # 停到下一张：最后一句说完后 10 秒内都可以
 
 
 def test_cards_too_close_together():
-    later = card(id="V09", start=15.0, end=16.0, hold=15.5, zone="left", reveals=[], props={"lines": ["一年200万"], "ats": [15.0]})
+    later = card(id="V09", start=15.0, end=18.0, hold=15.5, zone="left", reveals=[], props={"lines": ["一年200万"], "ats": [15.0]})
     assert rules(card(), later) == ["gap"]
-    assert rules(card(), {**later, "start": 17.6, "end": 18.0, "hold": 17.8}, rewrite="summarize") == []
+    assert rules(card(), {**later, "start": 17.6, "end": 20.6, "hold": 17.8}, rewrite="summarize") == []
 
 
 def test_coverage_is_reported_not_enforced():
@@ -181,16 +199,12 @@ def test_line_too_long_for_the_zone_gets_tiny_text():
 
 # —— 表达形式和图标 ——
 def test_two_cards_in_a_row_with_the_same_form():
-    later = card(id="V09", start=18.0, end=19.0, hold=18.5, zone="left", reveals=[], component="Quote",
-                 props={"lines": ["一年200万"], "ats": [18.0]})
-    forms = ["text", "number", "chart", "diagram", "icon"]
-    assert rules(card(), later, forms=forms, rewrite="summarize") == ["same-form"]
-    assert rules(card(), {**later, "component": "BigNumber", "props": {"value": "200万", "at": 18.0}}, forms=forms, rewrite="summarize") == []
-
-
-def test_form_left_out_of_this_video():
-    s = card(component="BigNumber", props={"value": "200万", "at": 12.8}, reveals=[], start=12.8, end=13.5, hold=13.0)
-    assert rules(s, forms=["text"]) == ["form-not-allowed"]
+    later = card(id="V09", start=18.0, end=21.0, hold=18.5, zone="left", reveals=[], component="Flow",
+                 props={"steps": [{"text": "一年", "at": 18.0}, {"text": "200万", "at": 18.0}]})
+    first = card(component="Cycle", props={"nodes": [{"text": "两件", "at": 10.3}, {"text": "问题", "at": 11.3}]}, reveals=[])
+    assert rules(first, later, effort="b", rewrite="summarize") == ["same-form"]
+    other = {**later, "component": "IconPoint", "props": {"icon": "users", "iconAt": 18.0, "lines": ["一年200万"], "ats": [18.0]}}
+    assert rules(first, other, effort="b", rewrite="summarize") == []
 
 
 def test_icon_must_exist_and_its_name_is_not_checked_as_speech():
@@ -203,3 +217,7 @@ def test_icon_must_exist_and_its_name_is_not_checked_as_speech():
 
 def test_component_that_does_not_exist():
     assert rules(card(component="PillSlot")) == ["unknown-component"]
+
+
+def test_card_too_short_to_read():
+    assert rules(card(end=11.5, hold=11.0)) == ["too-short"]

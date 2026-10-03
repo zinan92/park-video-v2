@@ -48,15 +48,16 @@ def test_side_zones_come_from_the_face_box():
 
 def test_defaults_fill_in_style_and_rules():
     b = brief.load(ROOT / "brief.example.yaml")
-    assert b["card"] == "glass" and b["intensity"] == "restrained" and b["rewrite"] == "trim-only"
-    assert b["max_items"] == 3 and b["min_gap"] == 5 and b["exit"] == "after-sentence"
+    assert b["card"] == "glass" and b["density"] == "medium" and b["effort"] == "b" and b["rewrite"] == "trim-only"
+    assert b["max_items"] == 3 and b["min_gap"] == 2 and b["exit"] == "until-next"
+    assert brief.coverage_range(b) == (0.30, 0.40)
 
 
 def test_a_video_can_override_a_default(tmp_path):
     p = tmp_path / "brief.yaml"
     p.write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8") + "card: dark\nmax_items: 5\n", encoding="utf-8")
     b = brief.load(p)
-    assert b["card"] == "dark" and b["max_items"] == 5 and b["intensity"] == "restrained"
+    assert b["card"] == "dark" and b["max_items"] == 5 and b["effort"] == "b"
 
 
 def test_unknown_style_choice_is_rejected(tmp_path):
@@ -77,9 +78,11 @@ def test_banned_words_never_ship_in_the_public_defaults():
     assert "banned_words" not in brief.defaults()
 
 
-def test_forms_default_to_all_five_and_unknown_forms_are_rejected(tmp_path):
-    assert brief.load(ROOT / "brief.example.yaml")["forms"] == ["text", "number", "chart", "diagram", "icon"]
+def test_density_maps_to_a_coverage_range_and_can_be_overridden(tmp_path):
+    assert brief.coverage_range({"density": "low"}) == (0.10, 0.20)
+    assert brief.coverage_range({"density": "high"}) == (0.50, 1.0)
+    assert brief.coverage_range({"density": "medium", "coverage": [0.25, 0.35]}) == (0.25, 0.35)
     p = tmp_path / "brief.yaml"
-    p.write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8") + "forms: [text, photo]\n", encoding="utf-8")
-    with pytest.raises(ValueError, match="forms"):
+    p.write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8") + "effort: e\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="effort"):
         brief.load(p)

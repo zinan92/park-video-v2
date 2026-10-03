@@ -8,8 +8,9 @@ plan.json 里每个镜头：{id, start, end, zone, component, reveals: [{at, tex
 - reveals：每段文字出现的时刻和它显示的原话，用来查「文字不早于说出口」
 - hold：从这一刻起画面不再动（渲染后由 qa.py 实测）
 
-风格和规则来自 defaults.yaml（brief.yaml 可覆盖）：不能出现的词、每张卡最多几条、一张卡一个重点、
-动效力度、能不能改写原话、说完就走、两张卡之间留多少秒纯人脸。疏密只报覆盖率，不卡数量。
+风格和规则来自 defaults.yaml（brief.yaml 可覆盖）：密度（动效占比区间）、努力程度（能用哪些组件、
+不能大部分偷懒）、不能出现的词、每张卡最多几条、一张卡一个重点、能不能改写原话、什么时候走、
+两张卡之间留多少秒纯人脸、相邻两张形式不同。
 """
 from __future__ import annotations
 
@@ -24,12 +25,14 @@ import brief as brief_mod
 FRAME = 1 / 30
 SEARCH = 5.0  # 在镜头前后多少秒内找原话
 ONE_POINT_CHARS = 24  # text_amount: one-point 时一张卡上所有字加起来最多几个
-RESTRAINED_SPREAD = 1.5  # intensity: restrained 时一张卡上的字要在这么多秒内全部出来（再长就是逐条出现）
 EXIT_GRACE = 1.5  # exit: after-sentence 时最后一个字说完后最多再停几秒
+MIN_SHOT = 2.5  # 一张卡至少停几秒，太短来不及看
+UNTIL_NEXT_MAX = 10.0  # exit: until-next 时最后一个字说完后最多再停几秒（不让一张卡挂太久）
+LOW_EFFORT_SHARE = 0.4  # 低于这条视频努力程度的卡最多占多少（不能大部分都偷懒做成文字卡）
 MOTION = Path(__file__).resolve().parents[1] / "motion"
 CATALOG_FILE = MOTION / "src" / "library" / "catalog.json"
 ICON_DIR = MOTION / "node_modules" / "lucide-react" / "dist" / "esm" / "icons"
-RANK = {"restrained": 0, "medium": 1, "rich": 2}
+EFFORT = {"a": 0, "b": 1, "c": 2, "d": 3}
 LISTS = ("lines", "items", "notes", "nodes", "layers", "bars", "steps")
 MIN_TEXT_PX = 56  # TextLines 每行不折行、按卡片宽度定字号；比这小就看不清，要拆行
 SHADOW_MARGIN, PAD_X = 28, 42  # 和 motion/src/kit/Card.tsx 一致
@@ -96,7 +99,7 @@ def _texts(props: Any) -> list[str]:
     if isinstance(props, str):
         return [props]
     if isinstance(props, dict):
-        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon") for t in _texts(v)]
+        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon", "symbol") for t in _texts(v)]
     if isinstance(props, list):
         return [t for v in props for t in _texts(v)]
     return []
@@ -131,7 +134,7 @@ def line_px(text: str, zone_w: int, i: int) -> int:
 
 
 def coverage(plan: dict[str, Any], b: dict[str, Any]) -> float:
-    """动效时长占可加动效时长（去掉 no_motion）的比例。只做参考。"""
+    """动效时长占可加动效时长（去掉 no_motion）的比例。密度检查用它。"""
     usable = plan["duration"] - sum(z - a for a, z in b.get("no_motion") or [])
     return round(sum(s["end"] - s["start"] for s in plan.get("shots") or []) / usable, 3) if usable > 0 else 0.0
 
@@ -162,6 +165,8 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any]) -> list[
     for s in shots:
         if s["start"] < 0 or s["end"] > plan["duration"]:
             add("outside-video", s, f"{s['start']}–{s['end']}s 超出视频 0–{plan['duration']}s")
+        if s["end"] - s["start"] < MIN_SHOT:
+            add("too-short", s, f"只停 {round(s['end'] - s['start'], 2)}s，至少 {MIN_SHOT}s 才看得清")
         if not s["start"] <= s["hold"] <= s["end"]:
             add("hold-outside-shot", s, f"hold {s['hold']}s 不在镜头 {s['start']}–{s['end']}s 内")
         for a, z in b.get("no_motion") or []:
@@ -190,12 +195,22 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any]) -> list[
         for c in shots[i + 1:]:
             if a["start"] < c["end"] and c["start"] < a["end"] and _overlap(_zone(a, b), _zone(c, b)):
                 add("zone-overlap", c, f"和 {a['id']} 在同一区域、时间重叠")
-    forms = b.get("forms") or []
     by_time = sorted(shots, key=lambda x: x["start"])
-    if len(forms) > 1:
+    if b.get("effort", "a") != "a":
         for a, c in zip(by_time, by_time[1:]):
             if _form(a) and _form(a) == _form(c):
                 add("same-form", c, f"和前一张 {a['id']} 都是「{_form(c)}」形式，相邻两张换一种")
+        want = EFFORT[b["effort"]]
+        low = [x for x in shots if EFFORT.get(_catalog().get(x.get("component", ""), {}).get("effort", "d"), 3) < want]
+        if shots and len(low) / len(shots) > LOW_EFFORT_SHARE:
+            out.append({"rule": "effort-too-low", "shot": "plan",
+                        "detail": f"{len(low)}/{len(shots)} 张卡低于努力程度 {b['effort']}，最多 {LOW_EFFORT_SHARE:.0%}"})
+    if "density" in b or "coverage" in b:
+        lo, hi = brief_mod.coverage_range(b)
+        got = coverage(plan, b)
+        if not lo - 1e-9 <= got <= hi + 1e-9:
+            out.append({"rule": "density", "shot": "plan",
+                        "detail": f"动效占 {got:.0%}，这条视频要 {lo:.0%}–{hi:.0%}（密度 {b.get('density')}）"})
     gap = b.get("min_gap") or 0
     ordered = sorted(shots, key=lambda x: x["start"])
     for a, c in zip(ordered, ordered[1:]):
@@ -224,25 +239,20 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
             if line_px(line, w, i) < MIN_TEXT_PX:
                 add("text-too-small", s, f"「{line}」在这块区域里只能用 {line_px(line, w, i)}px 字号，拆短一点（至少 {MIN_TEXT_PX}px）")
     entry = _catalog().get(s.get("component", ""), {})
-    if b.get("forms") and entry.get("form") and entry["form"] not in b["forms"]:
-        add("form-not-allowed", s, f"{s.get('component')} 是「{entry['form']}」形式，这条视频只用 {'/'.join(b['forms'])}")
     if not entry:
         add("unknown-component", s, f"组件库里没有 {s.get('component')}（见 motion/src/library/catalog.json）")
     for name in _icons(props):
         if ICON_DIR.is_dir() and not (ICON_DIR / f"{name}.mjs").is_file():
             add("unknown-icon", s, f"图标库里没有「{name}」（lucide 的短横线名字，见 https://lucide.dev/icons）")
-    level = entry.get("level", "rich")
-    if entry and RANK[level] > RANK[b.get("intensity", "rich")]:
-        add("intensity", s, f"{s.get('component')} 属于「{level}」，超过了这条视频的力度「{b['intensity']}」")
-    ats = [r["at"] for r in s.get("reveals") or []]
-    if b.get("intensity") == "restrained" and ats and max(ats) - min(ats) > RESTRAINED_SPREAD:
-        add("intensity", s, f"字在 {min(ats)}–{max(ats)}s 逐条出来，克制模式下一张卡要在 {RESTRAINED_SPREAD}s 内全部出来")
+    if entry and "effort" in b and EFFORT[entry["effort"]] > EFFORT[b["effort"]]:
+        add("effort-too-high", s, f"{s.get('component')} 是努力程度 {entry['effort']} 的组件，这条视频定的是 {b['effort']}")
     if b.get("rewrite") == "trim-only":
         for t in _texts(props):
             if not _trimmed_from_speech(ws, t, s["start"] - SEARCH, s["end"] + SEARCH):
                 add("rewritten", s, f"「{t}」不是原话删减出来的（换了词或加了词）")
-    if b.get("exit") == "after-sentence" and last_end is not None and s["end"] > last_end + EXIT_GRACE:
-        add("stays-too-long", s, f"最后一句 {last_end}s 说完，卡片到 {s['end']}s 才走，最多再停 {EXIT_GRACE}s")
+    grace = {"after-sentence": EXIT_GRACE, "until-next": UNTIL_NEXT_MAX}.get(b.get("exit", ""))
+    if grace is not None and last_end is not None and s["end"] > last_end + grace:
+        add("stays-too-long", s, f"最后一句 {last_end}s 说完，卡片到 {s['end']}s 才走，最多再停 {grace}s")
 
 
 def main(argv: list[str]) -> int:
