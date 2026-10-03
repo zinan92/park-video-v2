@@ -84,4 +84,4 @@ Park 说的样式名对不上组件时，查 `pv2.py catalog`：每个组件有�
 
 卡片外观（毛玻璃 / 纸卡 / 深色 / 无卡片、强调色、能不能冲过头）由 brief 决定，组件里用 `useLook()` 取颜色和弹出曲线，不要写死颜色。毛玻璃的模糊在合成时由 `render.py` 用原画面做。
 
-需要新样式：从 Video-ShotCraft（`~/.agents/skills/video-shotcraft`，主库）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记努力程度和形式（ShotCraft 级的多层镜头是 `c`，先用 Codex 画图再做动画的是 `d`；这两档的组件还没有）。
+需要新样式：从 Video-ShotCraft（主库，Park 的私有快照 `~/work/video-shotcraft-snapshot`，`pv2.py shotcraft` 列全部卡）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记努力程度和形式（ShotCraft 级的多层镜头是 `c`，先用 Codex 画图再做动画的是 `d`；这两档的组件还没有）。

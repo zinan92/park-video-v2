@@ -53,7 +53,7 @@ python3 scripts/pv2.py status <项目>            # 在哪一步、百分之多�
 
 ## 镜头库
 
-- **Video-ShotCraft**（主库，按路径引用，不复制）：`~/.agents/skills/video-shotcraft`
+- **Video-ShotCraft**（主库，按路径引用，不复制）：Park 的私有快照 `~/work/video-shotcraft-snapshot`（github.com/zinan92/video-shotcraft-snapshot，2026-09-07 版；原仓库已下线），`PV2_SHOTCRAFT` 可改
 - **Remotion 组件**：`motion/`，透明背景渲染，按 brief 给的区域摆放；14 个组件覆盖文字、数字、图表、示意图、图标五种形式（`motion/src/library/catalog.json`），图标来自 lucide（ISC）
 
 ## 不放进这个仓库的东西

@@ -187,12 +187,16 @@ def test_shotcraft_cards_are_listed_with_what_we_already_adapted(tmp_path, monke
     (home / "gallery" / "api").mkdir(parents=True)
     (home / "gallery" / "media" / "poster").mkdir(parents=True)
     (home / "gallery" / "media" / "poster" / "cycle-glass-node-morph.jpg").write_bytes(b"x")
+    (home / "gallery" / "media" / "cycle-glass-node-morph.mp4").write_bytes(b"x")
     (home / "gallery" / "api" / "library.json").write_text(json.dumps({
         "categories": {"data": {"zh": "数据与图表"}},
-        "cards": [{"name": "cycle-glass-node-morph", "summary": "循环图", "use": "机制解释", "category": "data"},
+        "cards": [{"name": "cycle-glass-node-morph", "summary": "循环图", "use": "机制解释", "category": "data",
+                   "styles": [{"key": "cycle-glass-node-morph"}]},
                   {"name": "aurora-bloom-bg-flip", "summary": "极光", "use": "开场", "category": "opening"}]}), encoding="utf-8")
     monkeypatch.setenv(pv2.SHOTCRAFT_ENV, str(home))
     cards = {c["name"]: c for c in pv2.shotcraft()}
     assert cards["cycle-glass-node-morph"]["adapted_as"] == ["Cycle"] and cards["cycle-glass-node-morph"]["poster"]
     assert cards["cycle-glass-node-morph"]["category_zh"] == "数据与图表"
+    assert cards["cycle-glass-node-morph"]["video"]
     assert cards["aurora-bloom-bg-flip"]["adapted_as"] == [] and cards["aurora-bloom-bg-flip"]["poster"] is None
+    assert cards["aurora-bloom-bg-flip"]["video"] is None

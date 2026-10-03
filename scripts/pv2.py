@@ -190,12 +190,22 @@ def catalog() -> list[dict[str, Any]]:
 
 
 SHOTCRAFT_ENV = "PV2_SHOTCRAFT"
+# 默认用 Park 的私有快照（github.com/zinan92/video-shotcraft-snapshot，2026-09-07 版，原仓库已下线）；
+# 没有快照时退回 skill 安装目录（会被「更新全部 skill」覆盖，不建议长期依赖）
+SHOTCRAFT_SNAPSHOT = Path.home() / "work" / "video-shotcraft-snapshot"
+SHOTCRAFT_INSTALLED = Path.home() / ".agents" / "skills" / "video-shotcraft"
+
+
+def shotcraft_home() -> Path:
+    if os.environ.get(SHOTCRAFT_ENV):
+        return Path(os.environ[SHOTCRAFT_ENV]).expanduser()
+    return SHOTCRAFT_SNAPSHOT if SHOTCRAFT_SNAPSHOT.is_dir() else SHOTCRAFT_INSTALLED
 
 
 def shotcraft() -> list[dict[str, Any]]:
     """Video-ShotCraft 的全部样式卡（它自己的 gallery/api/library.json）：名字、一句话、适用、分类、
-    本地有就给海报图路径（它的公开图鉴网站已经下线，演示视频本机没有）。改编成我们的组件时按 name 找源码。"""
-    home = Path(os.environ.get(SHOTCRAFT_ENV) or Path.home() / ".agents" / "skills" / "video-shotcraft")
+    海报图、预览视频本地有就给路径（预览是快照里在本机重渲的）。改编成我们的组件时按 name 找源码。"""
+    home = shotcraft_home()
     lib = _json(home / "gallery" / "api" / "library.json") or {}
     cats = lib.get("categories") or {}
     adapted = {}
@@ -205,9 +215,12 @@ def shotcraft() -> list[dict[str, Any]]:
     out = []
     for card in lib.get("cards") or []:
         poster = home / "gallery" / "media" / "poster" / f"{card['name']}.jpg"
+        style = ((card.get("styles") or [{}])[0]).get("key") or card["name"]
+        video = home / "gallery" / "media" / f"{style}.mp4"
         out.append({"name": card["name"], "summary": card.get("summary", ""), "use": card.get("use", ""),
                     "category": card.get("category", ""), "category_zh": (cats.get(card.get("category"), {}) or {}).get("zh", ""),
                     "poster": str(poster) if poster.is_file() else None,
+                    "video": str(video) if video.is_file() else None,
                     "source": card.get("source", ""),
                     "adapted_as": adapted.get(card["name"], [])})
     return out
