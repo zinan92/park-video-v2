@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, Kicker, useU } from '../kit/Card';
 import { E, lerp, seg } from '../kit/Motion';
 import { useSec } from '../kit/time';
-import { INK, LINE, RED } from '../kit/theme';
+import { useLook } from '../kit/look';
 
 export type GaugeProps = { t0: number; kicker?: string; value: number; at: number; label?: string };
 
@@ -16,6 +16,7 @@ const arc = (cx: number, cy: number, r: number, a0: number, a1: number) => {
 
 export const Gauge: React.FC<GaugeProps> = ({ t0, kicker, value, at, label }) => {
   const u = useU();
+  const look = useLook();
   const now = useSec(t0);
   const p = seg(now, at, at + 0.9, E.outCubic);
   const v = (value / 100) * p;
@@ -29,12 +30,12 @@ export const Gauge: React.FC<GaugeProps> = ({ t0, kicker, value, at, label }) =>
     <Card>
       {kicker ? <Kicker>{kicker}</Kicker> : null}
       <svg width={W} height={u(290)} style={{ alignSelf: 'center' }}>
-        <path d={arc(cx, cy, r, 0, 1)} stroke={LINE} strokeWidth={u(26)} fill="none" strokeLinecap="round" />
-        <path d={arc(cx, cy, r, 0, Math.max(v, 0.001))} stroke={INK} strokeWidth={u(26)} fill="none" strokeLinecap="round" />
-        <path d={arc(cx, cy, r, value / 100, 1)} stroke={RED} strokeWidth={u(26)} fill="none" strokeLinecap="round" opacity={rest} />
-        <line x1={cx} y1={cy} x2={cx + (r - u(30)) * Math.cos(ang)} y2={cy - (r - u(30)) * Math.sin(ang)} stroke={INK} strokeWidth={u(8)}
+        <path d={arc(cx, cy, r, 0, 1)} stroke={look.line} strokeWidth={u(26)} fill="none" strokeLinecap="round" />
+        <path d={arc(cx, cy, r, 0, Math.max(v, 0.001))} stroke={look.ink} strokeWidth={u(26)} fill="none" strokeLinecap="round" />
+        <path d={arc(cx, cy, r, value / 100, 1)} stroke={look.accent} strokeWidth={u(26)} fill="none" strokeLinecap="round" opacity={rest} />
+        <line x1={cx} y1={cy} x2={cx + (r - u(30)) * Math.cos(ang)} y2={cy - (r - u(30)) * Math.sin(ang)} stroke={look.ink} strokeWidth={u(8)}
           strokeLinecap="round" />
-        <circle cx={cx} cy={cy} r={u(12)} fill={RED} />
+        <circle cx={cx} cy={cy} r={u(12)} fill={look.accent} />
       </svg>
       <div style={{ textAlign: 'center', fontSize: u(72), fontWeight: 800, fontVariantNumeric: 'tabular-nums' }}>
         {Math.round(lerp(p, 0, value))}%

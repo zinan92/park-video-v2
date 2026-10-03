@@ -7,6 +7,9 @@ plan.json 里每个镜头：{id, start, end, zone, component, reveals: [{at, tex
 - zone：left / right / full，或者 {x, y, w, h}
 - reveals：每段文字出现的时刻和它显示的原话，用来查「文字不早于说出口」
 - hold：从这一刻起画面不再动（渲染后由 qa.py 实测）
+
+风格和规则来自 defaults.yaml（brief.yaml 可覆盖）：不能出现的词、每张卡最多几条、一张卡一个重点、
+动效力度、能不能改写原话、说完就走、两张卡之间留多少秒纯人脸。疏密只报覆盖率，不卡数量。
 """
 from __future__ import annotations
 
@@ -20,31 +23,103 @@ import brief as brief_mod
 
 FRAME = 1 / 30
 SEARCH = 5.0  # 在镜头前后多少秒内找原话
+ONE_POINT_CHARS = 24  # text_amount: one-point 时一张卡上所有字加起来最多几个
+RESTRAINED_SPREAD = 1.5  # intensity: restrained 时一张卡上的字要在这么多秒内全部出来（再长就是逐条出现）
+EXIT_GRACE = 1.5  # exit: after-sentence 时最后一个字说完后最多再停几秒
+LEVELS_FILE = Path(__file__).resolve().parents[1] / "motion" / "src" / "library" / "levels.json"
+RANK = {"restrained": 0, "medium": 1, "rich": 2}
+LISTS = ("lines", "items", "notes")
+MIN_TEXT_PX = 56  # TextLines 每行不折行、按卡片宽度定字号；比这小就看不清，要拆行
+SHADOW_MARGIN, PAD_X = 28, 42  # 和 motion/src/kit/Card.tsx 一致
 
 
 def _clean(text: str) -> str:
     return re.sub(r"[^\w]", "", text)
 
 
-def _spoken_at(words: list[dict[str, Any]], text: str, lo: float, hi: float) -> float | None:
-    """这句话在 [lo, hi] 附近第一次被说出的时刻（第一个字所在词的开始）。"""
-    target = _clean(text)
-    if not target:
-        return None
+def _stream(words: list[dict[str, Any]]) -> tuple[str, list[int]]:
     flat, owner = [], []
     for i, w in enumerate(words):
         for ch in _clean(w["w"]):
             flat.append(ch)
             owner.append(i)
-    stream = "".join(flat)
+    return "".join(flat), owner
+
+
+def _spoken_span(words: list[dict[str, Any]], text: str, lo: float, hi: float) -> tuple[float, float] | None:
+    """这句话在 [lo, hi] 附近第一次被说出的 (开始, 结束) 秒。"""
+    target = _clean(text)
+    if not target:
+        return None
+    stream, owner = _stream(words)
     at = stream.find(target)
     best = None
     while at >= 0:
-        start = words[owner[at]]["start"]
-        if lo <= start <= hi:
-            best = start if best is None else min(best, start)
+        span = (words[owner[at]]["start"], words[owner[at + len(target) - 1]]["end"])
+        if lo <= span[0] <= hi and (best is None or span[0] < best[0]):
+            best = span
         at = stream.find(target, at + 1)
     return best
+
+
+def _spoken_at(words: list[dict[str, Any]], text: str, lo: float, hi: float) -> float | None:
+    """这句话在 [lo, hi] 附近第一次被说出的时刻（第一个字所在词的开始）。"""
+    span = _spoken_span(words, text, lo, hi)
+    return span[0] if span else None
+
+
+def _trimmed_from_speech(words: list[dict[str, Any]], text: str, lo: float, hi: float) -> bool:
+    """卡片上的字是不是原话删减出来的：按顺序都能在一小段原话里找到，没有换词、没有加词。"""
+    target = _clean(text)
+    if not target:
+        return True
+    nearby = [w for w in words if lo <= w["start"] <= hi]
+    stream, _ = _stream(nearby)
+    limit = 2 * len(target) + 4  # 删减出来的字不会散在太长一段话里
+    for begin, ch in enumerate(stream):
+        if ch != target[0]:
+            continue
+        k, end = 0, begin
+        while end < len(stream) and k < len(target):
+            if stream[end] == target[k]:
+                k += 1
+            end += 1
+        if k == len(target) and end - begin <= limit:
+            return True
+    return False
+
+
+def _texts(props: Any) -> list[str]:
+    """props 里所有会显示在画面上的字（数字、时刻不算）。"""
+    if isinstance(props, str):
+        return [props]
+    if isinstance(props, dict):
+        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent") for t in _texts(v)]
+    if isinstance(props, list):
+        return [t for v in props for t in _texts(v)]
+    return []
+
+
+def _levels() -> dict[str, str]:
+    return {k: v for k, v in json.loads(LEVELS_FILE.read_text(encoding="utf-8")).items() if not k.startswith("_")}
+
+
+def _em_width(text: str) -> float:
+    """一行字大约占几个字宽（和 Card.tsx 的 emWidth 一致）：汉字 1，数字和英文约 0.6。"""
+    return sum((0.85 if ch in "%@MW" else 0.6) if ord(ch) < 256 else 1 for ch in text)
+
+
+def line_px(text: str, zone_w: int, i: int) -> int:
+    """TextLines 里这一行实际会用的字号（px）。"""
+    k = (zone_w - 2 * SHADOW_MARGIN) / 600
+    inner = zone_w - 2 * SHADOW_MARGIN - 2 * PAD_X * k
+    return int(min((96 if i == 0 else 72) * k, inner // max(1.0, _em_width(text))))
+
+
+def coverage(plan: dict[str, Any], b: dict[str, Any]) -> float:
+    """动效时长占可加动效时长（去掉 no_motion）的比例。只做参考。"""
+    usable = plan["duration"] - sum(z - a for a, z in b.get("no_motion") or [])
+    return round(sum(s["end"] - s["start"] for s in plan.get("shots") or []) / usable, 3) if usable > 0 else 0.0
 
 
 def _zone(shot: dict[str, Any], b: dict[str, Any]) -> dict[str, int]:
@@ -86,18 +161,60 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any]) -> list[
             fx, fy, fw, fh = b["face_box"]
             if _overlap(zone, {"x": fx, "y": fy, "w": fw, "h": fh}):
                 add("covers-face", s, f"区域 {zone} 盖到人脸 {b['face_box']}")
+        last_end = None
         for r in s.get("reveals") or []:
-            spoken = _spoken_at(ws, r["text"], s["start"] - SEARCH, s["end"] + SEARCH)
-            if spoken is None:
+            span = _spoken_span(ws, r["text"], s["start"] - SEARCH, s["end"] + SEARCH)
+            if span is None:
                 add("text-not-spoken", s, f"「{r['text']}」在 {s['start']}–{s['end']}s 附近没说过")
-            elif r["at"] < spoken - FRAME - 1e-9:
-                add("text-before-speech", s, f"「{r['text']}」{r['at']}s 出现，{spoken}s 才说")
+                continue
+            if r["at"] < span[0] - FRAME - 1e-9:
+                add("text-before-speech", s, f"「{r['text']}」{r['at']}s 出现，{span[0]}s 才说")
+            last_end = span[1] if last_end is None else max(last_end, span[1])
+        style_rules(s, b, ws, add, last_end)
 
     for i, a in enumerate(shots):
         for c in shots[i + 1:]:
             if a["start"] < c["end"] and c["start"] < a["end"] and _overlap(_zone(a, b), _zone(c, b)):
                 add("zone-overlap", c, f"和 {a['id']} 在同一区域、时间重叠")
+    gap = b.get("min_gap") or 0
+    ordered = sorted(shots, key=lambda x: x["start"])
+    for a, c in zip(ordered, ordered[1:]):
+        if gap and c["start"] - a["end"] < gap:
+            add("gap", c, f"和 {a['id']} 之间只留了 {round(c['start'] - a['end'], 2)}s 纯人脸，要至少 {gap}s")
     return out
+
+
+def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], add: Any, last_end: float | None) -> None:
+    """defaults.yaml / brief.yaml 里 Park 定的风格和规则。"""
+    props = s.get("props") or {}
+    texts = _texts(props) + [r["text"] for r in s.get("reveals") or []]
+    for word in b.get("banned_words") or []:
+        if any(_clean(word) and _clean(word) in _clean(t) for t in texts):
+            add("banned-word", s, f"画面上出现了不能出现的词「{word}」")
+    for key in LISTS:
+        if isinstance(props.get(key), list) and len(props[key]) > b.get("max_items", 99):
+            add("too-many-items", s, f"{key} 有 {len(props[key])} 条，一张卡最多 {b['max_items']} 条")
+    if b.get("text_amount") == "one-point":
+        n = sum(len(_clean(t)) for t in _texts(props))
+        if n > ONE_POINT_CHARS:
+            add("not-one-point", s, f"卡上一共 {n} 个字，一张卡一个重点最多 {ONE_POINT_CHARS} 个")
+    if s.get("component") == "TextLines":
+        w = _zone(s, b)["w"]
+        for i, line in enumerate(props.get("lines") or []):
+            if line_px(line, w, i) < MIN_TEXT_PX:
+                add("text-too-small", s, f"「{line}」在这块区域里只能用 {line_px(line, w, i)}px 字号，拆短一点（至少 {MIN_TEXT_PX}px）")
+    level = _levels().get(s.get("component", ""), "rich")
+    if RANK[level] > RANK[b.get("intensity", "rich")]:
+        add("intensity", s, f"{s.get('component')} 属于「{level}」，超过了这条视频的力度「{b['intensity']}」")
+    ats = [r["at"] for r in s.get("reveals") or []]
+    if b.get("intensity") == "restrained" and ats and max(ats) - min(ats) > RESTRAINED_SPREAD:
+        add("intensity", s, f"字在 {min(ats)}–{max(ats)}s 逐条出来，克制模式下一张卡要在 {RESTRAINED_SPREAD}s 内全部出来")
+    if b.get("rewrite") == "trim-only":
+        for t in _texts(props):
+            if not _trimmed_from_speech(ws, t, s["start"] - SEARCH, s["end"] + SEARCH):
+                add("rewritten", s, f"「{t}」不是原话删减出来的（换了词或加了词）")
+    if b.get("exit") == "after-sentence" and last_end is not None and s["end"] > last_end + EXIT_GRACE:
+        add("stays-too-long", s, f"最后一句 {last_end}s 说完，卡片到 {s['end']}s 才走，最多再停 {EXIT_GRACE}s")
 
 
 def main(argv: list[str]) -> int:

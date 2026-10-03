@@ -33,6 +33,19 @@ def test_remotion_command_passes_zone_and_times():
     assert "--codec=prores" in cmd and "--prores-profile=4444" in cmd
 
 
+def test_card_style_from_the_brief_goes_to_remotion():
+    look = layers.style({**BRIEF, "card": "glass", "accent": "#123456"})
+    assert look == {"card": "glass", "accent": "#123456", "overshoot": False, "glassAlpha": layers.GLASS_ALPHA}
+    cmd = layers.remotion_cmd(PLAN["shots"][0], {"x": 40, "y": 40, "w": 760, "h": 788}, Path("/tmp/V01.mov"), look)
+    props = [a for a in cmd if a.startswith("--props=")][0]
+    assert '"card": "glass"' in props and '"accent": "#123456"' in props
+
+
+def test_glass_cards_ask_the_composite_for_a_blur():
+    assert all(s["glass"] == layers.GLASS_ALPHA for s in layers.render_plan(PLAN, {**BRIEF, "card": "glass"}, base="b", layer_dir=Path("/x"))["shots"])
+    assert all(s["glass"] is None for s in layers.render_plan(PLAN, {**BRIEF, "card": "paper"}, base="b", layer_dir=Path("/x"))["shots"])
+
+
 def test_shots_in_window_for_the_sample():
     assert [s["id"] for s in layers.shots_between(PLAN, 0.0, 10.0)] == ["V01"]
     assert [s["id"] for s in layers.shots_between(PLAN, 4.0, 22.0)] == ["V01", "V02"]
@@ -44,5 +57,6 @@ def test_pick_sample_window_starts_just_before_the_first_shot():
 
 @pytest.mark.skipif(not os.environ.get("PV2_REMOTION") or shutil.which("npx") is None, reason="set PV2_REMOTION=1 to run a real render")
 def test_real_layer_render(tmp_path):
-    out = layers.render_layers({"duration": 60, "shots": [PLAN["shots"][0]]}, BRIEF, tmp_path, status=None)
-    assert out[0].is_file()
+    for card in ("glass", "paper", "dark", "none"):
+        out = layers.render_layers({"duration": 60, "shots": [PLAN["shots"][1]]}, {**BRIEF, "card": card}, tmp_path / card, status=None)
+        assert out[0].is_file() and layers.props_file(out[0]).is_file()

@@ -67,29 +67,44 @@ def test_approval_needs_a_message(proj):
         pv2.approve(proj, "hook", message="x")
 
 
-def test_stale_layers_are_rerendered(proj, tmp_path):
-    layer_dir = v2(proj) / "layers"
-    layer_dir.mkdir()
-    plan = {"duration": 10, "shots": [{"id": "A", "start": 0, "end": 1}, {"id": "B", "start": 2, "end": 3}]}
-    (v2(proj) / "plan.json").write_text(json.dumps(plan))
-    (layer_dir / "A.mov").write_text("x")
-    import os, time
-    old = time.time() - 100
-    os.utime(layer_dir / "A.mov", (old, old))
-    assert [s["id"] for s in pv2.layers_to_render(proj, plan["shots"])] == ["A", "B"]
-    (layer_dir / "A.mov").write_text("x")  # 比 plan.json 新
-    assert [s["id"] for s in pv2.layers_to_render(proj, plan["shots"])] == ["B"]
+BRIEF = {"canvas": [1920, 1080], "face_box": [840, 180, 440, 500], "caption_band": [868, 1000],
+         "motion_placement": "overlay-sides", "card": "glass", "accent": "#E2461F", "overshoot": False}
+SHOTS = [{"id": "A", "start": 0, "end": 1, "zone": "left", "component": "TextLines", "props": {"lines": ["a"]}},
+         {"id": "B", "start": 2, "end": 3, "zone": "right", "component": "TextLines", "props": {"lines": ["b"]}}]
+
+
+def _rendered(proj, shot, brief):
+    """假装这个镜头已经按 brief 渲染过：层文件 + 旁边的 props。"""
+    import check, layers
+    d = v2(proj) / "layers"
+    d.mkdir(exist_ok=True)
+    (d / f"{shot['id']}.mov").write_text("x")
+    props = layers.layer_props(shot, check._zone(shot, brief), layers.style(brief))
+    layers.props_file(d / f"{shot['id']}.mov").write_text(json.dumps(props, sort_keys=True))
+
+
+def test_layers_already_rendered_with_the_same_props_are_reused(proj):
+    _rendered(proj, SHOTS[0], BRIEF)
+    assert [s["id"] for s in pv2.layers_to_render(proj, SHOTS, BRIEF)] == ["B"]
+
+
+def test_changing_a_shot_makes_only_that_layer_stale(proj):
+    _rendered(proj, SHOTS[0], BRIEF)
+    _rendered(proj, SHOTS[1], BRIEF)
+    changed = [SHOTS[0], {**SHOTS[1], "props": {"lines": ["改了"]}}]
+    assert [s["id"] for s in pv2.layers_to_render(proj, changed, BRIEF)] == ["B"]
+
+
+def test_changing_the_card_style_makes_layers_stale(proj):
+    _rendered(proj, SHOTS[0], BRIEF)
+    assert [s["id"] for s in pv2.layers_to_render(proj, SHOTS[:1], {**BRIEF, "card": "paper"})] == ["A"]
 
 
 def test_changing_component_code_makes_layers_stale(proj, monkeypatch):
-    layer_dir = v2(proj) / "layers"
-    layer_dir.mkdir()
-    plan = {"duration": 10, "shots": [{"id": "A", "start": 0, "end": 1}]}
-    (v2(proj) / "plan.json").write_text(json.dumps(plan))
-    (layer_dir / "A.mov").write_text("x")
+    _rendered(proj, SHOTS[0], BRIEF)
     import time
     monkeypatch.setattr(pv2, "_motion_mtime", lambda: time.time() + 100)
-    assert [s["id"] for s in pv2.layers_to_render(proj, plan["shots"])] == ["A"]
+    assert [s["id"] for s in pv2.layers_to_render(proj, SHOTS[:1], BRIEF)] == ["A"]
 
 
 def test_find_returns_every_time_a_phrase_is_spoken():

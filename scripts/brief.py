@@ -1,4 +1,7 @@
-"""Park 在开头说清楚的东西（brief.yaml）。缺字段就停下来问他，不让 AI 猜。"""
+"""Park 在开头说清楚的东西（brief.yaml）。缺字段就停下来问他，不让 AI 猜。
+
+风格和规则（卡片底色、动效力度、能不能改写原话……）在仓库根目录 defaults.yaml 里填一次；
+brief.yaml 里写同名字段就覆盖这一条视频。"""
 from __future__ import annotations
 
 from pathlib import Path
@@ -6,8 +9,17 @@ from typing import Any
 
 import yaml
 
-REQUIRED = ("video_type", "canvas", "motion_placement", "no_motion", "captions_burned_in", "sfx", "bgm")
+DEFAULTS = Path(__file__).resolve().parents[1] / "defaults.yaml"
+REQUIRED = ("video_type", "canvas", "motion_placement", "no_motion", "captions_burned_in")
 PLACEMENTS = ("overlay-sides", "broll", "fullscreen")
+CHOICES = {
+    "card": ("glass", "paper", "dark", "none"),
+    "text_amount": ("one-point", "points"),
+    "intensity": ("restrained", "medium", "rich"),
+    "exit": ("after-sentence", "until-next"),
+    "rewrite": ("trim-only", "summarize"),
+    "density": ("low", "medium", "high"),
+}
 
 
 class NeedsPark(Exception):
@@ -18,8 +30,13 @@ class NeedsPark(Exception):
         super().__init__("brief 缺这些字段，停下来问 Park：" + "、".join(missing))
 
 
+def defaults() -> dict[str, Any]:
+    return yaml.safe_load(DEFAULTS.read_text(encoding="utf-8")) or {}
+
+
 def load(path: Path) -> dict[str, Any]:
-    data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    own = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
+    data = {**defaults(), "banned_words": [], **own}
     missing = [k for k in REQUIRED if k not in data]
     if data.get("motion_placement") == "overlay-sides" and "face_box" not in data:
         missing.append("face_box")
@@ -29,6 +46,9 @@ def load(path: Path) -> dict[str, Any]:
         raise NeedsPark(missing)
     if data["motion_placement"] not in PLACEMENTS:
         raise ValueError(f"motion_placement 只能是 {' / '.join(PLACEMENTS)}，收到 {data['motion_placement']!r}")
+    for key, allowed in CHOICES.items():
+        if data.get(key) not in allowed:
+            raise ValueError(f"{key} 只能是 {' / '.join(allowed)}，收到 {data.get(key)!r}")
     return data
 
 

@@ -7,5 +7,6 @@ no_motion:                       # 不加动效的时间段（秒），比如录
 captions_burned_in: true         # 字幕已在剪映里烧进画面：不再渲染，动效避开字幕带
 caption_band: [868, 1000]        # 字幕带 y 范围（从真实画面量）
 face_box: [700, 140, 520, 760]   # 人脸 x, y, w, h（从真实画面量）；overlay-sides 时两侧区域由它推出
-sfx: low                         # none / low / mid / high
-bgm: none                        # none / light
+banned_words: [客户甲, 某某市]     # 不能出现在画面上的词（客户名、地名…），只写在项目里
+# 想让这一条和 defaults.yaml 不一样，就在这里写同名字段，比如：
+# card: dark

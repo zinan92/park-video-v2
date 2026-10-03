@@ -7,7 +7,10 @@
 render-plan.json：
   {"base": 原视频, "canvas": [w, h],
    "shots": [{"id", "start", "end", "layer": 透明动效层(.mov), "src_rect": [x, y, w, h] 层里要裁出的那块,
-              "zone": {x, y, w, h} 放到画面哪里}]}
+              "zone": {x, y, w, h} 放到画面哪里, "glass": 毛玻璃那层白的不透明度或 null}]}
+
+毛玻璃：Remotion 单独渲染层时背后没有东西可模糊，所以在这里做——把卡片底下那块原画面裁出来模糊，
+用层的 alpha（放大 1/glass 倍，淡入淡出时跟着变）当蒙版贴回去，再把层叠上去。只在镜头时间内做。
 
 status.json 实时写 {state, done, total, percent, unit}：state 是 rendering / done / failed。
 --detach 在独立进程组里跑（调它的 agent 退出也不会把渲染带走），立刻返回。
@@ -35,14 +38,30 @@ def in_range(shots: list[dict[str, Any]], start: float, end: float) -> list[dict
     return [s for s in shots if s["start"] < end and start < s["end"]]
 
 
+GLASS_BLUR = 24  # 毛玻璃模糊的 sigma（1080p 像素）
+
+
 def filtergraph(shots: list[dict[str, Any]]) -> str:
     """输入 0 是原画面，输入 1..n 是各镜头的动效层；最后一路叫 [v1]…[vN]，最终输出标签见返回值末尾。"""
     parts, prev = [], "[0:v]"
     for i, s in enumerate(shots, start=1):
         x, y, w, h = s["src_rect"]
         p = s["place"]
-        parts.append(f"[{i}:v]crop={w}:{h}:{x}:{y},scale={p['w']}:{p['h']},setpts=PTS-STARTPTS+{s['start']}/TB[l{i}]")
-        parts.append(f"{prev}[l{i}]overlay={p['x']}:{p['y']}:enable='between(t,{s['start']},{s['end']})':eof_action=pass[v{i}]")
+        on = f"enable='between(t,{s['start']},{s['end']})':eof_action=pass"
+        layer = f"[{i}:v]crop={w}:{h}:{x}:{y},scale={p['w']}:{p['h']},format=rgba,setpts=PTS-STARTPTS+{s['start']}/TB"
+        if s.get("glass"):
+            k = round(1 / s["glass"], 4)
+            parts.append(f"{layer},split[l{i}][a{i}]")
+            parts.append(f"[a{i}]alphaextract,lut=c0='min(255,val*{k})'[m{i}]")
+            parts.append(f"{prev}split[b{i}][c{i}]")
+            parts.append(f"[c{i}]trim=start={s['start']}:end={s['end']},crop={p['w']}:{p['h']}:{p['x']}:{p['y']},"
+                         f"gblur=sigma={GLASS_BLUR},format=yuva420p[r{i}]")
+            parts.append(f"[r{i}][m{i}]alphamerge[g{i}]")
+            parts.append(f"[b{i}][g{i}]overlay={p['x']}:{p['y']}:{on}[q{i}]")
+            prev = f"[q{i}]"
+        else:
+            parts.append(f"{layer}[l{i}]")
+        parts.append(f"{prev}[l{i}]overlay={p['x']}:{p['y']}:{on}[v{i}]")
         prev = f"[v{i}]"
     if not shots:
         parts.append("[0:v]null[v1]")

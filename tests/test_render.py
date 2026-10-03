@@ -90,3 +90,42 @@ def test_sample_starting_mid_shot_seeks_into_the_layer(tmp_path):
         return tuple(raw[:3])
     assert pixel(0.3)[0] > 180 and pixel(0.3)[1] < 80      # 样片开头还在镜头里
     assert not (pixel(1.5)[0] > 180 and pixel(1.5)[1] < 80)  # 3.0s 之后镜头结束
+
+
+def test_glass_shot_blurs_the_picture_under_the_card_only():
+    shots = [{"id": "A", "start": 1.0, "end": 2.0, "src_rect": [0, 0, 100, 60], "place": {"x": 20, "y": 20, "w": 100, "h": 60},
+              "glass": 0.45}]
+    f = render.filtergraph(shots)
+    assert "trim=start=1.0:end=2.0" in f and "crop=100:60:20:20" in f and "gblur" in f
+    assert "lut=c0='min(255,val*2.2222)'" in f and "alphamerge" in f
+    assert f.rstrip().endswith("[v1]")
+
+
+def _sharpness(path, t, crop):
+    """相邻像素平均差多少：细节越多越大，模糊后接近 0。"""
+    w = int(crop.split(":")[0])
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-ss", str(t), "-i", str(path), "-frames:v", "1",
+                          "-vf", f"crop={crop},format=gray", "-f", "rawvideo", "-"], capture_output=True, check=True).stdout
+    diffs = [abs(raw[i] - raw[i + 1]) for i in range(len(raw) - 1) if (i + 1) % w]
+    return sum(diffs) / len(diffs)
+
+
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="needs ffmpeg")
+def test_glass_card_on_a_real_render(tmp_path):
+    base, layer = tmp_path / "base.mp4", tmp_path / "card.mov"
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=30:duration=3",
+                    "-vf", "noise=alls=60:allf=u", "-pix_fmt", "yuv420p", "-crf", "10", str(base)], check=True)
+    # 一张铺满层的半透明白卡（不透明度 0.45），和 Remotion 渲出来的毛玻璃层一样
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=white@0.45:size=120x80:rate=30:duration=1,format=rgba",
+                    "-c:v", "qtrle", str(layer)], check=True)
+    shot = {"id": "A", "start": 1.0, "end": 2.0, "layer": str(layer), "src_rect": [0, 0, 120, 80],
+            "zone": {"x": 100, "y": 50, "w": 120, "h": 80}}
+    glass, plain = tmp_path / "glass.mp4", tmp_path / "plain.mp4"
+    render.render({"base": str(base), "canvas": [320, 180], "shots": [{**shot, "glass": 0.45}]}, glass, None)
+    render.render({"base": str(base), "canvas": [320, 180], "shots": [shot]}, plain, None)
+    inside, outside = "80:50:120:65", "60:40:10:120"
+    # 卡片底下：毛玻璃把细节糊掉，比只盖一层半透明白平滑得多
+    assert _sharpness(glass, 1.5, inside) < 0.3 * _sharpness(plain, 1.5, inside)
+    # 卡片外面、镜头前后：和原画面一样
+    assert _sharpness(glass, 1.5, outside) > 0.8 * _sharpness(base, 1.5, outside)
+    assert _sharpness(glass, 0.5, inside) > 0.8 * _sharpness(base, 0.5, inside)

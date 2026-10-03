@@ -80,3 +80,100 @@ def test_adjacent_shots_in_different_zones_are_fine():
 def test_shot_past_the_end_of_the_video():
     f = findings(shot(start=570.0, end=600.0, hold=590.0, reveals=[]))
     assert [x["rule"] for x in f] == ["outside-video"]
+
+
+# —— defaults.yaml 里 Park 定的风格和规则 ——
+SPEECH = {"words": [
+    {"w": "这是", "start": 10.0, "end": 10.3}, {"w": "两件", "start": 10.3, "end": 10.6},
+    {"w": "非常", "start": 10.6, "end": 10.9}, {"w": "重要", "start": 10.9, "end": 11.2},
+    {"w": "的", "start": 11.2, "end": 11.3}, {"w": "问题", "start": 11.3, "end": 11.7},
+    {"w": "客户甲", "start": 12.0, "end": 12.5}, {"w": "一年", "start": 12.5, "end": 12.8},
+    {"w": "200万", "start": 12.8, "end": 13.4},
+]}
+RULES = {**BRIEF, "banned_words": ["客户甲"], "max_items": 3, "text_amount": "one-point", "intensity": "restrained",
+         "rewrite": "trim-only", "exit": "after-sentence", "min_gap": 5}
+
+
+def card(**kw):
+    s = {"id": "V08", "start": 10.0, "end": 12.5, "zone": "right", "component": "TextLines",
+         "props": {"lines": ["两件重要的问题"], "ats": [10.3]}, "reveals": [{"at": 10.3, "text": "两件非常重要的问题"}], "hold": 11.0}
+    s.update(kw)
+    return s
+
+
+def rules(*shots, **over):
+    return [x["rule"] for x in check.run({"duration": 600.0, "shots": list(shots)}, SPEECH, {**RULES, **over})]
+
+
+def test_card_that_follows_every_rule_passes():
+    assert rules(card()) == []
+
+
+def test_trimming_the_words_is_fine():
+    assert rules(card(props={"lines": ["两件重要问题"], "ats": [10.3]})) == []
+
+
+def test_swapping_a_word_is_caught():
+    # 昨天的 V08：他说「非常重要」，卡上写成「最重要」
+    assert rules(card(props={"lines": ["两件最重要的问题"], "ats": [10.3]})) == ["rewritten"]
+
+
+def test_kicker_and_titles_count_too():
+    assert rules(card(props={"kicker": "核心洞察", "lines": ["两件重要问题"], "ats": [10.3]})) == ["rewritten"]
+
+
+def test_summarize_mode_allows_rewording():
+    assert rules(card(props={"lines": ["两件最重要的问题"], "ats": [10.3]}), rewrite="summarize") == []
+
+
+def test_banned_word_on_the_card_is_caught():
+    f = rules(card(end=13.5, props={"lines": ["客户甲一年200万"], "ats": [12.0]}, reveals=[{"at": 12.0, "text": "客户甲一年200万"}]))
+    assert f == ["banned-word"]
+
+
+def test_too_many_items_on_one_card():
+    f = rules(card(props={"lines": ["两件", "重要", "问题", "一年"], "ats": [10.3, 10.9, 11.3, 12.5]}), text_amount="points", intensity="medium")
+    assert f == ["too-many-items"]
+
+
+def test_one_point_card_cannot_carry_a_paragraph():
+    long = "这是两件非常重要的问题客户一年200万"
+    f = rules(card(props={"lines": [long, long]}, reveals=[]), rewrite="summarize")
+    assert "not-one-point" in f
+
+
+def test_component_above_the_chosen_intensity():
+    f = rules(card(component="NumberRoll", props={"value": "200万", "lockAt": 12.8}, reveals=[], end=13.5))
+    assert f == ["intensity"]
+    assert rules(card(component="NumberRoll", props={"value": "200万", "lockAt": 12.8}, reveals=[], end=13.5), intensity="medium") == []
+
+
+def test_restrained_card_cannot_reveal_line_by_line():
+    s = card(end=14.0, props={"lines": ["两件重要问题", "一年200万"], "ats": [10.3, 12.5]},
+             reveals=[{"at": 10.3, "text": "两件非常重要的问题"}, {"at": 12.5, "text": "一年200万"}])
+    assert rules(s) == ["intensity"]
+
+
+def test_card_stays_long_after_the_sentence_ends():
+    assert rules(card(end=16.0)) == ["stays-too-long"]
+    assert rules(card(end=16.0), exit="until-next") == []
+
+
+def test_cards_too_close_together():
+    later = card(id="V09", start=15.0, end=16.0, hold=15.5, zone="left", reveals=[], props={"lines": ["一年200万"], "ats": [15.0]})
+    assert rules(card(), later) == ["gap"]
+    assert rules(card(), {**later, "start": 17.6, "end": 18.0, "hold": 17.8}, rewrite="summarize") == []
+
+
+def test_coverage_is_reported_not_enforced():
+    plan = {"duration": 100.0, "shots": [card(start=10.0, end=20.0)]}
+    assert check.coverage(plan, {"no_motion": [[50.0, 100.0]]}) == 0.2
+
+
+def test_line_too_long_for_the_zone_gets_tiny_text():
+    # 昨天样片里右侧窄区的「现在能够赚一年200万」只剩 30 多 px
+    narrow = {"x": 1320, "y": 40, "w": 560, "h": 788}
+    assert check.line_px("现在能够赚一年200万", 560, 1) < check.MIN_TEXT_PX
+    assert check.line_px("赚一年200万", 560, 1) >= check.MIN_TEXT_PX
+    s = card(zone=narrow, props={"lines": ["这是两件非常重要的问题一年200万"], "ats": [10.3]}, reveals=[])
+    assert "text-too-small" in rules(s, rewrite="summarize")

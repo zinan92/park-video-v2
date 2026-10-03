@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, Kicker, useU } from '../kit/Card';
 import { E, lerp, seg } from '../kit/Motion';
 import { useSec } from '../kit/time';
-import { MUTED, RED } from '../kit/theme';
+import { useLook } from '../kit/look';
 
 export type NumberRollProps = { t0: number; kicker?: string; value: string; unit?: string; lockAt: number;
   notes?: { text: string; at: number }[] };
@@ -24,15 +24,16 @@ const Digit: React.FC<{ d: number; p: number; size: number }> = ({ d, p, size })
 
 export const NumberRoll: React.FC<NumberRollProps> = ({ t0, kicker, value, unit, lockAt, notes = [] }) => {
   const u = useU();
+  const look = useLook();
   const now = useSec(t0);
   const p = seg(now, lockAt - 0.8, lockAt, E.outCubic);
   const size = u(130);
   return (
     <Card>
       {kicker ? <Kicker>{kicker}</Kicker> : null}
-      <div style={{ fontSize: size, fontWeight: 800, color: RED, fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
+      <div style={{ fontSize: size, fontWeight: 800, color: look.accent, fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }}>
         {value.split('').map((ch, i) => (/\d/.test(ch) ? <Digit key={i} d={Number(ch)} p={p} size={size} /> : <span key={i}>{ch}</span>))}
-        {unit ? <span style={{ fontSize: u(44), marginLeft: u(10), color: MUTED }}>{unit}</span> : null}
+        {unit ? <span style={{ fontSize: u(44), marginLeft: u(10), color: look.muted }}>{unit}</span> : null}
       </div>
       {notes.map((n, i) => {
         const q = seg(now, n.at, n.at + 0.3, E.outCubic);

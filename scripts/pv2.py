@@ -129,14 +129,15 @@ def find(words: list[dict[str, Any]], text: str) -> list[float]:
     return hits
 
 
-def layers_to_render(project: Path, shots: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """层文件不存在、或比 plan.json / 组件代码旧，就要重渲；其余直接复用（样片渲过的镜头整条时不重渲）。"""
+def layers_to_render(project: Path, shots: list[dict[str, Any]], b: dict[str, Any]) -> list[dict[str, Any]]:
+    """层要重渲：文件不存在、渲染它的 props（方案 + 外观）变了、或组件代码改过。其余直接复用（样片渲过的镜头整条时不重渲）。"""
     d = _v2(project)
-    plan_m = max((d / "plan.json").stat().st_mtime, _motion_mtime())
+    code_m = _motion_mtime()
     out = []
     for s in shots:
         f = d / "layers" / f"{s['id']}.mov"
-        if not f.is_file() or f.stat().st_mtime < plan_m:
+        want = json.loads(json.dumps(layers_mod.layer_props(s, check_mod._zone(s, b), layers_mod.style(b)), sort_keys=True))
+        if not f.is_file() or f.stat().st_mtime < code_m or _json(layers_mod.props_file(f)) != want:
             out.append(s)
     return out
 
@@ -178,7 +179,7 @@ def do_sample(project: Path) -> Path:
     d, b, plan, meta = _checked(project)
     status = d / "sample-status.json"
     a, z = layers_mod.sample_window(plan)
-    need = [s for s in layers_mod.shots_between(plan, a, z) if s in layers_to_render(project, plan["shots"])]
+    need = [s for s in layers_mod.shots_between(plan, a, z) if s in layers_to_render(project, plan["shots"], b)]
     layers_mod.render_layers(plan, b, d / "layers", status=status, only=need, weight=(0, 60))
     rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -192,7 +193,7 @@ def do_render(project: Path) -> Path:
     if "sample" not in (_json(d / "approvals.json", {}) or {}):
         raise SystemExit("Park 还没批样片，不渲染整条")
     status = d / "status.json"
-    layers_mod.render_layers(plan, b, d / "layers", status=status, only=layers_to_render(project, plan["shots"]), weight=(0, 45))
+    layers_mod.render_layers(plan, b, d / "layers", status=status, only=layers_to_render(project, plan["shots"], b), weight=(0, 45))
     rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "final.mp4"
@@ -240,6 +241,7 @@ def main(argv: list[str]) -> int:
         d, b, plan, _ = _load(project)
         found = check_mod.run(plan, _json(d / "words.json", {}), b)
         print(json.dumps(found, ensure_ascii=False, indent=2))
+        print(f"动效覆盖率 {check_mod.coverage(plan, b):.0%}（疏密 {b.get('density')}，只做参考）", file=sys.stderr)
         return 1 if found else 0
     elif a.cmd == "find":
         words = (_json(_v2(project) / "words.json", {}) or {}).get("words") or []

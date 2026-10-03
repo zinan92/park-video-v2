@@ -1,0 +1,20 @@
+# 风格和规则的默认值：填一次，每条视频沿用。某条视频要不一样，就在它的 v2/brief.yaml 里写同名字段覆盖。
+# 不能出现在画面上的词（客户名、地名…）只写在各项目的 brief.yaml 里，不写进这个公开仓库。
+
+# 一、长什么样
+card: glass              # glass 毛玻璃半透明 / paper 米白纸卡 / dark 深色卡 / none 无卡片，字直接浮在画面上
+accent: "#E2461F"        # 强调色（朱红）
+text_amount: one-point   # one-point 一张卡一个重点，大字 / points 标题加几条要点
+max_items: 3             # 一张卡最多几条（行、步骤、补充行）
+
+# 二、动起来什么样
+intensity: restrained    # restrained 克制：整张卡淡入上移、停住 / medium 中等：逐条出现、数字滚动 / rich 花哨：ShotCraft 复杂运镜
+overshoot: false         # 数字、指针、圆点能不能冲过头再弹回
+exit: after-sentence     # after-sentence 这句话说完就走 / until-next 停到下一张出来
+
+# 三、卡片上的字
+rewrite: trim-only       # trim-only 只能删减你的原话、不能换词 / summarize 允许概括
+
+# 四、疏密
+density: medium          # low 只给关键数字和结论 / medium / high 每个论点都配（只做参考，不卡数量）
+min_gap: 5               # 两张卡之间至少留多少秒纯人脸
