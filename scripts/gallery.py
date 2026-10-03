@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""动效图鉴：把组件库里每个组件用 catalog.json 里的 example 渲一段 3 秒演示，放进 gallery/。
+"""动效图鉴：把组件库里每个组件用 catalog.json 里的 example 渲一段 4 秒演示，放进 gallery/。
 
 背景是合成的渐变（仓库是公开的，不用任何真实视频画面）；卡片用默认外观（defaults.yaml），
 放在人脸左侧那块区域，和成片里一样走 layers.py + render.py。
@@ -18,7 +18,7 @@ import render
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "gallery"
-SECONDS = 3.0
+SECONDS = 4.0
 # 和横屏口播一样的版面：人脸在中间，字幕带在下面
 STAGE = {"canvas": [1920, 1080], "face_box": [760, 180, 400, 500], "caption_band": [868, 1000],
          "motion_placement": "overlay-sides"}

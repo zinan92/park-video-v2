@@ -44,7 +44,7 @@ export const HatchBars: React.FC<HatchBarsProps> = ({ t0, kicker, bars, accent =
           return (
             <div key={i} style={{ marginTop: u(i ? 30 : 0), opacity: slot }}>
               <div style={{ fontSize: labelSize, fontWeight: 800, color: hot ? look.accent : look.ink, whiteSpace: 'nowrap', minHeight: labelSize * 1.2 }}>
-                {now >= b.at ? <Kinetic text={b.label} now={now} at={b.at} gap={0.03} rise={u(14)} /> : null}
+                <Kinetic text={b.label} now={now} at={b.at} gap={0.03} rise={u(14)} />
               </div>
               <div style={{ position: 'relative', marginTop: u(10), height: H, width: full, borderRadius: u(14), background: look.line, overflow: 'hidden' }}>
                 {g > 0 ? (
