@@ -28,8 +28,8 @@ sliders:
     help: 画面上放多少证明和真实素材
     levels:
       - {value: none, label: 不放, detail: 只用你说的话和数字, cost: 0}
-      - {value: own, label: 你自己的截图和数据, detail: 后台截图、成交记录、你给的图, cost: 要你提供素材, available: false}
-      - {value: search, label: 搜索外部图片和数据, detail: 找真实图片、新闻、数据来源, cost: 要单独的找素材 skill, available: false}
+      - {value: own, label: 你自己的截图和数据, detail: 后台截图、成交记录——你在工作台骨架页传、点过「要」的, cost: 要你截图}
+      - {value: search, label: 搜索外部图片和数据, detail: 工作台骨架页按论点找的新闻、数据、原推（逐字核对过），你点过「要」的, cost: 拍之前在骨架页点一下找证据，3–8 分钟}
   - key: edit
     name: 剪辑
     help: 动效之外，要不要动粗剪本身

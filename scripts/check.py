@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import brief as brief_mod
+import proof as proof_mod
 
 FRAME = 1 / 30
 SEARCH = 5.0  # 在镜头前后多少秒内找原话
@@ -99,13 +100,13 @@ def _texts(props: Any) -> list[str]:
     if isinstance(props, str):
         return [props]
     if isinstance(props, dict):
-        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon", "symbol", "arc", "pick", "hours", "days", "sheets", "count") for t in _texts(v)]
+        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon", "symbol", "arc", "pick", "hours", "days", "sheets", "count", "src") for t in _texts(v)]
     if isinstance(props, list):
         return [t for v in props for t in _texts(v)]
     return []
 
 
-TIME_KEYS = ("at", "ats", "lockAt", "symbolAt", "iconAt", "captionAt", "centerAt", "coreAt")
+TIME_KEYS = ("at", "ats", "lockAt", "symbolAt", "iconAt", "captionAt", "centerAt", "coreAt", "sourceAt")
 
 
 def _times(props: Any) -> list[float]:
@@ -184,7 +185,7 @@ def _overlap(a: dict[str, int], b: dict[str, int]) -> bool:
     return a["x"] < b["x"] + b["w"] and b["x"] < a["x"] + a["w"] and a["y"] < b["y"] + b["h"] and b["y"] < a["y"] + a["h"]
 
 
-def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any]) -> list[dict[str, str]]:
+def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence: list[dict[str, Any]] | None = None) -> list[dict[str, str]]:
     out: list[dict[str, str]] = []
     ws = words.get("words") or []
 
@@ -220,6 +221,7 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any]) -> list[
                 add("text-before-speech", s, f"「{r['text']}」{r['at']}s 出现，{span[0]}s 才说")
             last_end = span[1] if last_end is None else max(last_end, span[1])
         style_rules(s, b, ws, add, last_end)
+        proof_mod.rules(s, b, evidence or [], add)
 
     for i, a in enumerate(shots):
         for c in shots[i + 1:]:
@@ -250,10 +252,12 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any]) -> list[
             if _form(a) and _form(a) == _form(c):
                 add("same-form", c, f"和前一张 {a['id']} 都是「{_form(c)}」形式，相邻两张换一种")
         want = EFFORT[b["effort"]]
-        low = [x for x in shots if EFFORT.get(_catalog().get(x.get("component", ""), {}).get("effort", "d"), 3) < want]
-        if shots and len(low) / len(shots) > LOW_EFFORT_SHARE:
+        # 证据截图是内容不是做工，不算进「偷懒」的比例
+        made = [x for x in shots if _form(x) != "image"]
+        low = [x for x in made if EFFORT.get(_catalog().get(x.get("component", ""), {}).get("effort", "d"), 3) < want]
+        if made and len(low) / len(made) > LOW_EFFORT_SHARE:
             out.append({"rule": "effort-too-low", "shot": "plan",
-                        "detail": f"{len(low)}/{len(shots)} 张卡低于努力程度 {b['effort']}，最多 {LOW_EFFORT_SHARE:.0%}"})
+                        "detail": f"{len(low)}/{len(made)} 张卡低于努力程度 {b['effort']}，最多 {LOW_EFFORT_SHARE:.0%}"})
     if "density" in b or "coverage" in b:
         lo, hi = brief_mod.coverage_range(b)
         got = coverage(plan, b)
@@ -279,7 +283,8 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
         if isinstance(props.get(key), list) and len(props[key]) > b.get("max_items", 99):
             add("too-many-items", s, f"{key} 有 {len(props[key])} 条，一张卡最多 {b['max_items']} 条")
     entry_limits = _catalog().get(s.get("component", ""), {}).get("limits")
-    if b.get("text_amount") == "one-point" and not entry_limits:  # 讲过程的组件有自己每段字数的上限（limits），不再套总字数
+    proof = s.get("component") == "Proof"  # 截图卡上的字是来源一行，不是他说的话：不套字数、不查原话删减
+    if b.get("text_amount") == "one-point" and not entry_limits and not proof:  # 讲过程的组件有自己每段字数的上限（limits），不再套总字数
         n = sum(len(_clean(t)) for t in _texts(props))
         if n > ONE_POINT_CHARS:
             add("not-one-point", s, f"卡上一共 {n} 个字，一张卡一个重点最多 {ONE_POINT_CHARS} 个")
@@ -310,7 +315,7 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
             add("unknown-icon", s, f"图标库里没有「{name}」（lucide 的短横线名字，见 https://lucide.dev/icons）")
     if entry and "effort" in b and EFFORT[entry["effort"]] > EFFORT[b["effort"]]:
         add("effort-too-high", s, f"{s.get('component')} 是努力程度 {entry['effort']} 的组件，这条视频定的是 {b['effort']}")
-    if b.get("rewrite") == "trim-only":
+    if b.get("rewrite") == "trim-only" and not proof:
         for t in _texts(props):
             if not _trimmed_from_speech(ws, t, s["start"] - SEARCH, s["end"] + SEARCH):
                 add("rewritten", s, f"「{t}」不是原话删减出来的（换了词或加了词）")
@@ -325,7 +330,7 @@ def main(argv: list[str]) -> int:
         return 2
     plan = json.loads(Path(argv[1]).read_text(encoding="utf-8"))
     words = json.loads(Path(argv[2]).read_text(encoding="utf-8"))
-    found = run(plan, words, brief_mod.load(Path(argv[3])))
+    found = run(plan, words, brief_mod.load(Path(argv[3])), proof_mod.load(Path(argv[3]).parent))
     print(json.dumps(found, ensure_ascii=False, indent=2))
     return 1 if found else 0
 

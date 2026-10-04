@@ -35,6 +35,10 @@ python3 scripts/pv2.py status <项目>            # 在哪一步、百分之多�
 
 `settings.yaml` 是全部设置的唯一清单：6 根滑杆（密度、动效努力、证据与素材、剪辑、声音、检查，每档写明代价，没做的档位标 `available: false`）、口味选项、每条视频单独给的项、一键预设。内容工作台跑 `pv2.py settings <项目>` 画界面，`pv2.py set` 写回，自己不写死任何视频设置。
 
+## 证据截图
+
+内容工作台骨架页里 Park 点过「要」的真截图（新闻、数据、原推、他自己的后台截图）用 `pv2.py evidence <项目> <清单.json>` 放进 `v2/evidence/`；方案里的 `Proof` 卡只能用这些图、来源照抄（`scripts/proof.py`，check 会拦），渲染时这个目录交给 Remotion 当 public 目录。
+
 ## 动效图鉴
 
 `pv2.py catalog` 列出每个组件的中文名、叫法、形式、努力程度和 ShotCraft 来源；`gallery/` 里是每个组件 3 秒的演示片段（合成背景，`pv2.py gallery` 重渲）。

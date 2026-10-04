@@ -88,6 +88,25 @@ C_COMPONENTS = ["HaloNumber", "HatchBars", "GlassCycle", "RingCore", "StackPress
                 "TimeCompress", "CrowdSplit", "PickOne", "Accumulate", "Quadrant", "Journey", "BrokenPath"]
 
 
+def test_evidence_screenshots_are_handed_to_remotion_as_its_public_folder(tmp_path):
+    shot = {"id": "P1", "start": 1.0, "end": 6.0, "zone": "left", "component": "Proof", "props": {"src": "a.png", "at": 1.2, "source": "来源：x"}}
+    cmd = layers.remotion_cmd(shot, {"w": 700, "h": 700}, tmp_path / "P1.mov", public=tmp_path / "evidence")
+    assert f"--public-dir={tmp_path / 'evidence'}" in cmd
+    assert not any(c.startswith("--public-dir") for c in layers.remotion_cmd(shot, {"w": 700, "h": 700}, tmp_path / "P1.mov"))
+
+
+@pytest.mark.skipif(not os.environ.get("PV2_REMOTION") or shutil.which("npx") is None, reason="set PV2_REMOTION=1 to run a real render")
+def test_the_evidence_card_shows_the_real_image_and_stops_moving(tmp_path):
+    # 证据截图卡：图从项目的 evidence/ 读（--public-dir）；出现 + 来源一行做完后一帧不变
+    import check
+    import qa
+    from gallery import ASSETS
+    entry = check._catalog()["Proof"]
+    shot = {"id": "Proof", "start": 0.0, "end": 3.5, "zone": "left", "component": "Proof", "props": entry["example"]}
+    out = layers.render_layers({"duration": 60, "shots": [shot]}, {**BRIEF, "card": "glass"}, tmp_path, status=None, public=ASSETS)[0]
+    assert qa.hold_is_static(out, hold_offset=1.4, end_offset=shot["end"] - 0.4)
+
+
 @pytest.mark.skipif(not os.environ.get("PV2_REMOTION") or shutil.which("npx") is None, reason="set PV2_REMOTION=1 to run a real render")
 @pytest.mark.parametrize("component", C_COMPONENTS)
 def test_c_component_is_still_after_it_settles(tmp_path, component):

@@ -44,15 +44,18 @@ def props_file(layer: Path) -> Path:
     return layer.with_suffix(".props.json")
 
 
-def remotion_cmd(shot: dict[str, Any], zone: dict[str, int], out: Path, look: dict[str, Any] | None = None) -> list[str]:
+def remotion_cmd(shot: dict[str, Any], zone: dict[str, int], out: Path, look: dict[str, Any] | None = None,
+                 public: Path | None = None) -> list[str]:
+    """public：证据截图所在的目录（项目的 v2/evidence/），Proof 卡用 staticFile 从这里读图。"""
     props = layer_props(shot, zone, look)
     return ["npx", "remotion", "render", "src/index.ts", "Shot", str(out), "--codec=prores", "--prores-profile=4444",
             "--pixel-format=yuva444p10le", "--image-format=png", "--muted", "--log=error",
+            *([f"--public-dir={public}"] if public else []),
             "--props=" + json.dumps(props, ensure_ascii=False)]
 
 
 def render_layers(plan: dict[str, Any], brief: dict[str, Any], layer_dir: Path, *, status: Path | None,
-                  only: list[dict[str, Any]] | None = None, weight: tuple[int, int] = (0, 100)) -> list[Path]:
+                  only: list[dict[str, Any]] | None = None, weight: tuple[int, int] = (0, 100), public: Path | None = None) -> list[Path]:
     layer_dir.mkdir(parents=True, exist_ok=True)
     shots = only if only is not None else plan["shots"]
     outs = []
@@ -60,7 +63,7 @@ def render_layers(plan: dict[str, Any], brief: dict[str, Any], layer_dir: Path, 
         write_status(status, "rendering", i, len(shots), stage="layers", weight=weight, unit="shots")
         out = layer_dir / f"{s['id']}.mov"
         props_file(out).unlink(missing_ok=True)
-        r = subprocess.run(remotion_cmd(s, _zone(s, brief), out, style(brief)), cwd=MOTION, capture_output=True, text=True)
+        r = subprocess.run(remotion_cmd(s, _zone(s, brief), out, style(brief), public), cwd=MOTION, capture_output=True, text=True)
         if r.returncode != 0:
             write_status(status, "failed", i, len(shots), stage="layers", weight=weight, unit="shots")
             raise RuntimeError(f"{s['id']} 渲染失败：{(r.stderr or r.stdout)[-1500:]}")
