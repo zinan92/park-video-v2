@@ -9,6 +9,7 @@
   pv2.py render  <项目> [--detach]      全部镜头 + 整条合成 + 终检 → final.mp4、qa.json、contact.jpg
   pv2.py qa      <项目>                 只重跑终检（不重渲）
   pv2.py status  <项目>                 现在在哪一步、进度多少、在等谁
+  pv2.py evidence <项目> <清单.json>    工作台里他点过「要」的证据截图放进 v2/evidence/（方案的 Proof 卡只能用这些）
   pv2.py settings [<项目>]              全部设置（settings.yaml）+ 当前取值和来源，JSON；工作台用它画滑杆
   pv2.py set <项目>|default --json '{"density": "low"}'   改设置：写进项目 brief.yaml，或 Park 的默认值
   pv2.py catalog                        动效图鉴：每个组件的中文名、形式、努力程度、演示片段，JSON
@@ -32,6 +33,7 @@ from typing import Any
 import brief as brief_mod
 import check as check_mod
 import layers as layers_mod
+import proof as proof_mod
 import qa as qa_mod
 import render as render_mod
 
@@ -273,11 +275,25 @@ def _load(project: Path) -> tuple[Path, dict[str, Any], dict[str, Any], dict[str
 
 def _checked(project: Path) -> tuple[Path, dict[str, Any], dict[str, Any], dict[str, Any]]:
     d, b, plan, meta = _load(project)
-    found = check_mod.run(plan, _json(d / "words.json", {}), b)
+    found = check_mod.run(plan, _json(d / "words.json", {}), b, proof_mod.load(d))
     if found:
         print(json.dumps(found, ensure_ascii=False, indent=2))
         raise SystemExit("程序检查没过，先改 plan.json")
     return d, b, plan, meta
+
+
+def _public(d: Path) -> Path | None:
+    """证据截图目录：有就交给 Remotion 当 public 目录。"""
+    return d / proof_mod.FOLDER if (d / proof_mod.FOLDER).is_dir() else None
+
+
+def evidence(project: Path, manifest: Path) -> dict[str, Any]:
+    """工作台给的证据清单（他点过「要」的）放进项目；brief 的「证据与素材」跟着改成 own / search（清单空就是 none）。"""
+    items = json.loads(Path(manifest).read_text(encoding="utf-8"))
+    d = _v2(project)
+    out = proof_mod.put(d, items if isinstance(items, list) else [])
+    _write_keys(d / "brief.yaml", {"evidence": proof_mod.level(out)})
+    return {"items": out, "evidence": proof_mod.level(out)}
 
 
 def _base(project: Path, meta: dict[str, Any]) -> str:
@@ -308,7 +324,7 @@ def do_sample(project: Path) -> Path:
     windows = sample_windows(plan)
     stale = layers_to_render(project, plan["shots"], b)
     need = [s for s in stale if any(s["start"] < z and a < s["end"] for a, z in windows)]
-    layers_mod.render_layers(plan, b, d / "layers", status=status, only=need, weight=(0, 60))
+    layers_mod.render_layers(plan, b, d / "layers", status=status, only=need, weight=(0, 60), public=_public(d))
     rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "sample.mp4"
@@ -335,7 +351,8 @@ def do_render(project: Path) -> Path:
     if "sample" not in (_json(d / "approvals.json", {}) or {}):
         raise SystemExit("Park 还没批样片，不渲染整条")
     status = d / "status.json"
-    layers_mod.render_layers(plan, b, d / "layers", status=status, only=layers_to_render(project, plan["shots"], b), weight=(0, 45))
+    layers_mod.render_layers(plan, b, d / "layers", status=status, only=layers_to_render(project, plan["shots"], b), weight=(0, 45),
+                             public=_public(d))
     rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "final.mp4"
@@ -368,7 +385,7 @@ def main(argv: list[str]) -> int:
     if len(argv) > 1 and argv[1] in ("settings", "set", "catalog", "gallery", "shotcraft"):
         return _main_settings(argv)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=("init", "prep", "check", "find", "sample", "approve", "render", "qa", "status"))
+    ap.add_argument("cmd", choices=("init", "prep", "check", "find", "sample", "approve", "render", "qa", "status", "evidence"))
     ap.add_argument("project")
     ap.add_argument("gate", nargs="?")
     ap.add_argument("--video")
@@ -383,7 +400,7 @@ def main(argv: list[str]) -> int:
         do_prep(project)
     elif a.cmd == "check":
         d, b, plan, _ = _load(project)
-        found = check_mod.run(plan, _json(d / "words.json", {}), b)
+        found = check_mod.run(plan, _json(d / "words.json", {}), b, proof_mod.load(d))
         print(json.dumps(found, ensure_ascii=False, indent=2))
         lo, hi = brief_mod.coverage_range(b)
         print(f"动效占 {check_mod.coverage(plan, b):.0%}（密度 {b.get('density')}：{lo:.0%}–{hi:.0%}）", file=sys.stderr)
@@ -402,6 +419,8 @@ def main(argv: list[str]) -> int:
         return 0 if report["status"] == "pass" else 1
     elif a.cmd == "approve":
         print(json.dumps(approve(project, a.gate or "", message=a.message), ensure_ascii=False))
+    elif a.cmd == "evidence":
+        print(json.dumps(evidence(project, Path(a.gate or "")), ensure_ascii=False, indent=2))
     elif a.cmd == "status":
         print(json.dumps(summary(project), ensure_ascii=False, indent=2))
     return 0

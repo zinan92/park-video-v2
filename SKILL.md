@@ -88,6 +88,7 @@ Park 的判断：组件做得再细，表达错了就是 10–20 分。所以精
 | `Compare` | diagram | b | 两件事对照（≠ / → / +） | `kicker?`, `top{title, sub?, at}`, `bottom{…}`, `symbol`, `symbolAt` |
 | `IconPoint` | icon | b | 一个概念配一个图标 | `icon`, `iconAt`, `lines[]`, `ats[]`, `accent?[]` |
 | `IconList` | icon | b | 2–3 条，每条配图标 | `kicker?`, `items[{icon, text, at}]`, `accent?[]` |
+| `Proof` | image | a | 证据截图：他点过「要」的新闻、数据、原推、后台截图 | `src`, `at`, `source`, `sourceAt?` |
 | `HaloNumber` | number | c | 关键数字：滚动锁定 + 光晕 + 下划线 + 高光扫过 | `value`, `unit?`, `at`, `caption?`, `captionAt?` |
 | `HatchBars` | chart | c | 2–3 个数量对比：斜纹草稿擦出再蜕变实色 | `kicker?`, `bars[{label, value, display?, at}]`, `accent?[]` |
 | `GlassCycle` | diagram | c | 飞轮：玻璃球托起、弧线箭头走一圈、整组推近 | `nodes[{text, at}]`, `center?`, `centerAt?`, `accent?[]` |
@@ -112,7 +113,16 @@ effort c 的组件动作多：`catalog.json` 里写了 `settle`（最后一次�
 
 Park 说的样式名对不上组件时，查 `pv2.py catalog`：每个组件有中文名、他可能的叫法（keywords）和形态来源的 ShotCraft 卡；图鉴演示片段在 `gallery/`（改了组件或加了组件后跑 `pv2.py gallery` 重渲）。
 
-图标用 lucide 的短横线名字（`users`、`clock`、`wallet`、`trending-up`…，全表见 https://lucide.dev/icons ），check 会核对图标存在。图表里的数值（`value`）必须是他说出口的数，不要编比例。真实图片暂不在这个流程里。
+图标用 lucide 的短横线名字（`users`、`clock`、`wallet`、`trending-up`…，全表见 https://lucide.dev/icons ），check 会核对图标存在。图表里的数值（`value`）必须是他说出口的数，不要编比例。
+
+## 证据截图（`Proof`）
+
+真截图只从 `v2/evidence.json` 来：内容工作台骨架页里按论点找的新闻、数据、原推，和他自己传的后台截图，**都是他点过「要」的**（工作台用 `pv2.py evidence <项目> <清单.json>` 放进来，brief 的 `evidence` 随之是 own / search）。不要自己找图、画图、编来源。
+
+- 每条清单项有 `point` / `point_title`（骨架里哪个论点）、`caption`、`claim`（它证明哪句话）。用 `pv2.py find` 找他讲到这个论点的时刻，截图卡放在那里；他没讲到的就不放，方案写完在回报里说哪几张没放、为什么。
+- `props.src` 写清单里的 `file`，`props.source` 一字不差写清单里的 `line`（「来源：… · 日期」）；`at` 不早于他说出这个论点。
+- 至少停 4 秒（看图 + 看来源）；放在 left / right，不挡脸、不进字幕带（和别的卡一样）。截图卡不算「偷懒」的低档卡，但相邻两张仍要换形式，两张截图之间插一张别的或留纯人脸。
+- check 会拦：清单外的图（proof-unknown）、来源不对（proof-source）、停太短（proof-too-short）、这条视频设了不放证据（proof-off）。
 
 卡片外观（毛玻璃 / 纸卡 / 深色 / 无卡片、强调色、能不能冲过头）由 brief 决定，组件里用 `useLook()` 取颜色和弹出曲线，不要写死颜色。毛玻璃的模糊在合成时由 `render.py` 用原画面做。
 

@@ -29,9 +29,11 @@ import { Journey } from './Journey';
 import { PickOne } from './PickOne';
 import { Quadrant } from './Quadrant';
 import { TimeCompress } from './TimeCompress';
+import { Proof } from './Proof';
 
 export const LIBRARY: Record<string, React.FC<any>> = {
   TextLines, Quote, ListSteps, BigNumber, NumberRoll, Ratio, Bars, Gauge, Cycle, Funnel, Flow, Compare, IconPoint, IconList,
   HaloNumber, HatchBars, GlassCycle, RingCore, StackPress, QuoteMarker, IconBloom,
   TimeCompress, CrowdSplit, PickOne, Accumulate, Quadrant, Journey, BrokenPath,
+  Proof,
 };

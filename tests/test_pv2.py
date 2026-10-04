@@ -179,7 +179,7 @@ def test_catalog_has_a_chinese_name_and_example_for_every_component():
     items = pv2.catalog()
     assert len(items) >= 14
     for c in items:
-        assert c["name"] and c["form"] in ("text", "number", "chart", "diagram", "icon") and c["example"]
+        assert c["name"] and c["form"] in ("text", "number", "chart", "diagram", "icon", "image") and c["example"]
 
 
 def test_shotcraft_cards_are_listed_with_what_we_already_adapted(tmp_path, monkeypatch):
