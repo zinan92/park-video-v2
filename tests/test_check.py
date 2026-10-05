@@ -253,23 +253,49 @@ def test_c_component_label_limit():
 
 # —— 精品档（C / D）的流程规则 ——
 def _premium(**kw):
-    base = card(intent={"means": "两件事里有一件最重要", "picture": "两颗点里一颗变红"}, sample=True)
+    base = card(intent={"means": "两件事里有一件最重要", "picture": "两颗点里一颗变红"})
     base.update(kw)
     return base
 
 
 def test_premium_cards_need_meaning_and_picture():
-    assert "no-intent" in rules(card(sample=True), effort="c", rewrite="summarize")
+    assert "no-intent" in rules(card(), effort="c", rewrite="summarize")
     assert "no-intent" not in rules(_premium(), effort="c", rewrite="summarize")
     assert "no-intent" not in rules(card(), effort="b")  # 快出 / 标准不要求
 
 
 def test_premium_never_repeats_a_component():
     a = _premium()
-    b2 = _premium(id="V09", start=18.0, end=21.0, hold=18.5, zone="left", reveals=[], sample=False,
+    b2 = _premium(id="V09", start=18.0, end=21.0, hold=18.5, zone="left", reveals=[],
                   props={"lines": ["一年200万"], "ats": [18.0]})
     assert "repeated-component" in rules(a, b2, effort="c", rewrite="summarize")
 
 
-def test_premium_marks_two_or_three_sample_shots():
-    assert "no-sample-shots" in rules(_premium(sample=False), effort="c", rewrite="summarize")
+def _bench(tmp_path, monkeypatch, *names):
+    f = tmp_path / "bench.yaml"
+    f.write_text("".join(f"{n}: {{video: /x.mp4, start: 1, end: 5, shows: 挑一个}}\n" for n in names), encoding="utf-8")
+    monkeypatch.setenv("PV2_BENCHMARKS", str(f))
+
+
+def test_premium_picks_two_or_three_key_shots():
+    assert "no-key-shots" in rules(_premium(), effort="c", rewrite="summarize")
+    assert "no-key-shots" in rules(_premium(key=True), effort="c", rewrite="summarize")
+    assert "no-key-shots" not in rules(_premium(), effort="b")
+
+
+def test_key_shot_needs_a_c_component_and_a_known_benchmark(tmp_path, monkeypatch):
+    _bench(tmp_path, monkeypatch, "抓重点")
+    found = rules(_premium(key=True), effort="c", rewrite="summarize")  # TextLines 是 a 档
+    assert "key-effort-too-low" in found and "no-benchmark" in found
+    assert "unknown-benchmark" in rules(_premium(key=True, benchmark="别的"), effort="c", rewrite="summarize")
+    assert "unknown-benchmark" not in rules(_premium(key=True, benchmark="抓重点"), effort="c", rewrite="summarize")
+
+
+def test_old_sample_flag_still_counts_as_key():
+    assert "no-benchmark" in rules(_premium(sample=True), effort="c", rewrite="summarize")
+
+
+def test_premium_non_key_cards_may_be_plain():
+    """功夫集中在重点时刻：其余的卡用 b 档、甚至文字卡，不算偷懒。"""
+    assert "effort-too-low" not in rules(_premium(), effort="c", rewrite="summarize")
+    assert "effort-too-low" in rules(card(), effort="b")

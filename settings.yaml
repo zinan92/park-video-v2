@@ -21,7 +21,7 @@ sliders:
     levels:
       - {value: a, label: 文字卡, detail: 大字、引用、编号要点, cost: 最快}
       - {value: b, label: 图表·示意图·图标, detail: 环形图、条形图、流程、飞轮、漏斗、对照、图标, cost: 和文字卡差不多}
-      - {value: c, label: 像专业 AE, detail: 光晕数字、斜纹蜕变条形图、玻璃飞轮、核心环形图、层叠压入、马克笔引用、图标涟漪（改编 ShotCraft 卡）, cost: 渲染和 b 差不多（实测每张约 4 秒）}
+      - {value: c, label: 像专业 AE, detail: 挑 2–3 个重点时刻照标杆单独做（做完和你认可过的成片左右对比，不低于它才给你看），其余用图表, cost: 重点时刻每张要单独做，样片前多一步对比}
       - {value: d, label: 先画图再做动画, detail: 先用 Codex 画出画面，再让它动起来, cost: 一条可能几小时, available: false}
   - key: evidence
     name: 证据与素材
