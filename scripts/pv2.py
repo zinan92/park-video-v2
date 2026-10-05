@@ -14,7 +14,7 @@
   pv2.py settings [<项目>]              全部设置（settings.yaml）+ 当前取值和来源，JSON；工作台用它画滑杆
   pv2.py set <项目>|default --json '{"density": "low"}'   改设置：写进项目 brief.yaml，或 Park 的默认值
   pv2.py catalog                        动效图鉴：每个组件的中文名、形式、努力程度、演示片段，JSON
-  pv2.py gallery                        重新渲染图鉴里每个组件的演示片段（gallery/）
+  pv2.py gallery [组件名 ...]           重新渲染图鉴里组件的演示片段（gallery/；不写组件名就全部）
   pv2.py shotcraft                      Video-ShotCraft 全部样式卡的名字、一句话、分类、预览：Park 叫不出名字时翻它挑
 
 进度：样片写 v2/sample-status.json，整条写 v2/status.json，都是 {state, stage, done, total, unit, percent}。
@@ -541,7 +541,7 @@ def _main_settings(argv: list[str]) -> int:
         print(json.dumps(shotcraft(), ensure_ascii=False, indent=2))
     elif cmd == "gallery":
         import gallery
-        for path in gallery.render_all():
+        for path in gallery.render_all(rest or None):
             print(path)
     else:
         if len(rest) != 3 or rest[1] != "--json":
