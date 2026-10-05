@@ -203,11 +203,65 @@ def test_shotcraft_cards_are_listed_with_what_we_already_adapted(tmp_path, monke
 
 
 
-def test_sample_uses_marked_shots_otherwise_the_first_ten_seconds():
+def test_sample_uses_key_shots_otherwise_the_first_ten_seconds():
     plan = {"duration": 100.0, "shots": [{"id": "A", "start": 2.0, "end": 8.0, "hold": 5.0},
-                                         {"id": "B", "start": 30.0, "end": 40.0, "hold": 34.0, "sample": True},
+                                         {"id": "B", "start": 30.0, "end": 40.0, "hold": 34.0, "key": True},
                                          {"id": "C", "start": 60.0, "end": 70.0, "hold": 63.0, "sample": True}]}
     assert pv2.sample_windows(plan) == [(29.6, 35.0), (59.6, 64.0)]
     for s in plan["shots"]:
         s.pop("sample", None)
+        s.pop("key", None)
     assert pv2.sample_windows(plan) == [(1.5, 11.5)]
+
+
+def test_premium_sample_waits_for_the_benchmark_compare(proj, monkeypatch):
+    """精品档：重点镜头没和标杆对比过、或对比之后层又重渲了，就不出样片。"""
+    shot = {"id": "K1", "start": 1.0, "end": 5.0, "hold": 3.0, "key": True}
+    plan = {"duration": 10.0, "shots": [shot]}
+    monkeypatch.setattr(pv2, "layers_to_render", lambda project, shots, b: [])
+    (v2(proj) / "layers").mkdir()
+    layer = v2(proj) / "layers" / "K1.mov"
+    layer.write_text("x")
+    assert pv2.compare_missing(proj, plan, {"effort": "c"}) == ["K1"]
+    assert pv2.compare_missing(proj, plan, {"effort": "b"}) == []  # 标准档不要求
+    (v2(proj) / "compare").mkdir()
+    pair = v2(proj) / "compare" / "K1.mp4"
+    pair.write_text("x")
+    import os
+    os.utime(layer, (pair.stat().st_mtime - 10, pair.stat().st_mtime - 10))
+    assert pv2.compare_missing(proj, plan, {"effort": "c"}) == []
+    os.utime(layer, (pair.stat().st_mtime + 10, pair.stat().st_mtime + 10))  # 对比后又改过
+    assert pv2.compare_missing(proj, plan, {"effort": "c"}) == ["K1"]
+    monkeypatch.setattr(pv2, "layers_to_render", lambda project, shots, b: shots)  # 层要重渲
+    os.utime(layer, (pair.stat().st_mtime - 10, pair.stat().st_mtime - 10))
+    assert pv2.compare_missing(proj, plan, {"effort": "c"}) == ["K1"]
+
+
+def test_benchmark_must_be_in_the_private_library(tmp_path, monkeypatch):
+    import bench
+    video = tmp_path / "old.mp4"
+    (tmp_path / "b.yaml").write_text(f"抓重点: {{video: {video}, start: 59, end: 72.2, shows: 一群里挑一个}}\n", encoding="utf-8")
+    monkeypatch.setenv("PV2_BENCHMARKS", str(tmp_path / "b.yaml"))
+    with pytest.raises(SystemExit, match="移动硬盘"):
+        bench.resolve("抓重点")
+    video.write_text("x")
+    assert bench.resolve("抓重点")["end"] == 72.2
+    with pytest.raises(SystemExit, match="没有「别的」"):
+        bench.resolve("别的")
+
+
+def test_side_by_side_pads_the_shorter_clip(tmp_path):
+    def clip(path, seconds, color):
+        pv2._ffmpeg("-f", "lavfi", "-i", f"color=c={color}:s=1920x1080:d={seconds}:r=30", "-f", "lavfi", "-i",
+                    f"sine=d={seconds}", "-shortest", "-pix_fmt", "yuv420p", str(path))
+    clip(tmp_path / "a.mp4", 2, "red")
+    clip(tmp_path / "b.mp4", 3, "blue")
+    out, strip = tmp_path / "pair.mp4", tmp_path / "pair.jpg"
+    pv2.side_by_side(tmp_path / "a.mp4", tmp_path / "b.mp4", out, bench_label="抓重点", strip=strip)
+    import subprocess
+    probe = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height:format=duration",
+                            "-of", "json", str(out)], capture_output=True, text=True, check=True)
+    info = json.loads(probe.stdout)
+    assert info["streams"][0]["width"] == 1920 and info["streams"][0]["height"] == 540
+    assert abs(float(info["format"]["duration"]) - 3.0) < 0.2
+    assert strip.is_file()

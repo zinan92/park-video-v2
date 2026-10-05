@@ -4,7 +4,8 @@
   pv2.py init    <项目> --video 粗剪.mov --srt source.srt   建 v2/，写 brief 模板（Park 填）
   pv2.py prep    <项目>                 SRT 对齐音频 → words.json
   pv2.py check   <项目>                 程序检查 plan.json（AI 写好方案后）
-  pv2.py sample  <项目> [--detach]      渲染一段 10 秒样片 → sample.mp4（和整条同一个渲染函数）
+  pv2.py compare <项目> [--detach]      精品档：每个重点镜头和它的标杆左右对比 → v2/compare/（不低于标杆才出样片）
+  pv2.py sample  <项目> [--detach]      渲染样片 → sample.mp4（精品档只渲重点镜头；和整条同一个渲染函数）
   pv2.py approve <项目> sample|final -m "Park 原话"
   pv2.py render  <项目> [--detach]      全部镜头 + 整条合成 + 终检 → final.mp4、qa.json、contact.jpg
   pv2.py qa      <项目>                 只重跑终检（不重渲）
@@ -30,6 +31,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import bench as bench_mod
 import brief as brief_mod
 import check as check_mod
 import layers as layers_mod
@@ -102,7 +104,14 @@ def summary(project: Path) -> dict[str, Any]:
         st = _json(d / "sample-status.json") or {}
         if st.get("state") == "rendering":
             return {**out, "percent": st.get("percent")}
-        return {**out, "waiting_for": "Park 看样片" if out["sample"] else "跑 sample"}
+        if out["sample"]:
+            return {**out, "waiting_for": "Park 看样片"}
+        try:
+            b = brief_mod.load(d / "brief.yaml")
+            missing = compare_missing(project, _json(d / "plan.json"), b)
+        except (OSError, ValueError, KeyError):
+            missing = []
+        return {**out, "waiting_for": "和标杆对比（compare）" if missing else "跑 sample"}
     out["step"] = "渲染"
     st = _json(d / "status.json") or {}
     qa_ok = (_json(d / "qa.json") or {}).get("status") == "pass"
@@ -310,16 +319,112 @@ def do_prep(project: Path) -> None:
                     str(d / "words.json")], check=True)
 
 
+def shot_window(s: dict[str, Any]) -> tuple[float, float]:
+    """一个镜头值得看的那段：出现前 0.4s 到停住后 1s。"""
+    return round(max(0.0, s["start"] - 0.4), 3), round(min(s["end"], s.get("hold", s["end"]) + 1.0), 3)
+
+
 def sample_windows(plan: dict[str, Any]) -> list[tuple[float, float]]:
-    """样片要渲的时间段：方案里标了 sample 的镜头各取「出现前 0.4s 到停住后 1s」；没标就取开头 10 秒。"""
-    marked = [s for s in plan["shots"] if s.get("sample")]
+    """样片要渲的时间段：重点镜头（key，旧方案的 sample）各取一段；没标就取开头 10 秒。"""
+    marked = [s for s in plan["shots"] if check_mod.is_key(s)]
     if not marked:
         return [layers_mod.sample_window(plan)]
-    return [(round(max(0.0, s["start"] - 0.4), 3), round(min(s["end"], s.get("hold", s["end"]) + 1.0), 3)) for s in sorted(marked, key=lambda x: x["start"])]
+    return [shot_window(s) for s in sorted(marked, key=lambda x: x["start"])]
+
+
+FONT = Path("/System/Library/Fonts/STHeiti Medium.ttc")  # 对比片上的「标杆 / 这版」字样；没有这个字体就不写字
+
+
+def _label(text: str) -> str:
+    if not FONT.is_file():
+        return "null"
+    safe = text.replace("\\", "").replace("'", "").replace(":", "：")
+    return (f"drawtext=fontfile='{FONT}':text='{safe}':x=24:y=20:fontsize=40:fontcolor=white:"
+            "box=1:boxcolor=black@0.55:boxborderw=12")
+
+
+def _ffmpeg(*args: str) -> None:
+    subprocess.run(["ffmpeg", "-v", "error", "-y", *args], check=True)
+
+
+def side_by_side(bench_clip: Path, ours: Path, out: Path, *, bench_label: str, strip: Path, frames: int = 6) -> None:
+    """左标杆、右这版，各缩到 960 宽；短的那段停在最后一帧等长的；声音用这版的。再出一张两行的逐帧对比图。"""
+    def dur(p: Path) -> float:
+        r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(p)],
+                           capture_output=True, text=True, check=True)
+        return float(r.stdout.strip())
+    da, db = dur(bench_clip), dur(ours)
+    longest = max(da, db)
+    pad = lambda d: f"tpad=stop_mode=clone:stop_duration={longest - d + 0.05:.3f}"
+    _ffmpeg("-i", str(bench_clip), "-i", str(ours), "-filter_complex",
+            f"[0:v]fps=30,scale=960:540,{pad(da)},{_label('标杆：' + bench_label)}[l];"
+            f"[1:v]fps=30,scale=960:540,{pad(db)},{_label('这版')}[r];[l][r]hstack[v];[1:a]apad[a]",
+            "-map", "[v]", "-map", "[a]", "-t", f"{longest:.3f}", "-c:v", "libx264", "-crf", "20", "-pix_fmt", "yuv420p",
+            "-c:a", "aac", str(out))
+    rows = []
+    for i, (clip, d, name) in enumerate(((bench_clip, da, "标杆"), (ours, db, "这版"))):
+        row = strip.with_name(f".{strip.stem}-{i}.png")
+        _ffmpeg("-i", str(clip), "-vf", f"fps={frames / d:.4f},scale=480:270,tile={frames}x1,{_label(name)}", "-frames:v", "1", str(row))
+        rows.append(row)
+    _ffmpeg("-i", str(rows[0]), "-i", str(rows[1]), "-filter_complex", "vstack", str(strip))
+    for r in rows:
+        r.unlink(missing_ok=True)
+
+
+def key_shots(plan: dict[str, Any]) -> list[dict[str, Any]]:
+    return sorted((s for s in plan["shots"] if check_mod.is_key(s)), key=lambda x: x["start"])
+
+
+def do_compare(project: Path) -> Path:
+    """精品档：每个重点镜头和它的标杆左右对比（视频 + 逐帧图），在 v2/compare/。AI 先看，不低于标杆才出样片。"""
+    d, b, plan, meta = _checked(project)
+    keys = key_shots(plan)
+    if not keys:
+        raise SystemExit("方案里没有重点镜头（key: true）")
+    benches = {s["id"]: bench_mod.resolve(s["benchmark"]) for s in keys}
+    out_dir = d / "compare"
+    out_dir.mkdir(exist_ok=True)
+    stale = [s for s in layers_to_render(project, plan["shots"], b) if check_mod.is_key(s)]
+    layers_mod.render_layers(plan, b, d / "layers", status=None, only=stale, public=_public(d))
+    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
+    pairs = []
+    for s in keys:
+        bm = benches[s["id"]]
+        ours, theirs = out_dir / f".ours-{s['id']}.mp4", out_dir / f".bench-{s['id']}.mp4"
+        a, z = shot_window(s)
+        render_mod.render(rp, ours, None, start=a, end=z)
+        _ffmpeg("-ss", str(bm["start"]), "-to", str(bm["end"]), "-i", bm["video"], "-c:v", "libx264", "-crf", "18", "-c:a", "aac", str(theirs))
+        pair = out_dir / f"{s['id']}.mp4"
+        side_by_side(theirs, ours, pair, bench_label=bm["name"], strip=out_dir / f"{s['id']}.jpg")
+        ours.unlink(missing_ok=True)
+        theirs.unlink(missing_ok=True)
+        pairs.append(pair)
+    lst = out_dir / ".list.txt"
+    lst.write_text("".join(f"file '{p}'\n" for p in pairs), encoding="utf-8")
+    _ffmpeg("-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", str(d / "compare.mp4"))
+    lst.unlink(missing_ok=True)
+    return d / "compare.mp4"
+
+
+def compare_missing(project: Path, plan: dict[str, Any], b: dict[str, Any]) -> list[str]:
+    """精品档出样片前：哪些重点镜头还没和标杆对比过，或对比之后又改过（层要重渲 / 比对比片新）。"""
+    if b.get("effort") not in ("c", "d"):
+        return []
+    d = _v2(project)
+    stale = {s["id"] for s in layers_to_render(project, plan["shots"], b)}
+    out = []
+    for s in key_shots(plan):
+        pair, layer = d / "compare" / f"{s['id']}.mp4", d / "layers" / f"{s['id']}.mov"
+        if s["id"] in stale or not pair.is_file() or pair.stat().st_mtime < layer.stat().st_mtime:
+            out.append(s["id"])
+    return out
 
 
 def do_sample(project: Path) -> Path:
     d, b, plan, meta = _checked(project)
+    missing = compare_missing(project, plan, b)
+    if missing:
+        raise SystemExit(f"重点镜头 {'、'.join(missing)} 还没和标杆对比（或对比后又改过）：先跑 compare，看过不低于标杆再出样片")
     status = d / "sample-status.json"
     windows = sample_windows(plan)
     stale = layers_to_render(project, plan["shots"], b)
@@ -385,7 +490,7 @@ def main(argv: list[str]) -> int:
     if len(argv) > 1 and argv[1] in ("settings", "set", "catalog", "gallery", "shotcraft"):
         return _main_settings(argv)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=("init", "prep", "check", "find", "sample", "approve", "render", "qa", "status", "evidence"))
+    ap.add_argument("cmd", choices=("init", "prep", "check", "find", "compare", "sample", "approve", "render", "qa", "status", "evidence"))
     ap.add_argument("project")
     ap.add_argument("gate", nargs="?")
     ap.add_argument("--video")
@@ -408,11 +513,11 @@ def main(argv: list[str]) -> int:
     elif a.cmd == "find":
         words = (_json(_v2(project) / "words.json", {}) or {}).get("words") or []
         print(json.dumps({"text": a.gate, "spoken_at": find(words, a.gate or "")}, ensure_ascii=False))
-    elif a.cmd in ("sample", "render"):
+    elif a.cmd in ("compare", "sample", "render"):
         if a.detach:
             _detach(argv, project)
             return 0
-        print((do_sample if a.cmd == "sample" else do_render)(project))
+        print({"compare": do_compare, "sample": do_sample, "render": do_render}[a.cmd](project))
     elif a.cmd == "qa":
         report = do_qa(project)
         print(json.dumps({k: report[k] for k in ("status", "placement", "hold_static")}, ensure_ascii=False, indent=2))

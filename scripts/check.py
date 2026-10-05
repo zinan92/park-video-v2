@@ -20,6 +20,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import bench as bench_mod
 import brief as brief_mod
 import proof as proof_mod
 
@@ -30,6 +31,7 @@ EXIT_GRACE = 1.5  # exit: after-sentence 时最后一个字说完后最多再停
 MIN_SHOT = 2.5  # 一张卡至少停几秒，太短来不及看
 UNTIL_NEXT_MAX = 10.0  # exit: until-next 时最后一个字说完后最多再停几秒（不让一张卡挂太久）
 LOW_EFFORT_SHARE = 0.4  # 低于这条视频努力程度的卡最多占多少（不能大部分都偷懒做成文字卡）
+KEY_SHOTS = (2, 3)  # 精品档挑几个重点时刻：功夫集中花在这几张上，其余可以是 b 档
 MOTION = Path(__file__).resolve().parents[1] / "motion"
 CATALOG_FILE = MOTION / "src" / "library" / "catalog.json"
 ICON_DIR = MOTION / "node_modules" / "lucide-react" / "dist" / "esm" / "icons"
@@ -37,6 +39,11 @@ EFFORT = {"a": 0, "b": 1, "c": 2, "d": 3}
 LISTS = ("lines", "items", "notes", "nodes", "layers", "bars", "steps")
 MIN_TEXT_PX = 56  # TextLines 每行不折行、按卡片宽度定字号；比这小就看不清，要拆行
 SHADOW_MARGIN, PAD_X = 28, 42  # 和 motion/src/kit/Card.tsx 一致
+
+
+def is_key(shot: dict[str, Any]) -> bool:
+    """重点时刻（旧方案写的 sample 也算）：精品档功夫花在这几张上，样片只渲它们。"""
+    return bool(shot.get("key") or shot.get("sample"))
 
 
 def _clean(text: str) -> str:
@@ -242,18 +249,30 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
                 add("repeated-component", x, f"{comp} 已经在 {seen[comp]} 用过，精品档整条每个组件只用一次")
             else:
                 seen[comp] = x["id"]
-        marked = [x["id"] for x in shots if x.get("sample")]
-        if not marked:
-            out.append({"rule": "no-sample-shots", "shot": "plan", "detail": "精品档在最难、最有代表性的 2–3 个镜头上标 \"sample\": true，样片就渲它们"})
-        elif len(marked) > 3:
-            out.append({"rule": "too-many-sample-shots", "shot": "plan", "detail": f"样片镜头最多 3 个，现在标了 {len(marked)} 个"})
+        # 重点时刻：功夫集中花在 2–3 张上（按标杆单独做），每张都要指一条标杆，做完左右对比
+        keys = [x for x in shots if is_key(x)]
+        if len(keys) < KEY_SHOTS[0]:
+            out.append({"rule": "no-key-shots", "shot": "plan",
+                        "detail": f"精品档挑 {KEY_SHOTS[0]}–{KEY_SHOTS[1]} 个重点时刻标 \"key\": true（功夫花在这几张，样片就渲它们），现在 {len(keys)} 个"})
+        elif len(keys) > KEY_SHOTS[1]:
+            out.append({"rule": "too-many-key-shots", "shot": "plan",
+                        "detail": f"重点时刻最多 {KEY_SHOTS[1]} 个，现在标了 {len(keys)} 个，功夫会摊薄"})
+        library = bench_mod.load()
+        for x in keys:
+            if EFFORT.get(_catalog().get(x.get("component", ""), {}).get("effort", "d"), 3) < EFFORT["c"]:
+                add("key-effort-too-low", x, f"重点时刻要用 c 档以上的组件（比喻组件或照意思新做），{x.get('component')} 不够")
+            name = x.get("benchmark")
+            if not name:
+                add("no-benchmark", x, f"重点时刻要写 benchmark：标杆库（{bench_mod.path()}）里意思最接近的一条")
+            elif name not in library:
+                add("unknown-benchmark", x, f"标杆库（{bench_mod.path()}）里没有「{name}」")
     if b.get("effort", "a") != "a":
         for a, c in zip(by_time, by_time[1:]):
             if _form(a) and _form(a) == _form(c):
                 add("same-form", c, f"和前一张 {a['id']} 都是「{_form(c)}」形式，相邻两张换一种")
         want = EFFORT[b["effort"]]
-        # 证据截图是内容不是做工，不算进「偷懒」的比例
-        made = [x for x in shots if _form(x) != "image"]
+        # 证据截图是内容不是做工；精品档功夫集中在重点时刻，其余的卡也不算「偷懒」
+        made = [x for x in shots if _form(x) != "image" and not (premium and not is_key(x))]
         low = [x for x in made if EFFORT.get(_catalog().get(x.get("component", ""), {}).get("effort", "d"), 3) < want]
         if made and len(low) / len(made) > LOW_EFFORT_SHARE:
             out.append({"rule": "effort-too-low", "shot": "plan",

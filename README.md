@@ -8,7 +8,8 @@
 python3 scripts/pv2.py init   <项目> --video 粗剪.mov --srt source.srt   # 然后填 v2/brief.yaml
 python3 scripts/pv2.py prep   <项目>
 python3 scripts/pv2.py check  <项目>            # AI 写好 v2/plan.json 后
-python3 scripts/pv2.py sample <项目> --detach   # 10 秒样片，Park 看
+python3 scripts/pv2.py compare <项目>           # 精品档：重点镜头和标杆左右对比，不低于标杆才往下
+python3 scripts/pv2.py sample <项目> --detach   # 样片（精品档只渲重点镜头），Park 看
 python3 scripts/pv2.py approve <项目> sample -m "可以"
 python3 scripts/pv2.py render <项目> --detach   # 整条 + 终检
 python3 scripts/pv2.py status <项目>            # 在哪一步、百分之多少、在等谁
@@ -57,7 +58,7 @@ python3 scripts/pv2.py status <项目>            # 在哪一步、百分之多�
 
 ## 精品档
 
-先写每张卡的意思（`intent.means`）和画面（`intent.picture`），关键时刻用画面比喻组件或照意思新做，整条不重复，样片只渲标了 `sample` 的 2–3 个最难镜头。见 SKILL.md。
+先写每张卡的意思（`intent.means`）和画面（`intent.picture`）；功夫集中在 2–3 个重点时刻（`key`），每个照一条标杆单独做，`pv2.py compare` 左右对比不低于标杆才出样片；整条不重复；样片只渲重点时刻。标杆库在本机 `~/.config/park-video-v2/benchmarks.yaml`（成片片段，不进本仓库）。见 SKILL.md。
 
 ## 镜头库
 
