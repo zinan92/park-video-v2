@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""口播动效 v2：一条命令走完四步。所有文件在 <项目目录>/v2/ 下。
+"""口播 v2：剪（标 Hook、切 Hook）和动效（四步）。动效的文件在 <项目目录>/v2/ 下，Hook 在 part-a-hook/。
 
+  pv2.py worktable <项目> [--text 校对稿.txt]  字幕 → 标 Hook 的表 analysis/worktable.html（Park 标完存回 analysis/worktable.json）
+  pv2.py hook    <项目> [--check]       照表里标的 Hook 切 part-a-hook/individual/h1.mp4…hN.mp4，写 edit.json、qa.json
   pv2.py init    <项目> --video 粗剪.mov --srt source.srt   建 v2/，写 brief 模板（Park 填）
   pv2.py prep    <项目>                 SRT 对齐音频 → words.json
   pv2.py check   <项目>                 程序检查 plan.json（AI 写好方案后）
@@ -486,9 +488,55 @@ def _detach(argv: list[str], project: Path) -> None:
     print("已在后台启动；进度：python3 scripts/pv2.py status", project)
 
 
+def _main_cut(argv: list[str]) -> int:
+    """剪的两步（10/21 从 ask-park-video 和内容工作台搬进来）：标 Hook 的表、照表切 Hook。"""
+    cmd, rest = argv[1], argv[2:]
+    ap = argparse.ArgumentParser(prog=f"pv2.py {cmd}")
+    ap.add_argument("project")
+    if cmd == "worktable":
+        ap.add_argument("--srt", help="默认 subtitles/source.srt 或项目里的 .srt")
+        ap.add_argument("--text", help="校对过、带标点的全文（可选；没有就照 SRT 原样断句）")
+    else:
+        ap.add_argument("--check", action="store_true", help="只看表里有没有标好的 Hook，不切")
+        ap.add_argument("--no-burned-captions", action="store_true", help="粗剪里没有烧录字幕：不查开头带上一句字幕")
+    a = ap.parse_args(rest)
+    project = Path(a.project).expanduser()
+    import hookcut
+    if cmd == "worktable":
+        srt = Path(a.srt).expanduser() if a.srt else hookcut.find_srt(project)
+        if srt is None:
+            print("项目里没有 SRT：先放一份剪映导出的字幕进来", file=sys.stderr)
+            return 1
+        script = Path(__file__).resolve().parent / "build_worktable.py"
+        sentences = project / "subtitles" / "transcript.sentences.json"
+        out = project / "analysis" / "worktable.html"
+        sentences.parent.mkdir(parents=True, exist_ok=True)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        mapped = [sys.executable, str(script), "map", "--srt", str(srt), "-o", str(sentences)] + (["--text", str(Path(a.text).expanduser())] if a.text else [])
+        for args in (mapped, [sys.executable, str(script), "html", str(sentences), "-o", str(out)]):
+            done = subprocess.run(args, capture_output=True, text=True)
+            if done.returncode != 0:
+                print((done.stderr or done.stdout).strip()[-400:], file=sys.stderr)
+                return 1
+        print(out)
+        return 0
+    try:
+        if a.check:
+            print(json.dumps({"hooks": len(hookcut.picked(project))}, ensure_ascii=False))
+            return 0
+        qa = hookcut.run(project, captions_burned_in=not a.no_burned_captions, progress=lambda s: print(f"STAGE {s}", file=sys.stderr, flush=True))
+    except hookcut.HookCutError as e:
+        print(f"ERROR {e}", file=sys.stderr)
+        return 2
+    print(json.dumps(qa, ensure_ascii=False))
+    return 0
+
+
 def main(argv: list[str]) -> int:
     if len(argv) > 1 and argv[1] in ("settings", "set", "catalog", "gallery", "shotcraft"):
         return _main_settings(argv)
+    if len(argv) > 1 and argv[1] in ("worktable", "hook"):
+        return _main_cut(argv)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("cmd", choices=("init", "prep", "check", "find", "compare", "sample", "approve", "render", "qa", "status", "evidence"))
     ap.add_argument("project")

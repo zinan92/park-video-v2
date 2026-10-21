@@ -11,3 +11,9 @@ def _no_user_defaults(tmp_path, monkeypatch):
 def _no_user_benchmarks(tmp_path, monkeypatch):
     """测试不读 Park 机器上的标杆库（里面是客户成片片段）。"""
     monkeypatch.setenv("PV2_BENCHMARKS", str(tmp_path / "benchmarks.yaml"))
+
+
+@pytest.fixture(autouse=True)
+def _no_hook_asr(monkeypatch):
+    """切 Hook 的复核要本机 mlx-whisper：测试里不跑。"""
+    monkeypatch.setenv("PV2_NO_HOOK_ASR", "1")

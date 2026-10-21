@@ -1,13 +1,46 @@
 ---
 name: park-video-v2
-description: 给口播视频加动效（Remotion 透明层叠到原画面）。Park 说「给这条视频加动效」「做动效样片」「用新流程跑这条」时使用。AI 只写方案，渲染、合成、检查都交给 scripts/pv2.py。
+description: Park 的口播视频全流程：标 Hook、切 Hook、给口播加动效（Remotion 透明层叠到原画面）、出样片和成片。Park 说「剪 Hook」「切 Hook」「给这条视频加动效」「做动效样片」「用新流程跑这条」「口播 workflow」时使用。AI 只做判断和写方案，切片、渲染、合成、检查都交给 scripts/pv2.py。10/21 起旧的 ask-park-video（14 步）和 videocut 已归档，全部用这一个。
 ---
 
-# 口播动效 v2：操作说明（给执行的 AI）
+# 口播 v2：操作说明（给执行的 AI）
 
-**你只做两件事：问清 brief、写 plan.json。** 渲染、合成、检查全部用 `scripts/pv2.py`，不要自己写渲染脚本、不要手动调 ffmpeg / remotion。
+**你只做判断：问清 brief、帮 Park 标 Hook、写 plan.json。** 切片、渲染、合成、检查全部用 `scripts/pv2.py`，不要自己写渲染脚本、不要手动调 ffmpeg / remotion。
 
-## 流程
+## 全流程：12 个环节，3 次等 Park 确认
+
+剪辑本身（删口误、停顿、调顺序）Park 在剪映里做完，导出**粗剪 + SRT** 放进项目文件夹，这个流程从这里开始。不剪 Hook 就跳过 2–3；不加动效就跳过 4–11。
+
+| # | 环节 | 命令 / 谁 | 产物 |
+|---|---|---|---|
+| **剪 Hook** ||||
+| 1 | 放进来：粗剪视频 + 剪映 SRT | Park | 项目根目录的视频、`subtitles/source.srt`（或根目录的 .srt） |
+| 2 | 标 Hook：出表，Park 在表里标开头用哪几句（顺手写视觉想法）→ **等 Park ①** | `pv2.py worktable <项目>` | `analysis/worktable.html` → Park 存回 `analysis/worktable.json` |
+| 3 | 切 Hook：原话对到词级时间，切点挪到停顿，切出的声音再听首尾字 | `pv2.py hook <项目>` | `part-a-hook/individual/h1.mp4…hN.mp4`、`edit.json`、`qa.json`（Park 拖进剪映拼到开头） |
+| **加动效** ||||
+| 4 | brief：建 v2/，问清这条的版式、哪些时间段不加、字幕是否烧录、不能出现的词 | `pv2.py init <项目> --video 粗剪 --srt SRT` | `v2/brief.yaml` |
+| 5 | 对齐：SRT 对齐音频，拿到每个字的时间 | `pv2.py prep <项目>` | `v2/words.json` |
+| 6 | 写方案：逐个时刻判断这句要观众明白什么、用什么画面；**不需要画面就不放**（保留真人也是决定） | AI | `v2/plan.json` |
+| 7 | **ShotCraft 接入**：方案要的画面，组件库（`pv2.py catalog`）里没有的，去 Video-ShotCraft 挑卡（`pv2.py shotcraft`），照它的 demo 源码改编成组件、注册进库 | AI | `motion/src/library/` 新组件 |
+| 8 | 检查：程序查方案（时机、遮挡、密度、禁用词…）；精品档每个重点镜头和标杆左右对比 | `pv2.py check` / `pv2.py compare` | `check` 输出 `[]`、`v2/compare/` |
+| 9 | 样片 → **等 Park ②** | `pv2.py sample <项目> --detach`，认可后 `approve <项目> sample -m "原话"` | `v2/sample.mp4` |
+| 10 | 整条：层 → 合成 → 终检 | `pv2.py render <项目> --detach` | `v2/final.mp4`、`qa.json`、`contact.jpg` |
+| 11 | 成片 → **等 Park ③** | `pv2.py approve <项目> final -m "原话"` | 批准记录 |
+| **交付** ||||
+| 12 | 封面、标题、发布 | 内容工作台（封面风格参考在 `assets/covers/`）；背景音乐、音效 Park 在剪映加 | 封面、各平台文案 |
+
+ShotCraft 只在第 7 环节进来，而且只借它的镜头配方和源码；它自己那套整片导演流程不启动，第 8 环节起又回到 pv2。
+
+Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要估。
+
+## 剪 Hook（环节 2–3）
+
+- 表里的时间是字幕插值出来的**近似值**，只用来定位；切片一律用 `pv2.py hook` 重新对到词级时间，不要拿近似时间直接切。
+- 同一句话前面可能说过：`hook` 只在 Park 标的大概位置前后 6 秒里找。
+- 剪映烧录的字幕切不掉：开头落在一条字幕中间、带着上一句的字，`qa.json` 会记一条，告诉 Park 听一下。
+- `pv2.py hook <项目> --check` 只数表里标了几个 Hook，不切。粗剪没有烧录字幕时加 `--no-burned-captions`。
+
+## 加动效（环节 4–11）
 
 1. **brief（Park 说，你不猜）**
    `python3 scripts/pv2.py init <项目> --video <粗剪> --srt <剪映SRT>`，然后把 Park 的原话填进 `<项目>/v2/brief.yaml`。
@@ -20,8 +53,6 @@ description: 给口播视频加动效（Remotion 透明层叠到原画面）。P
 5. Park 认可后：`python3 scripts/pv2.py approve <项目> sample -m "<Park 原话>"`。
 6. **整条**：`python3 scripts/pv2.py render <项目> --detach`（层 → 合成 → 终检，`status` 里有真实百分比）。完成后把 `v2/final.mp4`、`v2/contact.jpg` 给 Park。
 7. Park 确认：`python3 scripts/pv2.py approve <项目> final -m "<Park 原话>"`。
-
-Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要估。
 
 ## 精品档（effort c / d）的流程：先意思、功夫集中在 2–3 个重点时刻、每张都过标杆
 
