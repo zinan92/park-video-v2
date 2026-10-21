@@ -1,10 +1,13 @@
 # park-video-v2
 
-口播视频加动效的流程。原则：**AI 只做规划和判断，渲染、合成、检查交给固定脚本。**
+Park 的口播视频全流程：标 Hook、切 Hook、加动效、出样片和成片。原则：**AI 只做规划和判断，切片、渲染、合成、检查交给固定脚本。**
+（10/21 起，原来的 ask-park-video 14 步流程、内容工作台里的切 Hook、videocut 都并进这里或归档。完整 12 个环节见 `SKILL.md`。）
 
 ## 快速开始
 
 ```bash
+python3 scripts/pv2.py worktable <项目>        # 字幕 → 标 Hook 的表 analysis/worktable.html，Park 标完存回 worktable.json
+python3 scripts/pv2.py hook   <项目>            # 照表切 Hook → part-a-hook/individual/h1.mp4…，拖进剪映拼
 python3 scripts/pv2.py init   <项目> --video 粗剪.mov --srt source.srt   # 然后填 v2/brief.yaml
 python3 scripts/pv2.py prep   <项目>
 python3 scripts/pv2.py check  <项目>            # AI 写好 v2/plan.json 后
@@ -17,7 +20,7 @@ python3 scripts/pv2.py status <项目>            # 在哪一步、百分之多�
 
 执行的 AI 看 `SKILL.md`。Remotion 依赖：`cd motion && npm install`。
 
-## 四步
+## 加动效的四步
 
 | 步骤 | 做什么 | 谁 |
 |---|---|---|
