@@ -69,6 +69,7 @@ per_video:
   - {key: motion_placement, name: 动效放哪, options: [{value: overlay-sides, label: 人脸居中，透明叠在两侧}, {value: broll, label: 切走人脸}, {value: fullscreen, label: 盖满全屏}]}
   - {key: no_motion, name: 哪些时间段不加动效}
   - {key: captions_burned_in, name: 字幕已经烧进画面}
+  - {key: burn_captions, name: 成片里烧字幕（画面里还没有字幕时；用剪映 SRT 或本机转写的）, type: bool}
   - {key: banned_words, name: 不能出现在画面上的词}
 
 presets:

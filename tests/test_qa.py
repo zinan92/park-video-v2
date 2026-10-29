@@ -92,3 +92,10 @@ def test_hold_ignores_12_bit_prores_noise(tmp_path):
     ff("-f", "lavfi", "-i", "testsrc2=size=320x180:rate=30:duration=0.04,format=rgba,loop=loop=60:size=1:start=0",
        "-c:v", "prores_ks", "-profile:v", "4444", "-pix_fmt", "yuva444p10le", "-t", "2", str(still))
     assert qa.hold_is_static(still, hold_offset=0.5, end_offset=1.5) is True
+
+
+def test_placement_on_a_4k_render_plan_uses_the_scaled_face_and_captions():
+    brief = {"caption_band": [868, 1000], "face_box": [840, 180, 440, 500], "motion_placement": "overlay-sides"}
+    ok = {"id": "OK", "src_rect": [0, 0, 1520, 1576], "zone": {"x": 80, "y": 80, "w": 1520, "h": 1576}}
+    assert qa.placement_checks({"scale": 2, "shots": [ok]}, brief) == []
+    assert [x["rule"] for x in qa.placement_checks({"scale": 1, "shots": [ok]}, brief)] == ["caption-band", "covers-face"]

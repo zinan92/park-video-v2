@@ -37,8 +37,17 @@ CATALOG_FILE = MOTION / "src" / "library" / "catalog.json"
 ICON_DIR = MOTION / "node_modules" / "lucide-react" / "dist" / "esm" / "icons"
 EFFORT = {"a": 0, "b": 1, "c": 2, "d": 3}
 LISTS = ("lines", "items", "notes", "nodes", "layers", "bars", "steps")
-MIN_TEXT_PX = 56  # TextLines 每行不折行、按卡片宽度定字号；比这小就看不清，要拆行
+MIN_TEXT_PX = 56  # 带字组件每行不折行、按卡片宽度缩字号；1080p 下比这小就看不清，要拆短（canvas 是 4K 时按比例翻倍）
 SHADOW_MARGIN, PAD_X = 28, 42  # 和 motion/src/kit/Card.tsx 一致
+
+
+# 运镜镜头（plan.json 里 "kind": "camera"）：不叠卡片，直接推原画面。只有 ShotCraft tension-camera-moves 的 C 式慢推：
+# 越推越快（in quad）从 from 推到 to，暗角跟着加深，到 end 硬切回原样（那一下就是释放）。
+CAMERA_MOVES = {"slow-push": {"seconds": (2.5, 6.0), "to": (1.04, 1.2), "cards": {"tension-camera-moves", "slow-push-in", "slow-push"}}}
+
+
+def is_camera(shot: dict[str, Any]) -> bool:
+    return shot.get("kind") == "camera"
 
 
 def is_key(shot: dict[str, Any]) -> bool:
@@ -171,6 +180,52 @@ def line_px(text: str, zone_w: int, i: int) -> int:
     return int(min((96 if i == 0 else 72) * k, inner // max(1.0, _em_width(text))))
 
 
+def _fit(text: str, top: float, avail: float) -> int:
+    """和 motion/src/kit/parts.tsx 的 fit 一致：不超过 top，一行放得下。"""
+    return int(min(top, avail // max(1.0, _em_width(text))))
+
+
+def text_px(component: str, props: dict[str, Any], zone_w: int) -> list[tuple[str, int]]:
+    """组件上每段主要文字实际会用的字号（px），照各组件 .tsx 里的公式算。小字（kicker、注释、来源、数字下的说明）是设计好的固定小号，不算。
+    c 档组件不在这里：它们有自己的 min_zone_w 和每段字数上限（catalog.json 的 limits）。"""
+    k = (zone_w - 2 * SHADOW_MARGIN) / 600
+    inner = zone_w - 2 * SHADOW_MARGIN - 2 * PAD_X * k
+    u = lambda px: px * k  # noqa: E731
+
+    def same(texts: list[str], top: float, avail: float) -> list[tuple[str, int]]:  # 一张卡里所有条用同一个字号（取最小）
+        size = min((_fit(t, top, avail) for t in texts), default=0)
+        return [(t, size) for t in texts]
+
+    def texts(key: str) -> list[str]:
+        return [x["text"] if isinstance(x, dict) else x for x in props.get(key) or [] if isinstance(x, (dict, str))]
+
+    lines = [t for t in props.get("lines") or [] if isinstance(t, str)]
+    if component == "TextLines":
+        return [(t, line_px(t, zone_w, i)) for i, t in enumerate(lines)]
+    if component == "Quote":
+        return [(t, _fit(t, u(76 if i == 0 else 64), inner - u(34))) for i, t in enumerate(lines)]
+    if component == "IconPoint":
+        return [(t, _fit(t, u(84 if i == 0 else 64), inner)) for i, t in enumerate(lines)]
+    if component == "ListSteps":
+        return same(texts("items"), u(60), inner - u(64) - u(24))
+    if component == "IconList":
+        return same(texts("items"), u(76), inner - u(104) - u(24))
+    if component == "Flow":
+        return same(texts("steps"), u(72), inner - u(60))
+    if component == "Bars":
+        return same([b.get("label", "") for b in props.get("bars") or [] if isinstance(b, dict)], u(64), inner)
+    if component == "Cycle":
+        return same(texts("nodes"), u(60), min(inner, u(600)) * 0.38)
+    if component == "Funnel":
+        layers = texts("layers")
+        n = len(layers)
+        return [(t, _fit(t, u(64), inner * (1 - 0.38 * (i + 1) / n) * 0.8)) for i, t in enumerate(layers)]
+    if component == "Compare":
+        titles = [x.get("title", "") for x in (props.get("top"), props.get("bottom")) if isinstance(x, dict)]
+        return same(titles, u(68), inner - u(58))
+    return []
+
+
 def coverage(plan: dict[str, Any], b: dict[str, Any]) -> float:
     """动效时长占可加动效时长（去掉 no_motion）的比例。密度检查用它。"""
     usable = plan["duration"] - sum(z - a for a, z in b.get("no_motion") or [])
@@ -199,7 +254,9 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
     def add(rule: str, shot: dict[str, Any], detail: str) -> None:
         out.append({"rule": rule, "shot": shot["id"], "detail": detail})
 
-    shots = plan.get("shots") or []
+    cams = [s for s in plan.get("shots") or [] if is_camera(s)]
+    shots = [s for s in plan.get("shots") or [] if not is_camera(s)]
+    camera_rules(cams, shots, plan, b, add)
     for s in shots:
         if s["start"] < 0 or s["end"] > plan["duration"]:
             add("outside-video", s, f"{s['start']}–{s['end']}s 超出视频 0–{plan['duration']}s")
@@ -211,7 +268,7 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
             if s["start"] < z and a < s["end"]:
                 add("no-motion-range", s, f"镜头 {s['start']}–{s['end']}s 碰到不加动效的时间段 {a}–{z}s")
         zone = _zone(s, b)
-        band = b.get("caption_band") if b.get("captions_burned_in", True) else None
+        band = b.get("caption_band") if (b.get("captions_burned_in", True) or b.get("burn_captions")) else None
         if band and s["zone"] != "full" and zone["y"] < band[1] and band[0] < zone["y"] + zone["h"]:
             add("caption-band", s, f"区域 y{zone['y']}–{zone['y'] + zone['h']} 碰到字幕带 y{band[0]}–{band[1]}")
         if b.get("motion_placement") == "overlay-sides" and s["zone"] != "full" and b.get("face_box"):
@@ -291,6 +348,31 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
     return out
 
 
+def camera_rules(cams: list[dict[str, Any]], shots: list[dict[str, Any]], plan: dict[str, Any], b: dict[str, Any], add: Any) -> None:
+    """运镜镜头：认得的动作、时长、推多少、整条只用一次、推的时候不叠卡片（人脸放大会顶到两侧的卡）。"""
+    for c in cams:
+        spec = CAMERA_MOVES.get(c.get("move", ""))
+        if spec is None:
+            add("camera-unknown", c, f"运镜只有 {' / '.join(CAMERA_MOVES)}，收到 {c.get('move')!r}")
+            continue
+        lo, hi = spec["seconds"]
+        if not lo <= c["end"] - c["start"] <= hi:
+            add("camera-length", c, f"{c['move']} 要 {lo}–{hi}s，这一镜 {round(c['end'] - c['start'], 2)}s")
+        a, z = spec["to"]
+        if not (c.get("from", 1.0) == 1.0 and a <= c.get("to", 0) <= z):
+            add("camera-amount", c, f"{c['move']} 从 1.0 推到 {a}–{z}（ShotCraft 定的 1.14）；超过 1.2 就成了普通推镜头")
+        if c["start"] < 0 or c["end"] > plan["duration"]:
+            add("outside-video", c, f"{c['start']}–{c['end']}s 超出视频 0–{plan['duration']}s")
+        for na, nz in b.get("no_motion") or []:
+            if c["start"] < nz and na < c["end"]:
+                add("no-motion-range", c, f"运镜 {c['start']}–{c['end']}s 碰到不加动效的时间段 {na}–{nz}s")
+        for s in shots:
+            if s["start"] < c["end"] and c["start"] < s["end"]:
+                add("camera-with-card", c, f"推镜头的时候 {s['id']} 还在画面上：画面一推，人脸会顶到卡片，错开")
+    for c in sorted(cams, key=lambda x: x["start"])[1:]:
+        add("camera-repeat", c, "运镜整条只用一次（ShotCraft：每式全片 ≤1 次），多了就不压迫了")
+
+
 def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], add: Any, last_end: float | None) -> None:
     """defaults.yaml / brief.yaml 里 Park 定的风格和规则。"""
     props = s.get("props") or {}
@@ -307,11 +389,12 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
         n = sum(len(_clean(t)) for t in _texts(props))
         if n > ONE_POINT_CHARS:
             add("not-one-point", s, f"卡上一共 {n} 个字，一张卡一个重点最多 {ONE_POINT_CHARS} 个")
-    if s.get("component") == "TextLines":
-        w = _zone(s, b)["w"]
-        for i, line in enumerate(props.get("lines") or []):
-            if line_px(line, w, i) < MIN_TEXT_PX:
-                add("text-too-small", s, f"「{line}」在这块区域里只能用 {line_px(line, w, i)}px 字号，拆短一点（至少 {MIN_TEXT_PX}px）")
+    floor = brief_mod.min_text_px(b, MIN_TEXT_PX)
+    w = _zone(s, b)["w"]
+    for text, px in text_px(s.get("component", ""), props, w):
+        if text and px < floor - 1e-9:
+            add("text-too-small", s, f"「{text}」在 {w}px 宽的区域里 {s.get('component')} 只能用 {px}px 字号（至少 {round(floor)}px）："
+                                     "拆短、换到更宽的一侧，或换组件")
     entry = _catalog().get(s.get("component", ""), {})
     if s.get("component") in (b.get("avoid") or []):
         add("avoided-component", s, f"{s.get('component')}（{entry.get('name', '')}）在「不用的样式」里")

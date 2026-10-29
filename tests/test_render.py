@@ -148,3 +148,25 @@ def test_glass_shots_spread_across_a_video_render_in_one_pass(tmp_path):
                            f"render.render(json.loads({json.dumps(json.dumps({'base': str(base), 'canvas': [320, 180], 'shots': shots}))}), render.Path({str(out)!r}), None)"],
                           timeout=60)
     assert proc.returncode == 0 and out.stat().st_size > 10000
+
+
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="needs ffmpeg")
+def test_slow_push_zooms_the_footage_and_cuts_back(tmp_path):
+    base = tmp_path / "base.mp4"
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "testsrc2=size=320x180:rate=30:duration=5",
+                    "-f", "lavfi", "-i", "sine=duration=5", "-shortest", "-pix_fmt", "yuv420p", str(base)], check=True)
+    cam = {"start": 1.0, "end": 4.0, "move": "slow-push", "from": 1.0, "to": 1.14, "vignette": 0.0, "origin": [160, 90]}
+    plain, pushed = tmp_path / "plain.mp4", tmp_path / "pushed.mp4"
+    render.render({"base": str(base), "canvas": [320, 180], "shots": []}, plain, None, start=0.0, end=5.0)
+    render.render({"base": str(base), "canvas": [320, 180], "shots": [], "camera": [cam]}, pushed, None, start=0.0, end=5.0)
+
+    def frame(path, t):
+        return subprocess.run(["ffmpeg", "-v", "error", "-ss", str(t), "-i", str(path), "-frames:v", "1", "-vf", "scale=32:18",
+                               "-f", "rawvideo", "-pix_fmt", "gray", "-"], capture_output=True, check=True).stdout
+
+    def diff(t):
+        a, b = frame(plain, t), frame(pushed, t)
+        return sum(abs(x - y) for x, y in zip(a, b)) / len(a)
+    assert diff(0.5) < 2 and diff(1.2) < 2  # 推之前一样；刚开始推得很慢（越推越快）
+    assert diff(3.9) > 8  # 快推到头：画面明显放大
+    assert diff(4.5) < 2  # 到点硬切回原样
