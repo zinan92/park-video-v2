@@ -363,3 +363,34 @@ def test_4k_rough_cut_scales_up_and_wrong_aspect_stops():
     with pytest.raises(SystemExit) as e:
         pv2.base_scale(Path("."), b, {"rough_cut": "x", "size": [2160, 3840]})
     assert "宽高比" in str(e.value)
+
+
+def _speech(until):
+    """每秒一个字，从 0 说到 until 秒；开头两句是渲染包里的两镜。"""
+    words = [{"w": "十分", "start": 1.0, "end": 1.5}, {"w": "好用", "start": 1.5, "end": 2.0},
+             {"w": "开头", "start": 10.0, "end": 10.5}, {"w": "要", "start": 10.5, "end": 10.7}, {"w": "抓人", "start": 10.7, "end": 11.0}]
+    words += [{"w": "嗯", "start": float(t), "end": t + 0.5} for t in range(12, int(until))]
+    return {"words": words}
+
+
+def test_pack_that_stops_early_is_caught_against_the_real_video(proj, tmp_path):
+    """10/29：渲染包只有前 77 秒的镜头，后面 2 分多钟没人发现。pv2 拿原片长度和录音自己对。"""
+    pv2.take_pack(proj, _pack(tmp_path))
+    meta = json.loads((v2(proj) / "project.json").read_text())
+    (v2(proj) / "project.json").write_text(json.dumps({**meta, "duration": 210.0}), encoding="utf-8")
+    (v2(proj) / "words.json").write_text(json.dumps(_speech(209)), encoding="utf-8")
+    shots = [{"id": "V01", "beat": 1, "start": 1.0, "end": 6.0, "component": "Compare"},
+             {"id": "V02", "beat": 2, "start": 10.0, "end": 15.0, "component": "Compare"}]
+    st = pv2.deviations_state(proj, {"duration": 210.0, "shots": shots})
+    assert st["pack_until"] == 10.0  # 方案的最后一镜在录音 10s 处
+    assert st["empty"] == [[15.0, 208.5]] and "一张卡都没有" in st["problem"]
+    assert "原片是 210.0s" in pv2.deviations_state(proj, {"duration": 77.0, "shots": shots})["problem"]
+    # 后面照平常的规矩自己排满：不标 beat 的镜头要写进清单
+    own = [{"id": f"A{i}", "start": float(t), "end": t + 5.0} for i, t in enumerate(range(35, 209, 25))]
+    st = pv2.deviations_state(proj, {"duration": 210.0, "shots": shots + own})
+    assert st["empty"] == [] and st["own"] == [s["id"] for s in own]
+    (v2(proj) / "deviations.json").write_text(json.dumps([{"beat": 2, "why": "没有花括号组件"}]), encoding="utf-8")
+    assert "A0" in pv2.deviations_state(proj, {"duration": 210.0, "shots": shots + own})["problem"]
+    dev = [{"beat": 2, "why": "没有花括号组件"}] + [{"shot": s["id"], "why": "渲染包没写到这一段"} for s in own]
+    (v2(proj) / "deviations.json").write_text(json.dumps(dev, ensure_ascii=False), encoding="utf-8")
+    assert "Park 还没看" in pv2.deviations_state(proj, {"duration": 210.0, "shots": shots + own})["problem"]

@@ -86,13 +86,25 @@ def video_size(path: str | Path) -> list[int] | None:
         return None
 
 
+def video_duration(path: str | Path) -> float | None:
+    """原片多长（秒）；读不出来就是 None。"""
+    try:
+        r = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
+                           capture_output=True, text=True, timeout=30)
+        return round(float(r.stdout.strip()), 3)
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return None
+
+
 def init(project: Path, *, video: str, srt: str | None = None, pack: str | None = None) -> Path:
     d = _v2(project)
     d.mkdir(parents=True, exist_ok=True)
     meta: dict[str, Any] = {"rough_cut": video, "srt": srt or find_srt(project, video)}
-    size = video_size(Path(project) / video)
+    size, length = video_size(Path(project) / video), video_duration(Path(project) / video)
     if size:
         meta["size"] = size
+    if length:
+        meta["duration"] = length
     (d / "project.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
     b = d / "brief.yaml"
     if not b.exists():
@@ -215,30 +227,89 @@ def deviation_items(project: Path) -> list[dict[str, Any]] | None:
     return [r for r in rows if isinstance(r, dict)]
 
 
+EMPTY_STRETCH = {"low": 60.0, "medium": 30.0, "high": 20.0}  # 按密度：说着话、却连续这么多秒一张卡都没有，就是漏了一段
+
+
+def _beat_times(beats: list[dict[str, Any]], words: list[dict[str, Any]]) -> list[float]:
+    """方案里每一镜大概落在录音的哪一秒（原句找不到就取意思最接近的那处）。"""
+    out = []
+    for b in beats:
+        hits = find(words, b.get("line") or "")
+        if not hits:
+            hits = [x["at"] for x in near(words, b.get("line") or "", k=1)]
+        out += hits[:1]
+    return out
+
+
+def empty_stretches(plan: dict[str, Any], words: list[dict[str, Any]], b: dict[str, Any]) -> list[list[float]]:
+    """从他开口到说完，去掉不加动效的段，连续超过 EMPTY_STRETCH 秒一张卡都没有的时间段。"""
+    if not words:
+        return []
+    lo, hi = words[0]["start"], words[-1]["end"]
+    busy = sorted([[s["start"], s["end"]] for s in plan.get("shots") or [] if "start" in s and "end" in s]
+                  + [list(r) for r in b.get("no_motion") or []])
+    limit = EMPTY_STRETCH.get(brief_mod.normalize("density", b.get("density", "medium")), 30.0)
+    out, at = [], lo
+    for a, z in busy + [[hi, hi]]:
+        a = min(a, hi)
+        if a - at > limit:
+            out.append([round(at, 1), round(a, 1)])
+        at = max(at, z)
+    return out
+
+
 def deviations_state(project: Path, plan: dict[str, Any] | None) -> dict[str, Any]:
-    """出样片前的偏离清单：哪几镜没照方案做（undone）、清单里漏了哪几镜（unlisted）、Park 批了这一份没有。"""
+    """出样片前的偏离清单。渲染包是前端给的方案，不一定完整，所以 pv2 拿原片自己对一遍：
+    - 方案里哪几镜没照做（undone）、清单里漏了哪几镜（unlisted）；
+    - 方案只覆盖到哪一秒（pack_until），整条里还有哪些长段一张卡都没有（empty）；
+    - 不在方案里、AI 自己排的镜头（own）也要写进清单，Park 才知道哪些是谁定的；
+    - Park 批了这一份没有。"""
     beats = plan_beats(project)
     if not beats:
         return {"needed": False, "problem": None}
+    d = _v2(project)
+    plan = plan or {}
+    try:
+        b = brief_mod.load(d / "brief.yaml")
+    except (brief_mod.NeedsPark, OSError, ValueError):
+        b = {}
+    meta = _json(d / "project.json", {}) or {}
+    words = (_json(d / "words.json", {}) or {}).get("words") or []
+    times = _beat_times(beats, words)
+    length = meta.get("duration")
     cat = check_mod._catalog()
-    undone = [b["n"] for b in beats if not beat_done(b, plan or {}, cat)]
+    undone = [x["n"] for x in beats if not beat_done(x, plan, cat)]
     items = deviation_items(project)
-    listed = {r.get("beat") for r in items or []}
+    listed = {r.get("beat") for r in items or [] if r.get("beat") is not None}
+    listed_shots = {r.get("shot") for r in items or [] if r.get("shot")}
     unlisted = [n for n in undone if n not in listed]
-    no_why = [r.get("beat") for r in items or [] if not str(r.get("why", "")).strip()]
-    approved = ((_json(_v2(project) / "approvals.json", {}) or {}).get("deviations") or {}).get("content") == items
-    if items is None:
-        problem = f"有 Park 看过的方案（{len(beats)} 镜），出样片前先写 v2/{DEVIATIONS}：没照方案做的每一镜 + 原因（全照做了就写 []）"
+    own = [s["id"] for s in plan.get("shots") or [] if s.get("beat") is None]
+    own_unlisted = [i for i in own if i not in listed_shots]
+    empty = empty_stretches(plan, words, b)
+    no_why = [r.get("beat") or r.get("shot") for r in items or [] if not str(r.get("why", "")).strip()]
+    approved = ((_json(d / "approvals.json", {}) or {}).get("deviations") or {}).get("content") == items
+    until = f"方案只覆盖到约 {max(times):.0f}s" if times else "方案"
+    if length and plan.get("duration") and abs(plan["duration"] - length) > 1.0:
+        problem = f"plan.json 的 duration 写的是 {plan['duration']}s，原片是 {length}s：照原片改"
+    elif empty:
+        span = "、".join(f"{a:.0f}–{z:.0f}s" for a, z in empty)
+        problem = (f"{until}（原片 {length or plan.get('duration')}s），{span} 一张卡都没有：方案没写到的段落照平常的规矩自己排镜头"
+                   f"（不标 beat），写进偏离清单让 Park 知道哪些是你排的")
+    elif items is None:
+        problem = f"有 Park 看过的方案（{len(beats)} 镜），出样片前先写 v2/{DEVIATIONS}：没照方案做的每一镜、自己排的每个镜头 + 原因（全照做了就写 []）"
     elif unlisted:
         problem = f"第 {'、'.join(map(str, unlisted))} 镜没照方案做（或镜头没标 \"beat\"），也不在偏离清单里：照方案做，或写进清单给 Park 看"
+    elif own_unlisted:
+        problem = f"{'、'.join(own_unlisted)} 不在方案里（没标 beat），是你自己排的：写进偏离清单（{{\"shot\": \"V11\", \"why\": …}}）"
     elif no_why:
-        problem = f"偏离清单里第 {'、'.join(map(str, no_why))} 镜没写原因"
+        problem = f"偏离清单里 {'、'.join(map(str, no_why))} 没写原因"
     elif items and not approved:
-        problem = f"偏离清单有 {len(items)} 镜，Park 还没看：发给他，他认可后 approve <项目> deviations -m \"原话\""
+        problem = f"偏离清单有 {len(items)} 条，Park 还没看：发给他，他认可后 approve <项目> deviations -m \"原话\""
     else:
         problem = None
-    return {"needed": True, "beats": len(beats), "undone": undone, "listed": sorted(listed, key=str), "unlisted": unlisted,
-            "approved": approved or items == [], "problem": problem}
+    return {"needed": True, "beats": len(beats), "pack_until": round(max(times), 1) if times else None, "video": length,
+            "empty": empty, "undone": undone, "own": own, "listed": sorted(listed, key=str) + sorted(listed_shots),
+            "unlisted": unlisted + own_unlisted, "approved": approved or items == [], "problem": problem}
 
 
 def summary(project: Path) -> dict[str, Any]:

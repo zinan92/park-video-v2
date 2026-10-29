@@ -70,8 +70,9 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
    ```json
    [{"beat": 2, "motion": "brace-expand", "instead": "IconList", "why": "为什么做不了 / 为什么这样换"}]
    ```
-   全照做了就写 `[]`。跑 `pv2.py deviations <项目>`：没标 `beat` 或没照方案做、又不在清单里的镜头会被点名。把清单发给 Park，他认可后 `pv2.py approve <项目> deviations -m "<原话>"`。**`sample` 会拒绝**：有渲染包却没有清单、清单漏了镜头、清单没批或批过又改了。
-6. 密度、字数、交替、no_motion 这些规矩照样要过 check；方案和规矩冲突时同样写进偏离清单问 Park，不在最后汇报里顺带一句。
+   全照做了就写 `[]`。跑 `pv2.py deviations <项目>`：没照方案做、又不在清单里的镜头会被点名。把清单发给 Park，他认可后 `pv2.py approve <项目> deviations -m "<原话>"`。**`sample` 会拒绝**：有渲染包却没有清单、清单漏了镜头、清单没批或批过又改了。
+6. **渲染包不一定覆盖整条，pv2 拿原片自己对。** `init` 记下原片时长；`deviations` 把每一镜落到录音里，报出方案覆盖到第几秒（`pack_until`），以及说着话却连续很久一张卡都没有的时间段（`empty`：密度 low 60 秒 / medium 30 秒 / high 20 秒）。方案没写到的段落照平常的规矩自己排镜头（不标 `beat`），每个都写进偏离清单（`{"shot": "V11", "why": "渲染包没写到这一段"}`），Park 才知道哪些是你排的。`plan.json` 的 `duration` 必须是原片时长。有空段、或自己排的镜头没进清单，`sample` 都会拒绝。
+7. 密度、字数、交替、no_motion 这些规矩照样要过 check；方案和规矩冲突时同样写进偏离清单问 Park，不在最后汇报里顺带一句。
 
 ## 精品档（effort c / d）的流程：先意思、功夫集中在 2–3 个重点时刻、每张都过标杆
 
