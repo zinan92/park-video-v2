@@ -82,7 +82,8 @@ def render_layers(plan: dict[str, Any], brief: dict[str, Any], layer_dir: Path, 
     return outs
 
 
-def render_plan(plan: dict[str, Any], brief: dict[str, Any], *, base: str, layer_dir: Path, scale: float = 1.0) -> dict[str, Any]:
+def render_plan(plan: dict[str, Any], brief: dict[str, Any], *, base: str, layer_dir: Path, scale: float = 1.0,
+                captions: str | None = None) -> dict[str, Any]:
     """scale ≠ 1（4K 原片配 1920×1080 的 canvas）：区域和层都换算成原片像素，render.py 照原片坐标叠，成片保住原分辨率。"""
     glass = GLASS_ALPHA if brief.get("card") == "glass" else None
     shots = []
@@ -98,4 +99,4 @@ def render_plan(plan: dict[str, Any], brief: dict[str, Any], *, base: str, layer
                       "glass": glass, **({"blur": round(24 * scale)} if scale != 1 else {})})
     cw, ch = brief["canvas"]
     return {"base": base, "canvas": [round(cw * scale), round(ch * scale)] if scale != 1 else brief["canvas"], "scale": scale,
-            "shots": shots}
+            "shots": shots, **({"captions": captions} if captions else {})}

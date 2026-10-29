@@ -394,3 +394,10 @@ def test_pack_that_stops_early_is_caught_against_the_real_video(proj, tmp_path):
     dev = [{"beat": 2, "why": "没有花括号组件"}] + [{"shot": s["id"], "why": "渲染包没写到这一段"} for s in own]
     (v2(proj) / "deviations.json").write_text(json.dumps(dev, ensure_ascii=False), encoding="utf-8")
     assert "Park 还没看" in pv2.deviations_state(proj, {"duration": 210.0, "shots": shots + own})["problem"]
+
+
+def test_burning_captions_uses_the_projects_srt(proj):
+    assert pv2.burn_srt(proj, {}, {"srt": "source.srt"}) is None  # brief 没说要烧
+    assert pv2.burn_srt(proj, {"burn_captions": True}, {"srt": "source.srt"}) == str((proj / "source.srt").resolve())
+    with pytest.raises(SystemExit, match="transcribe"):
+        pv2.burn_srt(proj, {"burn_captions": True}, {"srt": None})

@@ -9,6 +9,7 @@ render-plan.json：
    "shots": [{"id", "start", "end", "layer": 透明动效层(.mov), "src_rect": [x, y, w, h] 层里要裁出的那块,
               "zone": {x, y, w, h} 放到画面哪里, "glass": 毛玻璃那层白的不透明度或 null}]}
   坐标都是原片像素：原片比 brief 的 canvas 大（4K）时，layers.render_plan 已经按倍数换算好（plan 里的 scale）。
+  "captions": SRT 路径（可选）：要把字幕烧进去时才有，样式见 captions.py，叠在所有动效层上面。
 
 毛玻璃：Remotion 单独渲染层时背后没有东西可模糊，所以合成前先把每个镜头「烤」成一个新层：
 把卡片底下那块原画面（只取镜头那几秒）裁出来模糊，叠上动效层，再用层的 alpha（放大 1/glass 倍，
@@ -125,12 +126,20 @@ def render(plan: dict[str, Any], out: Path, status: Path | None, *, start: float
                       "place": fit((w, h), s["zone"])})
     graph = filtergraph(shots)
     last = f"[v{max(len(shots), 1)}]"
+    tail, cwd = "null", None
+    if plan.get("captions"):
+        # 只烧这一段的字幕，时间换成从 start 起算；ffmpeg 在 ASS 所在目录里跑，滤镜里只写文件名，路径里的空格、冒号不用转义
+        import captions
+        ass = captions.write(Path(plan["captions"]), plan["canvas"], Path(out).resolve().with_suffix(".ass"), start=start, end=end)
+        tail, cwd = f"subtitles=filename={ass.name}", str(ass.parent)
+        inputs = [str(Path(x).resolve()) if i and inputs[i - 1] == "-i" else x for i, x in enumerate(inputs)]
+        out = Path(out).resolve()
     cmd = ["ffmpeg", "-v", "error", "-y", *inputs]
-    cmd += ["-filter_complex", graph + f";{last}null[out]", "-map", "[out]", "-map", "0:a?",
+    cmd += ["-filter_complex", graph + f";{last}{tail}[out]", "-map", "[out]", "-map", "0:a?",
             "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k",
             "-movflags", "+faststart", "-progress", "pipe:1", "-nostats", str(out)]
     write_status(status, "rendering", 0.0, total, weight=weight)
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=cwd)
     assert proc.stdout is not None
     for line in proc.stdout:
         if line.startswith("out_time_us=") and line.strip().split("=")[1].isdigit():

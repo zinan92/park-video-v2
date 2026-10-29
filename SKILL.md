@@ -45,7 +45,8 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 
 1. **brief（Park 说，你不猜）**
    `python3 scripts/pv2.py init <项目> --video <粗剪> [--pack <渲染包文件夹>]`，然后把 Park 的原话填进 `<项目>/v2/brief.yaml`。
-   - **字幕**：不给 `--srt` 时，`init` 在视频旁边找（同名 .srt → 旁边唯一一个 .srt → `subtitles/source.srt`），找到会打印路径。**没找到就问用户有没有剪映导出的 SRT**，有就 `init --srt`；确实没有，跑 `python3 scripts/pv2.py transcribe <项目>`，在本机转写一份 `v2/source.srt`（要 mlx-whisper），后面照常 prep。没有 SRT 的视频通常也没烧字幕，`captions_burned_in` 照实问。
+   - **字幕**：不给 `--srt` 时，`init` 在视频旁边找（同名 .srt → 旁边唯一一个 .srt → `subtitles/source.srt`），找到会打印路径。**没找到就问用户有没有剪映导出的 SRT**，有就 `init --srt`；确实没有，跑 `python3 scripts/pv2.py transcribe <项目>`，在本机转写一份 `v2/source.srt`（要 mlx-whisper），后面照常 prep。
+   - **烧字幕**：先问画面里有没有字幕（`captions_burned_in`）。没有、用户又要字幕，brief 写 `burn_captions: true`：样片和成片都会把 SRT 按 Park 的字幕样式烧进去（苹方、浅色字、深色半透明底板、底部居中，`scripts/captions.py`），字幕带自动算出来，动效会避开。转写出来的字幕先对照 `pack-script.md` / 稿子改错别字（只改识别错的字，不改他说的话），用户在样片里一起看。两个都是 true 会报错（字幕不能烧两遍）。
    - **4K 原片**：`canvas` 照旧写 `[1920, 1080]`，`face_box` / `caption_band` 在缩到 1920 宽的截图上量。`prep` 会读原片分辨率：同比例更大（4K）就合成时整体放大（动效层用 Remotion `--scale` 渲，字不糊），成片保住原分辨率，**不要先转 1080p 工作副本**；比例不同会直接报错，照提示改 canvas。
    每条视频只问 Park 这几项：视频类型、动效怎么放（`overlay-sides` 人脸居中两侧透明叠加 / `broll` / `fullscreen`）、哪些时间段不加动效、字幕是否已烧进画面、**不能出现在画面上的词**（客户名、地名…，写进项目的 `banned_words`，绝不写进本仓库）。
    人脸位置 `face_box` 和字幕带 `caption_band`：从粗剪的真实画面截两帧量，不要猜。

@@ -257,7 +257,7 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
             if s["start"] < z and a < s["end"]:
                 add("no-motion-range", s, f"镜头 {s['start']}–{s['end']}s 碰到不加动效的时间段 {a}–{z}s")
         zone = _zone(s, b)
-        band = b.get("caption_band") if b.get("captions_burned_in", True) else None
+        band = b.get("caption_band") if (b.get("captions_burned_in", True) or b.get("burn_captions")) else None
         if band and s["zone"] != "full" and zone["y"] < band[1] and band[0] < zone["y"] + zone["h"]:
             add("caption-band", s, f"区域 y{zone['y']}–{zone['y'] + zone['h']} 碰到字幕带 y{band[0]}–{band[1]}")
         if b.get("motion_placement") == "overlay-sides" and s["zone"] != "full" and b.get("face_box"):

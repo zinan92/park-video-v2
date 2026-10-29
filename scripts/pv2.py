@@ -577,6 +577,15 @@ def _base(project: Path, meta: dict[str, Any]) -> str:
     return str((Path(project) / meta["rough_cut"]).resolve())
 
 
+def burn_srt(project: Path, b: dict[str, Any], meta: dict[str, Any]) -> str | None:
+    """brief 说要烧字幕（burn_captions）时，烧哪一份 SRT：剪映导出的，或 transcribe 转写、校对过的。"""
+    if not b.get("burn_captions"):
+        return None
+    if not meta.get("srt"):
+        raise SystemExit("brief 要烧字幕，但项目还没有 SRT：先 init --srt，或 transcribe 转写一份")
+    return str((Path(project) / meta["srt"]).resolve())
+
+
 def base_scale(project: Path, b: dict[str, Any], meta: dict[str, Any]) -> float:
     """原片和 brief canvas 的倍数：brief 照旧按 canvas（1920×1080）写坐标，合成时整体放大到原片（4K 就是 2），成片保住原分辨率。
     宽高比不一样（竖屏原片配横屏 canvas）就停下：放大救不了，canvas 要改。读不出原片尺寸时按 1。"""
@@ -671,7 +680,8 @@ def do_compare(project: Path) -> Path:
     scale = base_scale(project, b, meta)
     stale = [s for s in layers_to_render(project, plan["shots"], b, scale) if check_mod.is_key(s)]
     layers_mod.render_layers(plan, b, d / "layers", status=None, only=stale, public=_public(d), scale=scale)
-    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale)
+    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale,
+                                captions=burn_srt(project, b, meta))
     pairs = []
     for s in keys:
         bm = benches[s["id"]]
@@ -721,7 +731,8 @@ def do_sample(project: Path) -> Path:
     need = [s for s in stale if any(s["start"] < z and a < s["end"] for a, z in windows)]
     scale = base_scale(project, b, meta)
     layers_mod.render_layers(plan, b, d / "layers", status=status, only=need, weight=(0, 60), public=_public(d), scale=scale)
-    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale)
+    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale,
+                                captions=burn_srt(project, b, meta))
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "sample.mp4"
     if len(windows) == 1:
@@ -750,7 +761,8 @@ def do_render(project: Path) -> Path:
     scale = base_scale(project, b, meta)
     layers_mod.render_layers(plan, b, d / "layers", status=status, only=layers_to_render(project, plan["shots"], b, scale), weight=(0, 45),
                              public=_public(d), scale=scale)
-    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale)
+    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale,
+                                captions=burn_srt(project, b, meta))
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "final.mp4"
     render_mod.render(rp, out, status, weight=(45, 90))

@@ -93,6 +93,11 @@ def load(path: Path) -> dict[str, Any]:
         missing.append("face_box")
     if data.get("captions_burned_in") and "caption_band" not in data:
         missing.append("caption_band")
+    if data.get("burn_captions") and data.get("captions_burned_in"):
+        raise ValueError("字幕已经烧在画面里（captions_burned_in: true），就不能再烧一遍（burn_captions）")
+    if data.get("burn_captions") and "caption_band" not in data and "canvas" in data:
+        import captions
+        data["caption_band"] = captions.band(data["canvas"])  # 我们自己烧的字幕在哪，动效就避开哪
     if missing:
         raise NeedsPark(missing)
     if data["motion_placement"] not in PLACEMENTS:
