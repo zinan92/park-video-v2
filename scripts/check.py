@@ -41,6 +41,15 @@ MIN_TEXT_PX = 56  # 带字组件每行不折行、按卡片宽度缩字号；108
 SHADOW_MARGIN, PAD_X = 28, 42  # 和 motion/src/kit/Card.tsx 一致
 
 
+# 运镜镜头（plan.json 里 "kind": "camera"）：不叠卡片，直接推原画面。只有 ShotCraft tension-camera-moves 的 C 式慢推：
+# 越推越快（in quad）从 from 推到 to，暗角跟着加深，到 end 硬切回原样（那一下就是释放）。
+CAMERA_MOVES = {"slow-push": {"seconds": (2.5, 6.0), "to": (1.04, 1.2), "cards": {"tension-camera-moves", "slow-push-in", "slow-push"}}}
+
+
+def is_camera(shot: dict[str, Any]) -> bool:
+    return shot.get("kind") == "camera"
+
+
 def is_key(shot: dict[str, Any]) -> bool:
     """重点时刻（旧方案写的 sample 也算）：精品档功夫花在这几张上，样片只渲它们。"""
     return bool(shot.get("key") or shot.get("sample"))
@@ -245,7 +254,9 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
     def add(rule: str, shot: dict[str, Any], detail: str) -> None:
         out.append({"rule": rule, "shot": shot["id"], "detail": detail})
 
-    shots = plan.get("shots") or []
+    cams = [s for s in plan.get("shots") or [] if is_camera(s)]
+    shots = [s for s in plan.get("shots") or [] if not is_camera(s)]
+    camera_rules(cams, shots, plan, b, add)
     for s in shots:
         if s["start"] < 0 or s["end"] > plan["duration"]:
             add("outside-video", s, f"{s['start']}–{s['end']}s 超出视频 0–{plan['duration']}s")
@@ -335,6 +346,31 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
         if gap and c["start"] - a["end"] < gap:
             add("gap", c, f"和 {a['id']} 之间只留了 {round(c['start'] - a['end'], 2)}s 纯人脸，要至少 {gap}s")
     return out
+
+
+def camera_rules(cams: list[dict[str, Any]], shots: list[dict[str, Any]], plan: dict[str, Any], b: dict[str, Any], add: Any) -> None:
+    """运镜镜头：认得的动作、时长、推多少、整条只用一次、推的时候不叠卡片（人脸放大会顶到两侧的卡）。"""
+    for c in cams:
+        spec = CAMERA_MOVES.get(c.get("move", ""))
+        if spec is None:
+            add("camera-unknown", c, f"运镜只有 {' / '.join(CAMERA_MOVES)}，收到 {c.get('move')!r}")
+            continue
+        lo, hi = spec["seconds"]
+        if not lo <= c["end"] - c["start"] <= hi:
+            add("camera-length", c, f"{c['move']} 要 {lo}–{hi}s，这一镜 {round(c['end'] - c['start'], 2)}s")
+        a, z = spec["to"]
+        if not (c.get("from", 1.0) == 1.0 and a <= c.get("to", 0) <= z):
+            add("camera-amount", c, f"{c['move']} 从 1.0 推到 {a}–{z}（ShotCraft 定的 1.14）；超过 1.2 就成了普通推镜头")
+        if c["start"] < 0 or c["end"] > plan["duration"]:
+            add("outside-video", c, f"{c['start']}–{c['end']}s 超出视频 0–{plan['duration']}s")
+        for na, nz in b.get("no_motion") or []:
+            if c["start"] < nz and na < c["end"]:
+                add("no-motion-range", c, f"运镜 {c['start']}–{c['end']}s 碰到不加动效的时间段 {na}–{nz}s")
+        for s in shots:
+            if s["start"] < c["end"] and c["start"] < s["end"]:
+                add("camera-with-card", c, f"推镜头的时候 {s['id']} 还在画面上：画面一推，人脸会顶到卡片，错开")
+    for c in sorted(cams, key=lambda x: x["start"])[1:]:
+        add("camera-repeat", c, "运镜整条只用一次（ShotCraft：每式全片 ≤1 次），多了就不压迫了")
 
 
 def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], add: Any, last_end: float | None) -> None:

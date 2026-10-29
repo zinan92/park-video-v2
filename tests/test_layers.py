@@ -129,3 +129,14 @@ def test_4k_rough_cut_gets_layers_and_zones_in_its_own_pixels(tmp_path):
     cmd = layers.remotion_cmd(PLAN["shots"][0], {"x": 40, "y": 40, "w": 760, "h": 788}, Path("/tmp/V01.mov"), scale=2)
     assert "--scale=2" in cmd and '"w": 760' in cmd[-1]  # 组件照 canvas 尺寸排版，Remotion 渲两倍大
     assert "--scale" not in " ".join(layers.remotion_cmd(PLAN["shots"][0], {"x": 40, "y": 40, "w": 760, "h": 788}, Path("/tmp/V01.mov")))
+
+
+def test_camera_shots_get_no_layer_and_go_to_the_composite(tmp_path, monkeypatch):
+    cam = {"id": "C08", "kind": "camera", "move": "slow-push", "start": 40.0, "end": 44.0, "to": 1.14}
+    plan = {"duration": 60.0, "shots": PLAN["shots"] + [cam]}
+    monkeypatch.setattr(layers.subprocess, "run", lambda *a, **k: (_ for _ in ()).throw(AssertionError("运镜不该渲层")))
+    assert layers.render_layers({"duration": 60.0, "shots": [cam]}, BRIEF, tmp_path, status=None) == []
+    rp = layers.render_plan(plan, BRIEF, base="/v/rough.mov", layer_dir=tmp_path, scale=2)
+    assert [s["id"] for s in rp["shots"]] == ["V01", "V02"]
+    assert rp["camera"] == [{"id": "C08", "start": 40.0, "end": 44.0, "move": "slow-push", "from": 1.0, "to": 1.14, "vignette": 0.5,
+                             "origin": [2120, 860]}]  # 推向人脸中心，4K 原片按 2 倍换算

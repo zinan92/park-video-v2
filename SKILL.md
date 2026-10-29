@@ -67,7 +67,7 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 2. **卡上的字以录音（SRT / words.json）为准，不抄渲染包的 `line`。** 稿子写「十分好用」、他录的是「非常好用」，卡上就是「非常好用」，照样只删不换（`rewrite: trim-only`）。
 3. **组件库里没有这张卡的组件（`pv2.py catalog` 里没有哪个组件的 `shotcraft` 写着它），就走第 7 环节去 ShotCraft 改编**，登记进 catalog 时把这张卡名写进 `shotcraft`。不准拿「效果最接近」的现成组件顶替。
 4. **努力档位按改编后的实际做工定，不按 ShotCraft 原档。** 花括号拉开这类文字动效，改编成区域组件后是 b 档就登记 b。渲染包的 motion 和 brief 的 effort 还是冲突（改编后确实超出这一档），**先问 Park**，不准自己降级替换。
-5. **做不了的（运镜要动原画面、改编不出来、和 brief 的规矩冲突），出样片之前列给 Park**：写进 `v2/deviations.json`：
+5. **做不了的（改编不出来、和 brief 的规矩冲突），出样片之前列给 Park**：写进 `v2/deviations.json`：
    ```json
    [{"beat": 2, "motion": "brace-expand", "instead": "IconList", "why": "为什么做不了 / 为什么这样换"}]
    ```
@@ -131,6 +131,21 @@ Park 的判断：组件做得再细，表达错了就是 10–20 分；16 张卡
 - `reveals`：每段文字的出现时刻和原话，给 check 查「不早于说出口」
 - `hold`：从这一刻起画面不再动（终检会实测）
 - `props` 里所有时刻都是原片绝对秒
+
+## 运镜（`"kind": "camera"`）：直接推原画面
+
+ShotCraft 的 tension-camera-moves（情绪运镜）里，口播能用的是 C 式**慢推**（slow-push-in）：画面越推越快地推近人脸，四周暗角跟着加深，推到头硬切回原样——那一下是「蓄力→释放」，用在大数字、宣言、反转的前一刻。它不叠卡片，合成时直接推原画面（`render.py` 的 `camera_chain`，ffmpeg 逐帧放大 + 暗角），4K 原片照样按原分辨率推。
+
+```json
+{"id": "C08", "kind": "camera", "move": "slow-push", "start": 61.2, "end": 65.2, "from": 1.0, "to": 1.14, "vignette": 0.5, "beat": 8}
+```
+
+- `start` / `end`：推的时间段，2.5–6 秒（ShotCraft 是 4 秒）；`end` 落在要释放的那句话前。
+- `to`：推到多少，1.04–1.2（ShotCraft 定的 1.14；超过 1.2 就成了普通推镜头）。`vignette`：暗角强度 0–1，默认 0.5。
+- 推向人脸中心（brief 的 `face_box`）。
+- check 会拦：不认识的运镜（camera-unknown）、时长不对（camera-length）、推太多（camera-amount）、整条用了第二次（camera-repeat）、推的时候画面上还有卡片（camera-with-card：人脸一放大就顶到卡片）。
+- 运镜也算动效时长（密度）；渲染包里写 tension-camera-moves / slow-push-in 的那一镜标 `beat`，就算照做了。
+- 其余三式（冻结环绕、斜角滚正、拉远孤立）是给图表、整页界面用的，口播画面上不做；渲染包推荐了就写进偏离清单。
 
 ## 组件（`motion/src/library/`）
 

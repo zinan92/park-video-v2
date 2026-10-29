@@ -335,3 +335,24 @@ def test_text_floor_doubles_on_a_4k_canvas():
     narrow = {**wide, "zone": {"x": 80, "y": 80, "w": 880, "h": 1576}}
     assert "text-too-small" in rules(narrow, rewrite="summarize", canvas=[3840, 2160], caption_band=[1736, 2000],
                                      face_box=[1400, 280, 1040, 1520])
+
+
+# —— 运镜：慢推原画面 ——
+
+def _push(**kw):
+    c = {"id": "C08", "kind": "camera", "move": "slow-push", "start": 40.0, "end": 44.0, "from": 1.0, "to": 1.14, "vignette": 0.5}
+    c.update(kw)
+    return c
+
+
+def test_slow_push_passes_on_its_own():
+    assert rules(card(), _push()) == []
+
+
+def test_slow_push_rules():
+    assert rules(_push(move="dolly-zoom")) == ["camera-unknown"]
+    assert rules(_push(end=52.0)) == ["camera-length"]
+    assert rules(_push(to=1.3)) == ["camera-amount"]
+    assert rules(_push(), _push(id="C09", start=80.0, end=84.0)) == ["camera-repeat"]
+    assert "camera-with-card" in rules(card(start=41.0, end=45.0, hold=42.0, props={"lines": ["两件重要的问题"], "ats": [41.0]}, reveals=[]),
+                                       _push(), rewrite="summarize")

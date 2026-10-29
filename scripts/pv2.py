@@ -211,6 +211,10 @@ def beat_done(beat: dict[str, Any], plan: dict[str, Any], cat: dict[str, Any]) -
     for s in (plan or {}).get("shots") or []:
         if s.get("beat") != beat["n"]:
             continue
+        if check_mod.is_camera(s):  # 运镜镜头：渲染包写的是 tension-camera-moves（slow-push-in）
+            if _card_names(beat["motion"]) & check_mod.CAMERA_MOVES.get(s.get("move", ""), {}).get("cards", set()):
+                return True
+            continue
         comp = s.get("component")
         if beat.get("component") and comp == beat["component"]:
             return True
@@ -532,7 +536,7 @@ def layers_to_render(project: Path, shots: list[dict[str, Any]], b: dict[str, An
     d = _v2(project)
     code_m = _motion_mtime()
     out = []
-    for s in shots:
+    for s in [x for x in shots if not check_mod.is_camera(x)]:
         f = d / "layers" / f"{s['id']}.mov"
         want = json.loads(json.dumps(layers_mod.saved_props(s, check_mod._zone(s, b), layers_mod.style(b), scale), sort_keys=True))
         if not f.is_file() or f.stat().st_mtime < code_m or _json(layers_mod.props_file(f)) != want:

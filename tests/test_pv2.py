@@ -401,3 +401,14 @@ def test_burning_captions_uses_the_projects_srt(proj):
     assert pv2.burn_srt(proj, {"burn_captions": True}, {"srt": "source.srt"}) == str((proj / "source.srt").resolve())
     with pytest.raises(SystemExit, match="transcribe"):
         pv2.burn_srt(proj, {"burn_captions": True}, {"srt": None})
+
+
+def test_camera_beat_counts_as_done_with_a_slow_push(proj, tmp_path):
+    pack = tmp_path / "包"
+    pack.mkdir()
+    (pack / "plan.json").write_text(json.dumps({"beats": [{"n": 8, "line": "x", "motion": "tension-camera-moves（slow-push-in）"}]}),
+                                    encoding="utf-8")
+    pv2.take_pack(proj, pack)
+    push = {"id": "C08", "beat": 8, "kind": "camera", "move": "slow-push", "start": 1.0, "end": 5.0, "to": 1.14}
+    assert pv2.deviations_state(proj, {"shots": [push]})["undone"] == []
+    assert pv2.deviations_state(proj, {"shots": [{**push, "kind": None, "component": "TextLines"}]})["undone"] == [8]

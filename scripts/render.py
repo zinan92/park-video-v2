@@ -9,6 +9,7 @@ render-plan.json：
    "shots": [{"id", "start", "end", "layer": 透明动效层(.mov), "src_rect": [x, y, w, h] 层里要裁出的那块,
               "zone": {x, y, w, h} 放到画面哪里, "glass": 毛玻璃那层白的不透明度或 null}]}
   坐标都是原片像素：原片比 brief 的 canvas 大（4K）时，layers.render_plan 已经按倍数换算好（plan 里的 scale）。
+  "camera": [{start, end, move, from, to, vignette, origin: [x, y]}]（可选）：运镜，合成前先推原画面（见 camera_chain）。
   "captions": SRT 路径（可选）：要把字幕烧进去时才有，样式见 captions.py，叠在所有动效层上面。
 
 毛玻璃：Remotion 单独渲染层时背后没有东西可模糊，所以合成前先把每个镜头「烤」成一个新层：
@@ -45,9 +46,31 @@ def in_range(shots: list[dict[str, Any]], start: float, end: float) -> list[dict
 GLASS_BLUR = 24  # 毛玻璃模糊的 sigma（1080p 像素）；4K 原片时 render-plan 每个镜头带放大后的 blur
 
 
-def filtergraph(shots: list[dict[str, Any]]) -> str:
-    """输入 0 是原画面，输入 1..n 是各镜头的动效层；最后一路叫 [v1]…[vN]，最终输出标签见返回值末尾。"""
+def camera_chain(cams: list[dict[str, Any]], size: list[int]) -> str:
+    """慢推（ShotCraft tension-camera-moves C 式）：镜头时间内逐帧放大原画面、裁回原尺寸，推向 origin；
+    放大按 in quad 越推越快，暗角同一条曲线加深；到 end 直接回到原样（硬切释放）。时间是这一段渲染里的相对秒。"""
+    w, h = size
+    def ramp(c: dict[str, Any]) -> str:
+        a, z = c["start"], c["end"]
+        return f"between(t,{a},{z})*pow((t-{a})/{z - a},2)"
+    zoom = "1" + "".join(f"+between(t,{c['start']},{c['end']})*{c['from'] - 1}+{c['to'] - c['from']}*{ramp(c)}" for c in cams)
+    ox = "+".join(f"between(t,{c['start']},{c['end']})*{c['origin'][0]}" for c in cams)
+    oy = "+".join(f"between(t,{c['start']},{c['end']})*{c['origin'][1]}" for c in cams)
+    chain = (f"scale=w='trunc(iw*({zoom})/2)*2':h='trunc(ih*({zoom})/2)*2':eval=frame,"
+             f"crop=w={w}:h={h}:x='min(max(0,({ox})*(({zoom})-1)),iw-{w})':y='min(max(0,({oy})*(({zoom})-1)),ih-{h})'")
+    if any(c.get("vignette") for c in cams):
+        angle = "0.0001" + "".join(f"+{c.get('vignette', 0) * 1.0472:.4f}*{ramp(c)}" for c in cams)  # 强度 1 = PI/3
+        chain += f",vignette=angle='{angle}':eval=frame"
+    return chain
+
+
+def filtergraph(shots: list[dict[str, Any]], cams: list[dict[str, Any]] | None = None, size: list[int] | None = None) -> str:
+    """输入 0 是原画面，输入 1..n 是各镜头的动效层；最后一路叫 [v1]…[vN]，最终输出标签见返回值末尾。
+    有运镜时原画面先推（[cam]），动效层叠在推过的画面上。"""
     parts, prev = [], "[0:v]"
+    if cams:
+        parts.append(f"[0:v]{camera_chain(cams, size or [1920, 1080])}[cam]")
+        prev = "[cam]"
     for i, s in enumerate(shots, start=1):
         x, y, w, h = s["src_rect"]
         p = s["place"]
@@ -55,7 +78,7 @@ def filtergraph(shots: list[dict[str, Any]]) -> str:
         parts.append(f"{prev}[l{i}]overlay={p['x']}:{p['y']}:enable='between(t,{s['start']},{s['end']})':eof_action=pass[v{i}]")
         prev = f"[v{i}]"
     if not shots:
-        parts.append("[0:v]null[v1]")
+        parts.append(f"{prev}null[v1]")
     return ";".join(parts)
 
 
@@ -124,7 +147,9 @@ def render(plan: dict[str, Any], out: Path, status: Path | None, *, start: float
         inputs += (["-ss", f"{skip:.3f}"] if skip else []) + ["-i", s["layer"]]
         shots.append({**s, "start": round(max(s["start"], start) - start, 3), "end": round(min(s["end"], end) - start, 3),
                       "place": fit((w, h), s["zone"])})
-    graph = filtergraph(shots)
+    cams = [{**c, "start": round(c["start"] - start, 3), "end": round(c["end"] - start, 3)}
+            for c in plan.get("camera") or [] if c["start"] < end and start < c["end"]]
+    graph = filtergraph(shots, cams, plan.get("canvas"))
     last = f"[v{max(len(shots), 1)}]"
     tail, cwd = "null", None
     if plan.get("captions"):

@@ -9,7 +9,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from check import _zone
+from check import _zone, is_camera
 from render import write_status
 
 MOTION = Path(__file__).resolve().parents[1] / "motion"
@@ -65,7 +65,7 @@ def render_layers(plan: dict[str, Any], brief: dict[str, Any], layer_dir: Path, 
                   only: list[dict[str, Any]] | None = None, weight: tuple[int, int] = (0, 100), public: Path | None = None,
                   scale: float = 1.0) -> list[Path]:
     layer_dir.mkdir(parents=True, exist_ok=True)
-    shots = only if only is not None else plan["shots"]
+    shots = [s for s in (only if only is not None else plan["shots"]) if not is_camera(s)]  # 运镜不渲层，合成时直接推原画面
     outs = []
     for i, s in enumerate(shots):
         write_status(status, "rendering", i, len(shots), stage="layers", weight=weight, unit="shots")
@@ -87,7 +87,7 @@ def render_plan(plan: dict[str, Any], brief: dict[str, Any], *, base: str, layer
     """scale ≠ 1（4K 原片配 1920×1080 的 canvas）：区域和层都换算成原片像素，render.py 照原片坐标叠，成片保住原分辨率。"""
     glass = GLASS_ALPHA if brief.get("card") == "glass" else None
     shots = []
-    for s in plan["shots"]:
+    for s in [x for x in plan["shots"] if not is_camera(x)]:
         z = _zone(s, brief)
         if scale == 1:
             w, h = round(z["w"] / 2) * 2, round(z["h"] / 2) * 2
@@ -98,5 +98,9 @@ def render_plan(plan: dict[str, Any], brief: dict[str, Any], *, base: str, layer
                       "layer": str(layer_dir / f"{s['id']}.mov"), "src_rect": [0, 0, w, h], "zone": z,
                       "glass": glass, **({"blur": round(24 * scale)} if scale != 1 else {})})
     cw, ch = brief["canvas"]
-    return {"base": base, "canvas": [round(cw * scale), round(ch * scale)] if scale != 1 else brief["canvas"], "scale": scale,
+    fx, fy, fw, fh = brief.get("face_box") or [0, 0, cw, ch]
+    camera = [{"id": c["id"], "start": c["start"], "end": c["end"], "move": c["move"], "from": c.get("from", 1.0), "to": c["to"],
+               "vignette": c.get("vignette", 0.5), "origin": [round((fx + fw / 2) * scale), round((fy + fh / 2) * scale)]}
+              for c in plan["shots"] if is_camera(c)]  # 推向人脸中心（没有 face_box 就是画面中心）
+    return {"base": base, **({"camera": camera} if camera else {}), "canvas": [round(cw * scale), round(ch * scale)] if scale != 1 else brief["canvas"], "scale": scale,
             "shots": shots, **({"captions": captions} if captions else {})}
