@@ -931,5 +931,185 @@
       "at": 0.5,
       "source": "来源：示例新闻网 · 2026-10-05"
     }
+  },
+  "BraceExpand": {
+    "effort": "b",
+    "form": "text",
+    "name": "括号拉幕",
+    "keywords": [
+      "花括号",
+      "括号拉开",
+      "拉幕",
+      "揭示标题"
+    ],
+    "use": "一个词或一句短话：一对花括号撑开，字像幕布一样从中间露出来（技术、代码语感）",
+    "shotcraft": [
+      "brace-expand"
+    ],
+    "settle": 1.4,
+    "min_zone_w": 560,
+    "limits": {
+      "text": 6,
+      "kicker": 10
+    },
+    "example": {
+      "kicker": "一句话",
+      "text": "先说结论",
+      "at": 0.6
+    }
+  },
+  "CelFlashStomp": {
+    "effort": "b",
+    "form": "text",
+    "name": "底色闪砸字",
+    "keywords": [
+      "砸字",
+      "闪",
+      "口号",
+      "三连词",
+      "图章"
+    ],
+    "use": "三四个词一拍一个砸下来，底色闪几下（高能开场、口号）；靠音效撑，一条最多一次",
+    "shotcraft": [
+      "cel-flash-stomp"
+    ],
+    "settle": 0.5,
+    "min_zone_w": 520,
+    "limits": {
+      "words.text": 6
+    },
+    "example": {
+      "words": [
+        {
+          "text": "快",
+          "at": 0.5
+        },
+        {
+          "text": "准",
+          "at": 1.4
+        },
+        {
+          "text": "狠",
+          "at": 2.3
+        }
+      ]
+    }
+  },
+  "WeightPump": {
+    "effort": "b",
+    "form": "text",
+    "name": "字重脉冲",
+    "keywords": [
+      "字重",
+      "加粗",
+      "重音",
+      "节奏",
+      "跟着重音跳"
+    ],
+    "use": "他加重语气的那一刻，那行字的笔画变粗再弹回；一条最多一次",
+    "shotcraft": [
+      "type-rhythm-sync",
+      "font-weight-pump"
+    ],
+    "settle": 0.4,
+    "min_zone_w": 500,
+    "limits": {
+      "lines": 8
+    },
+    "example": {
+      "lines": [
+        "不是更有效率",
+        "是快乐"
+      ],
+      "ats": [
+        0.5,
+        1.5
+      ],
+      "pumps": [
+        {
+          "at": 0.5,
+          "line": 0
+        },
+        {
+          "at": 1.5,
+          "line": 1
+        },
+        {
+          "at": 2.2,
+          "line": 1
+        }
+      ],
+      "accent": [
+        1
+      ]
+    }
+  },
+  "SpotlightSweep": {
+    "effort": "b",
+    "form": "text",
+    "name": "聚光扫字",
+    "keywords": [
+      "聚光",
+      "扫光",
+      "点亮",
+      "光扫过"
+    ],
+    "use": "一道光从左往右匀速扫过，字被点亮（揭晓、点名一句话）",
+    "shotcraft": [
+      "spotlight-sweep-moves",
+      "spotlight-sweep"
+    ],
+    "settle": 1.3,
+    "min_zone_w": 500,
+    "limits": {
+      "lines": 8
+    },
+    "example": {
+      "lines": [
+        "真正的答案",
+        "在后端"
+      ],
+      "ats": [
+        0.5,
+        1.3
+      ],
+      "accent": [
+        1
+      ]
+    }
+  },
+  "DrawTrace": {
+    "effort": "b",
+    "form": "text",
+    "name": "描边圈注",
+    "keywords": [
+      "描边",
+      "画出来",
+      "圈注",
+      "下划线",
+      "手绘"
+    ],
+    "use": "一支笔沿卡片边画一圈把它「画」出来，再出字；重点那行补一道下划线",
+    "shotcraft": [
+      "draw-svg-trace"
+    ],
+    "settle": 1.6,
+    "min_zone_w": 500,
+    "limits": {
+      "lines": 8
+    },
+    "example": {
+      "lines": [
+        "接下来讲它",
+        "入口要宽"
+      ],
+      "ats": [
+        1.1,
+        1.6
+      ],
+      "accent": [
+        1
+      ]
+    }
   }
 }
