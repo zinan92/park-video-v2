@@ -12,9 +12,9 @@ sliders:
     name: 密度
     help: 动效占可加动效时长（去掉不加动效的段）的比例
     levels:
-      - {value: low, label: 低, detail: 10–20%, cost: 整条约 3 分钟}
-      - {value: medium, label: 中, detail: 30–40%, cost: 整条约 5 分钟}
-      - {value: high, label: 高, detail: 50% 以上, cost: 整条约 8 分钟}
+      - {value: low, label: 低, detail: 10–20%（每分钟 1–2 张）, cost: 整条约 3 分钟}
+      - {value: medium, label: 中, detail: 30–40%（每分钟 4–5 张）, cost: 整条约 5 分钟}
+      - {value: high, label: 高, detail: 50–60%（每分钟 6–7 张）, cost: 整条约 8 分钟}
   - key: effort
     name: 动效努力
     help: 每一张动效花多少功夫

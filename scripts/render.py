@@ -10,6 +10,7 @@ render-plan.json：
               "zone": {x, y, w, h} 放到画面哪里, "glass": 毛玻璃那层白的不透明度或 null}]}
   坐标都是原片像素：原片比 brief 的 canvas 大（4K）时，layers.render_plan 已经按倍数换算好（plan 里的 scale）。
   "camera": [{start, end, move, from, to, vignette, origin: [x, y]}]（可选）：运镜，合成前先推原画面（见 camera_chain）。
+  镜头可以带 "panel": [r, g, b, a] 和 "radius"：在层背后先垫一块圆角卡片底（ShotCraft 直通卡去了底，浅字叠在脸上看不清）。
   "captions": SRT 路径（可选）：要把字幕烧进去时才有，样式见 captions.py，叠在所有动效层上面。
 
 毛玻璃：Remotion 单独渲染层时背后没有东西可模糊，所以合成前先把每个镜头「烤」成一个新层：
@@ -74,6 +75,11 @@ def filtergraph(shots: list[dict[str, Any]], cams: list[dict[str, Any]] | None =
     for i, s in enumerate(shots, start=1):
         x, y, w, h = s["src_rect"]
         p = s["place"]
+        if s.get("panel_input"):
+            a, z = s["start"], s["end"]
+            parts.append(f"[{s['panel_input']}:v]format=rgba,fade=t=in:st={a}:d=0.3:alpha=1,fade=t=out:st={max(a, z - 0.3)}:d=0.3:alpha=1[p{i}]")
+            parts.append(f"{prev}[p{i}]overlay={p['x']}:{p['y']}:enable='between(t,{a},{z})'[q{i}]")
+            prev = f"[q{i}]"
         parts.append(f"[{i}:v]crop={w}:{h}:{x}:{y},scale={p['w']}:{p['h']},format=rgba,setpts=PTS-STARTPTS+{s['start']}/TB[l{i}]")
         parts.append(f"{prev}[l{i}]overlay={p['x']}:{p['y']}:enable='between(t,{s['start']},{s['end']})':eof_action=pass[v{i}]")
         prev = f"[v{i}]"
@@ -117,6 +123,15 @@ def bake_glass(plan: dict[str, Any], status: Path | None, *, weight: tuple[int, 
     return out
 
 
+def panel_png(path: Path, w: int, h: int, rgba: tuple[int, ...], radius: int) -> Path:
+    from PIL import Image, ImageDraw
+
+    im = Image.new("RGBA", (max(2, w), max(2, h)), (0, 0, 0, 0))
+    ImageDraw.Draw(im).rounded_rectangle([0, 0, im.width - 1, im.height - 1], radius=radius, fill=rgba)
+    im.save(path)
+    return path
+
+
 def write_status(path: Path | None, state: str, done: float, total: float, *, stage: str = "composite",
                  weight: tuple[int, int] = (0, 100), unit: str = "seconds") -> None:
     """status.json：state = rendering / done / failed；percent 是整条流程的总进度（本阶段占 weight 这一段）。"""
@@ -147,6 +162,14 @@ def render(plan: dict[str, Any], out: Path, status: Path | None, *, start: float
         inputs += (["-ss", f"{skip:.3f}"] if skip else []) + ["-i", s["layer"]]
         shots.append({**s, "start": round(max(s["start"], start) - start, 3), "end": round(min(s["end"], end) - start, 3),
                       "place": fit((w, h), s["zone"])})
+    panels = []
+    for s in shots:  # 卡片底：一张圆角图，循环成这一段的长度，淡入淡出跟着镜头
+        if s.get("panel"):
+            png = Path(out).resolve().with_suffix(f".panel-{s['id']}.png")
+            panel_png(png, s["place"]["w"], s["place"]["h"], tuple(s["panel"]), s.get("radius", 30))
+            panels.append(png)
+            s["panel_input"] = len(shots) + len(panels)
+            inputs += ["-loop", "1", "-framerate", "30", "-t", f"{total:.3f}", "-i", str(png)]
     cams = [{**c, "start": round(c["start"] - start, 3), "end": round(c["end"] - start, 3)}
             for c in plan.get("camera") or [] if c["start"] < end and start < c["end"]]
     graph = filtergraph(shots, cams, plan.get("canvas"))
@@ -170,7 +193,10 @@ def render(plan: dict[str, Any], out: Path, status: Path | None, *, start: float
         if line.startswith("out_time_us=") and line.strip().split("=")[1].isdigit():
             write_status(status, "rendering", min(int(line.split("=")[1]) / 1e6, total), total, weight=weight)
     err = proc.stderr.read() if proc.stderr else ""
-    if proc.wait() != 0:
+    code = proc.wait()
+    for png in panels:
+        png.unlink(missing_ok=True)
+    if code != 0:
         write_status(status, "failed", 0.0, total, weight=weight)
         raise RuntimeError(f"ffmpeg 失败：{err[-1500:]}")
     write_status(status, "rendering" if weight[1] < 100 else "done", total, total, weight=weight)

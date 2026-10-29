@@ -16,7 +16,12 @@ SETTINGS = ROOT / "settings.yaml"
 USER_DEFAULTS_ENV = "PV2_USER_DEFAULTS"  # 测试时指到临时文件
 REQUIRED = ("video_type", "canvas", "motion_placement", "no_motion", "captions_burned_in")
 PLACEMENTS = ("overlay-sides", "broll", "fullscreen")
-DENSITY = {"low": (0.10, 0.20), "medium": (0.30, 0.40), "high": (0.50, 1.0)}  # 动效占可加动效时长的比例
+DENSITY = {"low": (0.10, 0.20), "medium": (0.30, 0.40), "high": (0.50, 0.60)}  # 动效占可加动效时长的比例
+# 密度的标准（10/29 Park：「低中高要定一个标准」）：比例是唯一的标准，张数从它换算——一张卡平均停 5 秒，
+# 高密度按 60% 算上限（再多人脸就太少了）。口播大约每秒 4 个字，没有视频时（工作台排镜头表）按字数估时长。
+CARD_SECONDS = 5.0
+HIGH_CAP = 0.60
+CHARS_PER_SECOND = 4.0
 ALIASES = {"density": {"mid": "medium"}}  # 工作台渲染包的 settings.json 写过 mid
 
 
@@ -116,6 +121,13 @@ def coverage_range(b: dict[str, Any]) -> tuple[float, float]:
         lo, hi = b["coverage"]
         return float(lo), float(hi)
     return DENSITY[normalize("density", b.get("density", "medium"))]
+
+
+def cards_for(seconds: float, density: str = "medium") -> tuple[int, int]:
+    """这么长（可加动效的秒数）、这个密度，大约放几张卡：(最少, 最多)。工作台排镜头表照这个数排。"""
+    import math
+    lo, hi = DENSITY[normalize("density", density)]
+    return max(1, math.ceil(seconds * lo / CARD_SECONDS)), max(1, math.floor(seconds * min(hi, HIGH_CAP) / CARD_SECONDS))
 
 
 def min_text_px(b: dict[str, Any], base: int = 56) -> float:
