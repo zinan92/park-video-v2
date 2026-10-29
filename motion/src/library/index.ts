@@ -30,10 +30,16 @@ import { PickOne } from './PickOne';
 import { Quadrant } from './Quadrant';
 import { TimeCompress } from './TimeCompress';
 import { Proof } from './Proof';
+import { BraceExpand } from './BraceExpand';
+import { CelFlashStomp } from './CelFlashStomp';
+import { WeightPump } from './WeightPump';
+import { SpotlightSweep } from './SpotlightSweep';
+import { DrawTrace } from './DrawTrace';
 
 export const LIBRARY: Record<string, React.FC<any>> = {
   TextLines, Quote, ListSteps, BigNumber, NumberRoll, Ratio, Bars, Gauge, Cycle, Funnel, Flow, Compare, IconPoint, IconList,
   HaloNumber, HatchBars, GlassCycle, RingCore, StackPress, QuoteMarker, IconBloom,
   TimeCompress, CrowdSplit, PickOne, Accumulate, Quadrant, Journey, BrokenPath,
   Proof,
+  BraceExpand, CelFlashStomp, WeightPump, SpotlightSweep, DrawTrace,
 };

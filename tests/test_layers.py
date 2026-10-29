@@ -86,6 +86,8 @@ def test_every_new_component_renders(tmp_path, component):
 
 C_COMPONENTS = ["HaloNumber", "HatchBars", "GlassCycle", "RingCore", "StackPress", "QuoteMarker", "IconBloom",
                 "TimeCompress", "CrowdSplit", "PickOne", "Accumulate", "Quadrant", "Journey", "BrokenPath"]
+# 从 ShotCraft 文字类卡改编的 b 档组件（10/29 渲染包要的）：动作也有 settle，同样要停得住
+SHOTCRAFT_TEXT = ["BraceExpand", "CelFlashStomp", "WeightPump", "SpotlightSweep", "DrawTrace"]
 
 
 def test_evidence_screenshots_are_handed_to_remotion_as_its_public_folder(tmp_path):
@@ -108,7 +110,7 @@ def test_the_evidence_card_shows_the_real_image_and_stops_moving(tmp_path):
 
 
 @pytest.mark.skipif(not os.environ.get("PV2_REMOTION") or shutil.which("npx") is None, reason="set PV2_REMOTION=1 to run a real render")
-@pytest.mark.parametrize("component", C_COMPONENTS)
+@pytest.mark.parametrize("component", C_COMPONENTS + SHOTCRAFT_TEXT)
 def test_c_component_is_still_after_it_settles(tmp_path, component):
     # 「像专业 AE」那档动作多：做完（最后一次出现 + settle）之后必须一帧不变，终检靠这个判断「停住」
     import check
@@ -119,3 +121,14 @@ def test_c_component_is_still_after_it_settles(tmp_path, component):
     shot = {"id": component, "start": 0.0, "end": done + 2.0, "zone": "left", "component": component, "props": props}
     out = layers.render_layers({"duration": 60, "shots": [shot]}, {**BRIEF, "card": "glass"}, tmp_path, status=None)[0]
     assert qa.hold_is_static(out, hold_offset=done + 0.05, end_offset=shot["end"] - 0.4), f"{component} 在 {done}s 之后还在动"
+
+
+def test_adapted_shotcraft_cards_say_where_they_came_from():
+    """渲染包写的是 ShotCraft 卡名：catalog 的 shotcraft 要写上，pv2 才认得「这一镜照做了」。"""
+    import check
+    cat = check._catalog()
+    want = {"BraceExpand": "brace-expand", "CelFlashStomp": "cel-flash-stomp", "WeightPump": "font-weight-pump",
+            "SpotlightSweep": "spotlight-sweep", "DrawTrace": "draw-svg-trace"}
+    for comp, card in want.items():
+        e = cat[comp]
+        assert card in e["shotcraft"] and e["effort"] == "b" and e["settle"] and e["limits"] and e["min_zone_w"]

@@ -131,6 +131,18 @@ Park 的判断：组件做得再细，表达错了就是 10–20 分；16 张卡
 | `QuoteMarker` | text | c | 一句原话，关键行马克笔涂一下 | `lines[]`, `ats[]`, `accent?[]` |
 | `IconBloom` | icon | c | 概念配图标：玻璃圆盘擦出 + 三圈涟漪 | `icon`, `iconAt`, `lines[]`, `ats[]`, `accent?[]` |
 
+从 ShotCraft 文字类卡改编的组件（effort b，都是 text 形式；渲染包推荐这些卡时直接用，`shotcraft` 字段写着原卡名）：
+
+| 组件 | 原卡 | 用在 | props | 限制 |
+|---|---|---|---|---|
+| `BraceExpand` | brace-expand | 一个词 / 短句：花括号撑开，字从中间露出来 | `kicker?`, `kickerAt?`, `text`, `at` | text ≤6 字，区域 ≥560px |
+| `CelFlashStomp` | cel-flash-stomp | 三四个词一拍一个砸下来，底色闪（高能开场、口号；靠音效撑，一条最多一次） | `words[{text, at}]` | 每词 ≤6 字，区域 ≥520px |
+| `WeightPump` | type-rhythm-sync（font-weight-pump） | 他加重语气那一刻，那行字笔画变粗再弹回（一条最多一次；两次脉冲隔 ≥0.7s） | `kicker?`, `lines[]`, `ats[]`, `pumps?[{at, line}]`, `accent?[]` | 区域 ≥500px |
+| `SpotlightSweep` | spotlight-sweep-moves | 一道光从左往右匀速扫过，字被点亮（揭晓一句话） | `kicker?`, `lines[]`, `ats[]`, `accent?[]` | 区域 ≥500px |
+| `DrawTrace` | draw-svg-trace | 笔沿卡片边画一圈再出字，重点那行补下划线（字比画慢一拍，镜头可以早于他说出口 1s 开始） | `kicker?`, `lines[]`, `ats[]`, `accent?[]`, `drawAt?` | 下划线一张卡最多一条，区域 ≥500px |
+
+这五个都是文字形式：相邻两张不能同形式，渲染包里连着几镜都是文字卡时，中间换一种形式或留纯人脸，写进偏离清单。
+
 画面比喻组件（effort c，精品档的关键时刻用，都可以加 `arc: "hero"` / `"light"` 选进场方式）：
 
 | 组件 | 形式 | 意思 | props |
