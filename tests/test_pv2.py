@@ -218,7 +218,7 @@ def test_premium_sample_waits_for_the_benchmark_compare(proj, monkeypatch):
     """精品档：重点镜头没和标杆对比过、或对比之后层又重渲了，就不出样片。"""
     shot = {"id": "K1", "start": 1.0, "end": 5.0, "hold": 3.0, "key": True}
     plan = {"duration": 10.0, "shots": [shot]}
-    monkeypatch.setattr(pv2, "layers_to_render", lambda project, shots, b: [])
+    monkeypatch.setattr(pv2, "layers_to_render", lambda project, shots, b, *scale: [])
     (v2(proj) / "layers").mkdir()
     layer = v2(proj) / "layers" / "K1.mov"
     layer.write_text("x")
@@ -232,7 +232,7 @@ def test_premium_sample_waits_for_the_benchmark_compare(proj, monkeypatch):
     assert pv2.compare_missing(proj, plan, {"effort": "c"}) == []
     os.utime(layer, (pair.stat().st_mtime + 10, pair.stat().st_mtime + 10))  # 对比后又改过
     assert pv2.compare_missing(proj, plan, {"effort": "c"}) == ["K1"]
-    monkeypatch.setattr(pv2, "layers_to_render", lambda project, shots, b: shots)  # 层要重渲
+    monkeypatch.setattr(pv2, "layers_to_render", lambda project, shots, b, *scale: shots)  # 层要重渲
     os.utime(layer, (pair.stat().st_mtime - 10, pair.stat().st_mtime - 10))
     assert pv2.compare_missing(proj, plan, {"effort": "c"}) == ["K1"]
 
@@ -265,3 +265,150 @@ def test_side_by_side_pads_the_shorter_clip(tmp_path):
     assert info["streams"][0]["width"] == 1920 and info["streams"][0]["height"] == 540
     assert abs(float(info["format"]["duration"]) - 3.0) < 0.2
     assert strip.is_file()
+
+
+# —— 字幕：只给视频路径，SRT 自己找；找不到就问、确实没有就本机转写 ——
+
+def test_init_finds_the_srt_next_to_the_video(tmp_path):
+    (tmp_path / "粗剪.mov").write_text("x")
+    (tmp_path / "粗剪.srt").write_text("1\n00:00:00,000 --> 00:00:01,000\n你好\n", encoding="utf-8")
+    pv2.init(tmp_path, video="粗剪.mov")
+    assert json.loads((v2(tmp_path) / "project.json").read_text())["srt"] == str(tmp_path / "粗剪.srt")
+
+
+def test_init_without_any_srt_leaves_it_empty_and_prep_says_to_ask(tmp_path):
+    (tmp_path / "粗剪.mov").write_text("x")
+    pv2.init(tmp_path, video="粗剪.mov")
+    assert json.loads((v2(tmp_path) / "project.json").read_text())["srt"] is None
+    (v2(tmp_path) / "brief.yaml").write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8"), encoding="utf-8")
+    with pytest.raises(SystemExit) as e:
+        pv2.do_prep(tmp_path)
+    assert "transcribe" in str(e.value)
+
+
+def test_transcribe_writes_an_srt_the_rest_of_the_flow_uses(tmp_path, monkeypatch):
+    import sys
+    import types
+    (tmp_path / "粗剪.mov").write_text("x")
+    pv2.init(tmp_path, video="粗剪.mov")
+    fake = types.SimpleNamespace(transcribe=lambda *a, **k: {"segments": [{"start": 0.0, "end": 1.5, "text": "先说结论"},
+                                                                         {"start": 1.5, "end": 3.25, "text": " 再讲原因 "}]})
+    monkeypatch.setitem(sys.modules, "mlx_whisper", fake)
+    out = pv2.transcribe(tmp_path)
+    assert out.read_text(encoding="utf-8") == ("1\n00:00:00,000 --> 00:00:01,500\n先说结论\n\n"
+                                               "2\n00:00:01,500 --> 00:00:03,250\n再讲原因\n\n")
+    assert json.loads((v2(tmp_path) / "project.json").read_text())["srt"] == "v2/source.srt"
+
+
+# —— 渲染包：是方案不是参考 ——
+
+def _pack(tmp_path):
+    pack = tmp_path / "渲染包"
+    pack.mkdir()
+    (pack / "plan.json").write_text(json.dumps({"title": "t", "beats": [
+        {"n": 1, "line": "十分好用", "motion": "before-after-slider-scrub"},
+        {"n": 2, "line": "开头要抓人", "motion": "brace-expand"}]}, ensure_ascii=False), encoding="utf-8")
+    (pack / "settings.json").write_text(json.dumps({"density": "mid", "effort": "b", "skill": "park-video-v2"}), encoding="utf-8")
+    (pack / "script.md").write_text("稿子", encoding="utf-8")
+    return pack
+
+
+def test_render_pack_goes_into_the_project_and_its_settings_read_back(proj, tmp_path):
+    pv2.take_pack(proj, _pack(tmp_path))
+    assert [b["motion"] for b in pv2.plan_beats(proj)] == ["before-after-slider-scrub", "brace-expand"]
+    s = pv2.settings(proj)
+    assert s["values"]["density"] == "medium" and s["source"]["density"] == "project" and s["values"]["effort"] == "b"
+
+
+def test_sample_waits_for_the_deviation_list_park_has_seen(proj, tmp_path):
+    pv2.take_pack(proj, _pack(tmp_path))
+    plan = {"shots": [{"id": "V01", "beat": 1, "component": "Compare"},  # Compare 是照 before-after-slider-scrub 改的：算照做
+                      {"id": "V02", "beat": 2, "component": "IconList"}]}  # 花括号拉开换成了图标列表：偏离
+    st = pv2.deviations_state(proj, plan)
+    assert st["undone"] == [2] and "deviations.json" in st["problem"]
+    (v2(proj) / "deviations.json").write_text(json.dumps([]), encoding="utf-8")
+    assert "第 2 镜" in pv2.deviations_state(proj, plan)["problem"]  # 偷偷换了、清单里没写
+    dev = [{"beat": 2, "motion": "brace-expand", "instead": "IconList", "why": "库里没有花括号拉开，改编要半天"}]
+    (v2(proj) / "deviations.json").write_text(json.dumps(dev, ensure_ascii=False), encoding="utf-8")
+    assert "Park 还没看" in pv2.deviations_state(proj, plan)["problem"]
+    pv2.approve(proj, "deviations", message="第 2 镜先这样")
+    assert pv2.deviations_state(proj, plan)["problem"] is None
+    dev.append({"beat": 1, "why": "又改了"})
+    (v2(proj) / "deviations.json").write_text(json.dumps(dev, ensure_ascii=False), encoding="utf-8")
+    assert "Park 还没看" in pv2.deviations_state(proj, plan)["problem"]  # 批过之后清单又变了，要重新批
+
+
+def test_everything_done_as_planned_needs_only_an_empty_list(proj, tmp_path):
+    pv2.take_pack(proj, _pack(tmp_path))
+    plan = {"shots": [{"id": "V01", "beat": 1, "component": "Compare"}, {"id": "V02", "beat": 2, "component": "Compare"}]}
+    assert pv2.deviations_state(proj, plan)["undone"] == [2]  # Compare 不是从 brace-expand 改的
+    assert pv2.deviations_state(proj, {"shots": []})["undone"] == [1, 2]
+    assert pv2.deviations_state(tmp_path / "没有渲染包", {"shots": []})["problem"] is None
+
+
+def test_find_falls_back_to_the_closest_thing_he_actually_said():
+    words = [{"w": "这个", "start": 1.0, "end": 1.3}, {"w": "非常", "start": 1.3, "end": 1.6}, {"w": "好用", "start": 1.6, "end": 2.0},
+             {"w": "你", "start": 5.0, "end": 5.2}, {"w": "听到", "start": 5.2, "end": 5.5}, {"w": "什么", "start": 5.5, "end": 5.9}]
+    assert pv2.find(words, "十分好用") == []
+    assert pv2.near(words, "十分好用")[0] == {"at": 1.3, "said": "非常好用", "score": 0.5}
+    assert pv2.near(words, "你学到什么")[0]["said"] == "你听到什么"
+
+
+# —— 4K 原片：坐标照 canvas，合成按倍数放大 ——
+
+def test_4k_rough_cut_scales_up_and_wrong_aspect_stops():
+    b = {"canvas": [1920, 1080]}
+    assert pv2.base_scale(Path("."), b, {"rough_cut": "x", "size": [3840, 2160]}) == 2
+    assert pv2.base_scale(Path("."), b, {"rough_cut": "x", "size": [1920, 1080]}) == 1
+    with pytest.raises(SystemExit) as e:
+        pv2.base_scale(Path("."), b, {"rough_cut": "x", "size": [2160, 3840]})
+    assert "宽高比" in str(e.value)
+
+
+def _speech(until):
+    """每秒一个字，从 0 说到 until 秒；开头两句是渲染包里的两镜。"""
+    words = [{"w": "十分", "start": 1.0, "end": 1.5}, {"w": "好用", "start": 1.5, "end": 2.0},
+             {"w": "开头", "start": 10.0, "end": 10.5}, {"w": "要", "start": 10.5, "end": 10.7}, {"w": "抓人", "start": 10.7, "end": 11.0}]
+    words += [{"w": "嗯", "start": float(t), "end": t + 0.5} for t in range(12, int(until))]
+    return {"words": words}
+
+
+def test_pack_that_stops_early_is_caught_against_the_real_video(proj, tmp_path):
+    """10/29：渲染包只有前 77 秒的镜头，后面 2 分多钟没人发现。pv2 拿原片长度和录音自己对。"""
+    pv2.take_pack(proj, _pack(tmp_path))
+    meta = json.loads((v2(proj) / "project.json").read_text())
+    (v2(proj) / "project.json").write_text(json.dumps({**meta, "duration": 210.0}), encoding="utf-8")
+    (v2(proj) / "words.json").write_text(json.dumps(_speech(209)), encoding="utf-8")
+    shots = [{"id": "V01", "beat": 1, "start": 1.0, "end": 6.0, "component": "Compare"},
+             {"id": "V02", "beat": 2, "start": 10.0, "end": 15.0, "component": "Compare"}]
+    st = pv2.deviations_state(proj, {"duration": 210.0, "shots": shots})
+    assert st["pack_until"] == 10.0  # 方案的最后一镜在录音 10s 处
+    assert st["empty"] == [[15.0, 208.5]] and "一张卡都没有" in st["problem"]
+    assert "原片是 210.0s" in pv2.deviations_state(proj, {"duration": 77.0, "shots": shots})["problem"]
+    # 后面照平常的规矩自己排满：不标 beat 的镜头要写进清单
+    own = [{"id": f"A{i}", "start": float(t), "end": t + 5.0} for i, t in enumerate(range(35, 209, 25))]
+    st = pv2.deviations_state(proj, {"duration": 210.0, "shots": shots + own})
+    assert st["empty"] == [] and st["own"] == [s["id"] for s in own]
+    (v2(proj) / "deviations.json").write_text(json.dumps([{"beat": 2, "why": "没有花括号组件"}]), encoding="utf-8")
+    assert "A0" in pv2.deviations_state(proj, {"duration": 210.0, "shots": shots + own})["problem"]
+    dev = [{"beat": 2, "why": "没有花括号组件"}] + [{"shot": s["id"], "why": "渲染包没写到这一段"} for s in own]
+    (v2(proj) / "deviations.json").write_text(json.dumps(dev, ensure_ascii=False), encoding="utf-8")
+    assert "Park 还没看" in pv2.deviations_state(proj, {"duration": 210.0, "shots": shots + own})["problem"]
+
+
+def test_burning_captions_uses_the_projects_srt(proj):
+    assert pv2.burn_srt(proj, {}, {"srt": "source.srt"}) is None  # brief 没说要烧
+    assert pv2.burn_srt(proj, {"burn_captions": True}, {"srt": "source.srt"}) == str((proj / "source.srt").resolve())
+    with pytest.raises(SystemExit, match="transcribe"):
+        pv2.burn_srt(proj, {"burn_captions": True}, {"srt": None})
+
+
+def test_camera_beat_counts_as_done_with_a_slow_push(proj, tmp_path):
+    pack = tmp_path / "包"
+    pack.mkdir()
+    (pack / "plan.json").write_text(json.dumps({"beats": [{"n": 8, "line": "x", "motion": "tension-camera-moves（slow-push-in）"}]}),
+                                    encoding="utf-8")
+    pv2.take_pack(proj, pack)
+    push = {"id": "C08", "beat": 8, "kind": "camera", "move": "slow-push", "start": 1.0, "end": 5.0, "to": 1.14}
+    assert pv2.deviations_state(proj, {"shots": [push]})["undone"] == []
+    assert pv2.deviations_state(proj, {"shots": [{**push, "kind": None, "component": "TextLines"}]})["undone"] == [8]
