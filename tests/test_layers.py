@@ -119,3 +119,13 @@ def test_c_component_is_still_after_it_settles(tmp_path, component):
     shot = {"id": component, "start": 0.0, "end": done + 2.0, "zone": "left", "component": component, "props": props}
     out = layers.render_layers({"duration": 60, "shots": [shot]}, {**BRIEF, "card": "glass"}, tmp_path, status=None)[0]
     assert qa.hold_is_static(out, hold_offset=done + 0.05, end_offset=shot["end"] - 0.4), f"{component} 在 {done}s 之后还在动"
+
+
+def test_4k_rough_cut_gets_layers_and_zones_in_its_own_pixels(tmp_path):
+    rp = layers.render_plan(PLAN, BRIEF, base="/v/rough.mov", layer_dir=tmp_path, scale=2)
+    assert rp["canvas"] == [3840, 2160] and rp["scale"] == 2
+    v1 = rp["shots"][0]
+    assert v1["zone"] == {"x": 80, "y": 80, "w": 1520, "h": 1576} and v1["src_rect"] == [0, 0, 1520, 1576] and v1["blur"] == 48
+    cmd = layers.remotion_cmd(PLAN["shots"][0], {"x": 40, "y": 40, "w": 760, "h": 788}, Path("/tmp/V01.mov"), scale=2)
+    assert "--scale=2" in cmd and '"w": 760' in cmd[-1]  # 组件照 canvas 尺寸排版，Remotion 渲两倍大
+    assert "--scale" not in " ".join(layers.remotion_cmd(PLAN["shots"][0], {"x": 40, "y": 40, "w": 760, "h": 788}, Path("/tmp/V01.mov")))

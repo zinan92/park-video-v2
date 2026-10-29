@@ -8,6 +8,7 @@ render-plan.json：
   {"base": 原视频, "canvas": [w, h],
    "shots": [{"id", "start", "end", "layer": 透明动效层(.mov), "src_rect": [x, y, w, h] 层里要裁出的那块,
               "zone": {x, y, w, h} 放到画面哪里, "glass": 毛玻璃那层白的不透明度或 null}]}
+  坐标都是原片像素：原片比 brief 的 canvas 大（4K）时，layers.render_plan 已经按倍数换算好（plan 里的 scale）。
 
 毛玻璃：Remotion 单独渲染层时背后没有东西可模糊，所以合成前先把每个镜头「烤」成一个新层：
 把卡片底下那块原画面（只取镜头那几秒）裁出来模糊，叠上动效层，再用层的 alpha（放大 1/glass 倍，
@@ -40,7 +41,7 @@ def in_range(shots: list[dict[str, Any]], start: float, end: float) -> list[dict
     return [s for s in shots if s["start"] < end and start < s["end"]]
 
 
-GLASS_BLUR = 24  # 毛玻璃模糊的 sigma（1080p 像素）
+GLASS_BLUR = 24  # 毛玻璃模糊的 sigma（1080p 像素）；4K 原片时 render-plan 每个镜头带放大后的 blur
 
 
 def filtergraph(shots: list[dict[str, Any]]) -> str:
@@ -62,7 +63,7 @@ def glass_cmd(base: str, shot: dict[str, Any], out: Path) -> list[str]:
     x, y, w, h = shot["src_rect"]
     p = fit((w, h), shot["zone"])
     k = round(1 / shot["glass"], 4)
-    graph = (f"[0:v]crop={p['w']}:{p['h']}:{p['x']}:{p['y']},gblur=sigma={GLASS_BLUR},format=rgba[bl];"
+    graph = (f"[0:v]crop={p['w']}:{p['h']}:{p['x']}:{p['y']},gblur=sigma={shot.get('blur', GLASS_BLUR)},format=rgba[bl];"
              f"[1:v]crop={w}:{h}:{x}:{y},scale={p['w']}:{p['h']},format=rgba,split[l][a];"
              f"[a]alphaextract,lut=c0='min(255,val*{k})'[m];[bl][l]overlay=0:0:shortest=1[c];[c][m]alphamerge,format=yuva444p10le[out]")
     return ["ffmpeg", "-v", "error", "-y", "-ss", f"{shot['start']:.3f}", "-t", f"{shot['end'] - shot['start']:.3f}", "-i", base,

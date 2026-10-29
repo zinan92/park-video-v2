@@ -39,23 +39,31 @@ def layer_props(shot: dict[str, Any], zone: dict[str, int], look: dict[str, Any]
             "end": shot["end"], "props": shot.get("props") or {}, "style": {**(look or {}), "side": side}}
 
 
+def saved_props(shot: dict[str, Any], zone: dict[str, int], look: dict[str, Any] | None = None, scale: float = 1.0) -> dict[str, Any]:
+    """存在层旁边的那份：渲染它的 props，原片放大过（4K）再记上倍数，倍数变了层也算过期。"""
+    props = layer_props(shot, zone, look)
+    return props if scale == 1 else {**props, "renderScale": scale}
+
+
 def props_file(layer: Path) -> Path:
     """每个层旁边存一份渲染它用的 props：方案或外观一变，就知道这个层过期了。"""
     return layer.with_suffix(".props.json")
 
 
 def remotion_cmd(shot: dict[str, Any], zone: dict[str, int], out: Path, look: dict[str, Any] | None = None,
-                 public: Path | None = None) -> list[str]:
-    """public：证据截图所在的目录（项目的 v2/evidence/），Proof 卡用 staticFile 从这里读图。"""
+                 public: Path | None = None, scale: float = 1.0) -> list[str]:
+    """public：证据截图所在的目录（项目的 v2/evidence/），Proof 卡用 staticFile 从这里读图。
+    scale：原片是 canvas 的几倍（4K 是 2）。组件照 canvas 尺寸排版，Remotion 按倍数渲得更大，字不糊。"""
     props = layer_props(shot, zone, look)
     return ["npx", "remotion", "render", "src/index.ts", "Shot", str(out), "--codec=prores", "--prores-profile=4444",
             "--pixel-format=yuva444p10le", "--image-format=png", "--muted", "--log=error",
-            *([f"--public-dir={public}"] if public else []),
+            *([f"--public-dir={public}"] if public else []), *([f"--scale={scale}"] if scale != 1 else []),
             "--props=" + json.dumps(props, ensure_ascii=False)]
 
 
 def render_layers(plan: dict[str, Any], brief: dict[str, Any], layer_dir: Path, *, status: Path | None,
-                  only: list[dict[str, Any]] | None = None, weight: tuple[int, int] = (0, 100), public: Path | None = None) -> list[Path]:
+                  only: list[dict[str, Any]] | None = None, weight: tuple[int, int] = (0, 100), public: Path | None = None,
+                  scale: float = 1.0) -> list[Path]:
     layer_dir.mkdir(parents=True, exist_ok=True)
     shots = only if only is not None else plan["shots"]
     outs = []
@@ -63,24 +71,31 @@ def render_layers(plan: dict[str, Any], brief: dict[str, Any], layer_dir: Path, 
         write_status(status, "rendering", i, len(shots), stage="layers", weight=weight, unit="shots")
         out = layer_dir / f"{s['id']}.mov"
         props_file(out).unlink(missing_ok=True)
-        r = subprocess.run(remotion_cmd(s, _zone(s, brief), out, style(brief), public), cwd=MOTION, capture_output=True, text=True)
+        r = subprocess.run(remotion_cmd(s, _zone(s, brief), out, style(brief), public, scale), cwd=MOTION, capture_output=True, text=True)
         if r.returncode != 0:
             write_status(status, "failed", i, len(shots), stage="layers", weight=weight, unit="shots")
             raise RuntimeError(f"{s['id']} 渲染失败：{(r.stderr or r.stdout)[-1500:]}")
-        props_file(out).write_text(json.dumps(layer_props(s, _zone(s, brief), style(brief)), ensure_ascii=False, sort_keys=True),
+        props_file(out).write_text(json.dumps(saved_props(s, _zone(s, brief), style(brief), scale), ensure_ascii=False, sort_keys=True),
                                    encoding="utf-8")
         outs.append(out)
     write_status(status, "rendering", len(shots), len(shots), stage="layers", weight=weight, unit="shots")
     return outs
 
 
-def render_plan(plan: dict[str, Any], brief: dict[str, Any], *, base: str, layer_dir: Path) -> dict[str, Any]:
+def render_plan(plan: dict[str, Any], brief: dict[str, Any], *, base: str, layer_dir: Path, scale: float = 1.0) -> dict[str, Any]:
+    """scale ≠ 1（4K 原片配 1920×1080 的 canvas）：区域和层都换算成原片像素，render.py 照原片坐标叠，成片保住原分辨率。"""
     glass = GLASS_ALPHA if brief.get("card") == "glass" else None
     shots = []
     for s in plan["shots"]:
         z = _zone(s, brief)
-        w, h = round(z["w"] / 2) * 2, round(z["h"] / 2) * 2
+        if scale == 1:
+            w, h = round(z["w"] / 2) * 2, round(z["h"] / 2) * 2
+        else:  # Remotion --scale 出来的层是 w·scale × h·scale；往下取偶数，裁的不会超出层
+            w, h = int(z["w"] * scale) // 2 * 2, int(z["h"] * scale) // 2 * 2
+            z = {k: round(v * scale) for k, v in z.items()}
         shots.append({"id": s["id"], "start": s["start"], "end": s["end"], "hold": s.get("hold", s["end"]),
                       "layer": str(layer_dir / f"{s['id']}.mov"), "src_rect": [0, 0, w, h], "zone": z,
-                      "glass": glass})
-    return {"base": base, "canvas": brief["canvas"], "shots": shots}
+                      "glass": glass, **({"blur": round(24 * scale)} if scale != 1 else {})})
+    cw, ch = brief["canvas"]
+    return {"base": base, "canvas": [round(cw * scale), round(ch * scale)] if scale != 1 else brief["canvas"], "scale": scale,
+            "shots": shots}

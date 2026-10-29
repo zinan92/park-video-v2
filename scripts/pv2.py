@@ -3,12 +3,16 @@
 
   pv2.py worktable <项目> [--text 校对稿.txt]  字幕 → 标 Hook 的表 analysis/worktable.html（Park 标完存回 analysis/worktable.json）
   pv2.py hook    <项目> [--check]       照表里标的 Hook 切 part-a-hook/individual/h1.mp4…hN.mp4，写 edit.json、qa.json
-  pv2.py init    <项目> --video 粗剪.mov --srt source.srt   建 v2/，写 brief 模板（Park 填）
+  pv2.py init    <项目> --video 粗剪.mov [--srt source.srt] [--pack 渲染包目录]
+                                        建 v2/，写 brief 模板（Park 填）；不给 --srt 就在视频旁边找；
+                                        --pack：工作台的渲染包（镜头表 → v2/pack-beats.json，设置合进 brief）
+  pv2.py transcribe <项目>              没有 SRT 时在本机转写一份 → v2/source.srt（先问过用户确实没有）
   pv2.py prep    <项目>                 SRT 对齐音频 → words.json
   pv2.py check   <项目>                 程序检查 plan.json（AI 写好方案后）
   pv2.py compare <项目> [--detach]      精品档：每个重点镜头和它的标杆左右对比 → v2/compare/（不低于标杆才出样片）
   pv2.py sample  <项目> [--detach]      渲染样片 → sample.mp4（精品档只渲重点镜头；和整条同一个渲染函数）
-  pv2.py approve <项目> sample|final -m "Park 原话"
+  pv2.py deviations <项目>              有渲染包 / motion-picks 时：哪几镜没照方案、偏离清单写了没、Park 批了没
+  pv2.py approve <项目> deviations|sample|final -m "Park 原话"
   pv2.py render  <项目> [--detach]      全部镜头 + 整条合成 + 终检 → final.mp4、qa.json、contact.jpg
   pv2.py qa      <项目>                 只重跑终检（不重渲）
   pv2.py status  <项目>                 现在在哪一步、进度多少、在等谁
@@ -42,7 +46,9 @@ import qa as qa_mod
 import render as render_mod
 
 ROOT = Path(__file__).resolve().parents[1]
-GATES = ("sample", "final")
+GATES = ("deviations", "sample", "final")
+PACK_BEATS = "pack-beats.json"  # 工作台渲染包里的镜头表（渲染包里叫 plan.json，和 v2/plan.json 不是一种东西）
+DEVIATIONS = "deviations.json"  # 和渲染包 / motion-picks 不一致的每一镜 + 原因：出样片前 Park 看过
 
 
 def _v2(project: Path) -> Path:
@@ -56,16 +62,96 @@ def _json(path: Path, default: Any = None) -> Any:
         return default
 
 
-def init(project: Path, *, video: str, srt: str | None) -> Path:
+def find_srt(project: Path, video: str) -> str | None:
+    """没给 --srt 时找字幕：视频同名的 .srt → 视频旁边唯一一个 .srt → 项目的 subtitles/source.srt。找不到就是 None（去问用户）。"""
+    v = Path(video) if Path(video).is_absolute() else Path(project) / video
+    same = v.with_suffix(".srt")
+    if same.is_file():
+        return str(same)
+    near = sorted(v.parent.glob("*.srt"))
+    if len(near) == 1:
+        return str(near[0])
+    fallback = Path(project) / "subtitles" / "source.srt"
+    return str(fallback) if fallback.is_file() else None
+
+
+def video_size(path: str | Path) -> list[int] | None:
+    """原片的宽高（像素）；读不出来（不是视频、没有 ffprobe）就是 None。"""
+    try:
+        r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height",
+                            "-of", "csv=p=0", str(path)], capture_output=True, text=True, timeout=30)
+        w, h = (int(x) for x in r.stdout.strip().split(",")[:2])
+        return [w, h]
+    except (OSError, ValueError, subprocess.SubprocessError):
+        return None
+
+
+def init(project: Path, *, video: str, srt: str | None = None, pack: str | None = None) -> Path:
     d = _v2(project)
     d.mkdir(parents=True, exist_ok=True)
-    (d / "project.json").write_text(json.dumps({"rough_cut": video, "srt": srt}, ensure_ascii=False), encoding="utf-8")
+    meta: dict[str, Any] = {"rough_cut": video, "srt": srt or find_srt(project, video)}
+    size = video_size(Path(project) / video)
+    if size:
+        meta["size"] = size
+    (d / "project.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
     b = d / "brief.yaml"
     if not b.exists():
         template = (ROOT / "brief.example.yaml").read_text(encoding="utf-8")
         b.write_text("# Park 填好后去掉每行前面的 #。AI 不猜这些。\n" + "\n".join("# " + ln if ln and not ln.startswith("#") else ln
                                                                        for ln in template.splitlines()) + "\n", encoding="utf-8")
+    if pack:
+        take_pack(project, Path(pack).expanduser())
     return d
+
+
+def take_pack(project: Path, pack: Path) -> dict[str, Any]:
+    """工作台的渲染包放进项目：镜头表 → v2/pack-beats.json（方案，不是参考），settings.json 里认得的设置合进 brief。"""
+    d = _v2(project)
+    beats_file = next((pack / n for n in ("beats.json", "motion-picks.json", "plan.json") if (pack / n).is_file()), None)
+    if beats_file is None:
+        raise SystemExit(f"{pack} 里没有镜头表（beats.json / plan.json）")
+    data = json.loads(beats_file.read_text(encoding="utf-8"))
+    if not (isinstance(data, dict) and isinstance(data.get("beats"), list)) and not isinstance(data, list):
+        raise SystemExit(f"{beats_file.name} 不是渲染包的镜头表（要有 beats[]）")
+    (d / PACK_BEATS).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    if (pack / "script.md").is_file():
+        (d / "pack-script.md").write_text((pack / "script.md").read_text(encoding="utf-8"), encoding="utf-8")
+    picked: dict[str, Any] = {}
+    if (pack / "settings.json").is_file():
+        raw = json.loads((pack / "settings.json").read_text(encoding="utf-8"))
+        known = {x["key"] for x in (brief_mod.schema().get("sliders") or []) + (brief_mod.schema().get("choices") or [])}
+        picked = {k: brief_mod.normalize(k, v) for k, v in raw.items() if k in known}
+        for k, v in picked.items():
+            brief_mod.check_value(k, v)
+        if picked:
+            _write_keys(d / "brief.yaml", picked)
+    return {"beats": str(d / PACK_BEATS), "settings": picked}
+
+
+def transcribe(project: Path) -> Path:
+    """没有剪映 SRT 时：本机 mlx-whisper 把粗剪转写成 v2/source.srt，记进 project.json（之后 prep 照常对齐）。"""
+    d = _v2(project)
+    meta = _json(d / "project.json", {})
+    try:
+        import mlx_whisper
+    except ImportError:
+        raise SystemExit("这台电脑没有 mlx-whisper（pip install mlx-whisper，要 Apple 芯片）；或者在剪映里识别字幕后导出 SRT")
+    import align_srt
+    result = mlx_whisper.transcribe(_base(project, meta), path_or_hf_repo=align_srt.MODEL, language="zh", verbose=None,
+                                    initial_prompt="以下是普通话的句子。", condition_on_previous_text=False)
+    out = d / "source.srt"
+    out.write_text(segments_to_srt(result.get("segments") or []), encoding="utf-8")
+    meta["srt"] = str(out.relative_to(Path(project))) if out.is_relative_to(Path(project)) else str(out)
+    (d / "project.json").write_text(json.dumps(meta, ensure_ascii=False), encoding="utf-8")
+    return out
+
+
+def segments_to_srt(segments: list[dict[str, Any]]) -> str:
+    def ts(t: float) -> str:
+        ms = int(round(t * 1000))
+        return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
+    rows = [s for s in segments if str(s.get("text", "")).strip()]
+    return "".join(f"{i}\n{ts(s['start'])} --> {ts(s['end'])}\n{str(s['text']).strip()}\n\n" for i, s in enumerate(rows, start=1))
 
 
 def approve(project: Path, gate: str, *, message: str) -> dict[str, Any]:
@@ -76,8 +162,83 @@ def approve(project: Path, gate: str, *, message: str) -> dict[str, Any]:
     path = _v2(project) / "approvals.json"
     data = _json(path, {}) or {}
     data[gate] = {"by": "Park", "at": datetime.now().astimezone().isoformat(timespec="seconds"), "message": message.strip()}
+    if gate == "deviations":
+        items = deviation_items(project)
+        if items is None:
+            raise ValueError(f"还没有 v2/{DEVIATIONS}：先把没照方案做的每一镜和原因写进去，给 Park 看")
+        data[gate]["content"] = items  # 批的是这一份清单：之后又改了清单，要重新批
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     return data[gate]
+
+
+def _beat_list(data: Any) -> list[dict[str, Any]]:
+    rows = data if isinstance(data, list) else (data or {}).get("beats") or (data or {}).get("picks") or []
+    return [r for r in rows if isinstance(r, dict)]
+
+
+def plan_beats(project: Path) -> list[dict[str, Any]]:
+    """Park 看过的方案里的每一镜：渲染包（v2/pack-beats.json）+ 工作台「AI 排动效」（v2/motion-picks.json）。
+    每镜 {n, line, motion, component}：n 是镜头号（没有就按顺序数），motion 是 ShotCraft 卡名。"""
+    d = _v2(project)
+    out = []
+    for name in (PACK_BEATS, "motion-picks.json"):
+        for i, r in enumerate(_beat_list(_json(d / name)), start=1):
+            out.append({"n": r.get("n", i), "line": r.get("line", ""), "motion": r.get("motion") or r.get("shotcraft") or "",
+                        "component": r.get("component") or None, "from": name})
+    return out
+
+
+def _card_names(motion: str) -> set[str]:
+    """「type-rhythm-sync（font-weight-pump）」→ 两个卡名。"""
+    import re
+    return set(re.findall(r"[a-z0-9]+(?:-[a-z0-9]+)+", motion or ""))
+
+
+def beat_done(beat: dict[str, Any], plan: dict[str, Any], cat: dict[str, Any]) -> bool:
+    """这一镜照方案做了：方案里有镜头标了 "beat": n，用的是方案指定的组件，或是从这张 ShotCraft 卡改编的组件（catalog 的 shotcraft）。"""
+    for s in (plan or {}).get("shots") or []:
+        if s.get("beat") != beat["n"]:
+            continue
+        comp = s.get("component")
+        if beat.get("component") and comp == beat["component"]:
+            return True
+        if _card_names(beat["motion"]) & set((cat.get(comp) or {}).get("shotcraft") or []):
+            return True
+    return False
+
+
+def deviation_items(project: Path) -> list[dict[str, Any]] | None:
+    data = _json(_v2(project) / DEVIATIONS)
+    if data is None:
+        return None
+    rows = data if isinstance(data, list) else data.get("deviations") or []
+    return [r for r in rows if isinstance(r, dict)]
+
+
+def deviations_state(project: Path, plan: dict[str, Any] | None) -> dict[str, Any]:
+    """出样片前的偏离清单：哪几镜没照方案做（undone）、清单里漏了哪几镜（unlisted）、Park 批了这一份没有。"""
+    beats = plan_beats(project)
+    if not beats:
+        return {"needed": False, "problem": None}
+    cat = check_mod._catalog()
+    undone = [b["n"] for b in beats if not beat_done(b, plan or {}, cat)]
+    items = deviation_items(project)
+    listed = {r.get("beat") for r in items or []}
+    unlisted = [n for n in undone if n not in listed]
+    no_why = [r.get("beat") for r in items or [] if not str(r.get("why", "")).strip()]
+    approved = ((_json(_v2(project) / "approvals.json", {}) or {}).get("deviations") or {}).get("content") == items
+    if items is None:
+        problem = f"有 Park 看过的方案（{len(beats)} 镜），出样片前先写 v2/{DEVIATIONS}：没照方案做的每一镜 + 原因（全照做了就写 []）"
+    elif unlisted:
+        problem = f"第 {'、'.join(map(str, unlisted))} 镜没照方案做（或镜头没标 \"beat\"），也不在偏离清单里：照方案做，或写进清单给 Park 看"
+    elif no_why:
+        problem = f"偏离清单里第 {'、'.join(map(str, no_why))} 镜没写原因"
+    elif items and not approved:
+        problem = f"偏离清单有 {len(items)} 镜，Park 还没看：发给他，他认可后 approve <项目> deviations -m \"原话\""
+    else:
+        problem = None
+    return {"needed": True, "beats": len(beats), "undone": undone, "listed": sorted(listed, key=str), "unlisted": unlisted,
+            "approved": approved or items == [], "problem": problem}
 
 
 def summary(project: Path) -> dict[str, Any]:
@@ -111,9 +272,15 @@ def summary(project: Path) -> dict[str, Any]:
         try:
             b = brief_mod.load(d / "brief.yaml")
             missing = compare_missing(project, _json(d / "plan.json"), b)
-        except (OSError, ValueError, KeyError):
+        except (OSError, ValueError, KeyError, SystemExit):  # SystemExit：原片和 canvas 比例不同，status 照常报，不崩
             missing = []
-        return {**out, "waiting_for": "和标杆对比（compare）" if missing else "跑 sample"}
+        if missing:
+            return {**out, "waiting_for": "和标杆对比（compare）"}
+        dev = deviations_state(project, _json(d / "plan.json"))
+        if dev["problem"]:
+            return {**out, "waiting_for": "Park 看偏离清单" if (d / DEVIATIONS).is_file() and not dev.get("unlisted") else "写偏离清单",
+                    "detail": dev["problem"]}
+        return {**out, "waiting_for": "跑 sample"}
     out["step"] = "渲染"
     st = _json(d / "status.json") or {}
     qa_ok = (_json(d / "qa.json") or {}).get("status") == "pass"
@@ -149,7 +316,7 @@ def settings(project: Path | None = None) -> dict[str, Any]:
     for k in keys:
         for name, layer in (("project", own), ("user", user), ("repo", repo)):
             if k in layer:
-                values[k], source[k] = layer[k], name
+                values[k], source[k] = brief_mod.normalize(k, layer[k]), name
                 break
     levels = {sl["key"]: {lv["value"]: lv.get("available", True) for lv in sl["levels"]} for sl in sc.get("sliders") or []}
     presets = [{**pr, "available": all(levels.get(k, {}).get(v, True) for k, v in pr["values"].items())} for pr in sc.get("presets") or []]
@@ -178,6 +345,7 @@ def _write_keys(path: Path, updates: dict[str, Any]) -> None:
 
 def set_values(target: str, updates: dict[str, Any]) -> dict[str, Any]:
     """target 是项目目录（写进它的 v2/brief.yaml）或 "default"（写进 Park 的默认值）。先全部校验，再写。"""
+    updates = {k: brief_mod.normalize(k, v) for k, v in updates.items()}
     for k, v in updates.items():
         brief_mod.check_value(k, v)
     if target == "default":
@@ -261,14 +429,41 @@ def find(words: list[dict[str, Any]], text: str) -> list[float]:
     return hits
 
 
-def layers_to_render(project: Path, shots: list[dict[str, Any]], b: dict[str, Any]) -> list[dict[str, Any]]:
+def near(words: list[dict[str, Any]], text: str, k: int = 3, floor: float = 0.4) -> list[dict[str, Any]]:
+    """原话找不到时（稿子写「十分好用」，录的是「非常好用」）：按意思最接近的几处 {at, said, score}。卡上的字用 said。"""
+    from difflib import SequenceMatcher
+    target = check_mod._clean(text)
+    flat, owner = [], []
+    for i, w in enumerate(words):
+        for ch in check_mod._clean(w["w"]):
+            flat.append(ch)
+            owner.append(i)
+    stream, n = "".join(flat), len(target)
+    if not target or not stream:
+        return []
+
+    def score(i: int) -> float:  # 相同的字（ratio）+ 落在同一个位置上的字：「十分好用」更像「非常好用」，不像「好用你听」
+        piece = stream[i:i + n]
+        return 0.7 * SequenceMatcher(None, target, piece).ratio() + 0.3 * sum(x == y for x, y in zip(target, piece)) / n
+    scored = sorted(((score(i), i) for i in range(max(1, len(stream) - n + 1))), key=lambda x: (-x[0], x[1]))
+    out: list[dict[str, Any]] = []
+    for score, i in scored:
+        if score < floor or len(out) >= k:
+            break
+        if any(abs(i - j) < n for j in (o["_i"] for o in out)):
+            continue
+        out.append({"_i": i, "at": words[owner[i]]["start"], "said": stream[i:i + n], "score": round(score, 2)})
+    return [{k2: v for k2, v in o.items() if k2 != "_i"} for o in out]
+
+
+def layers_to_render(project: Path, shots: list[dict[str, Any]], b: dict[str, Any], scale: float = 1.0) -> list[dict[str, Any]]:
     """层要重渲：文件不存在、渲染它的 props（方案 + 外观）变了、或组件代码改过。其余直接复用（样片渲过的镜头整条时不重渲）。"""
     d = _v2(project)
     code_m = _motion_mtime()
     out = []
     for s in shots:
         f = d / "layers" / f"{s['id']}.mov"
-        want = json.loads(json.dumps(layers_mod.layer_props(s, check_mod._zone(s, b), layers_mod.style(b)), sort_keys=True))
+        want = json.loads(json.dumps(layers_mod.saved_props(s, check_mod._zone(s, b), layers_mod.style(b), scale), sort_keys=True))
         if not f.is_file() or f.stat().st_mtime < code_m or _json(layers_mod.props_file(f)) != want:
             out.append(s)
     return out
@@ -311,12 +506,28 @@ def _base(project: Path, meta: dict[str, Any]) -> str:
     return str((Path(project) / meta["rough_cut"]).resolve())
 
 
+def base_scale(project: Path, b: dict[str, Any], meta: dict[str, Any]) -> float:
+    """原片和 brief canvas 的倍数：brief 照旧按 canvas（1920×1080）写坐标，合成时整体放大到原片（4K 就是 2），成片保住原分辨率。
+    宽高比不一样（竖屏原片配横屏 canvas）就停下：放大救不了，canvas 要改。读不出原片尺寸时按 1。"""
+    size = meta.get("size") or video_size(_base(project, meta))
+    if not size:
+        return 1.0
+    (w, h), (cw, ch) = size, b["canvas"]
+    if abs(w * ch - h * cw) > 0.01 * w * ch:
+        raise SystemExit(f"原片是 {w}×{h}，brief 的 canvas 是 {cw}×{ch}，宽高比不一样：canvas 改成和原片同比例（比如 {round(w / h * ch)}×{ch}），"
+                         "face_box、caption_band 照新 canvas 量")
+    return round(w / cw, 4)
+
+
 def do_prep(project: Path) -> None:
     d = _v2(project)
-    brief_mod.load(d / "brief.yaml")
+    b = brief_mod.load(d / "brief.yaml")
     meta = _json(d / "project.json", {})
+    scale = base_scale(project, b, meta)
+    if scale != 1:
+        print(f"原片是 canvas 的 {scale} 倍：坐标照 canvas 写，合成时放大，成片保住原分辨率", file=sys.stderr)
     if not meta.get("srt"):
-        raise SystemExit("没有 SRT：先在剪映导出 SRT 放进项目，再 init --srt")
+        raise SystemExit("没有 SRT：问用户有没有剪映导出的 SRT（有就 init --srt）；确实没有就跑 pv2.py transcribe <项目>")
     subprocess.run([sys.executable, str(ROOT / "scripts/align_srt.py"), _base(project, meta), str((Path(project) / meta["srt"]).resolve()),
                     str(d / "words.json")], check=True)
 
@@ -386,9 +597,10 @@ def do_compare(project: Path) -> Path:
     benches = {s["id"]: bench_mod.resolve(s["benchmark"]) for s in keys}
     out_dir = d / "compare"
     out_dir.mkdir(exist_ok=True)
-    stale = [s for s in layers_to_render(project, plan["shots"], b) if check_mod.is_key(s)]
-    layers_mod.render_layers(plan, b, d / "layers", status=None, only=stale, public=_public(d))
-    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
+    scale = base_scale(project, b, meta)
+    stale = [s for s in layers_to_render(project, plan["shots"], b, scale) if check_mod.is_key(s)]
+    layers_mod.render_layers(plan, b, d / "layers", status=None, only=stale, public=_public(d), scale=scale)
+    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale)
     pairs = []
     for s in keys:
         bm = benches[s["id"]]
@@ -413,7 +625,9 @@ def compare_missing(project: Path, plan: dict[str, Any], b: dict[str, Any]) -> l
     if b.get("effort") not in ("c", "d"):
         return []
     d = _v2(project)
-    stale = {s["id"] for s in layers_to_render(project, plan["shots"], b)}
+    meta = _json(d / "project.json", {}) or {}
+    scale = base_scale(project, b, meta) if meta.get("rough_cut") and b.get("canvas") else 1.0
+    stale = {s["id"] for s in layers_to_render(project, plan["shots"], b, scale)}
     out = []
     for s in key_shots(plan):
         pair, layer = d / "compare" / f"{s['id']}.mp4", d / "layers" / f"{s['id']}.mov"
@@ -427,12 +641,16 @@ def do_sample(project: Path) -> Path:
     missing = compare_missing(project, plan, b)
     if missing:
         raise SystemExit(f"重点镜头 {'、'.join(missing)} 还没和标杆对比（或对比后又改过）：先跑 compare，看过不低于标杆再出样片")
+    problem = deviations_state(project, plan)["problem"]
+    if problem:
+        raise SystemExit(problem)
     status = d / "sample-status.json"
     windows = sample_windows(plan)
-    stale = layers_to_render(project, plan["shots"], b)
+    stale = layers_to_render(project, plan["shots"], b, base_scale(project, b, meta))
     need = [s for s in stale if any(s["start"] < z and a < s["end"] for a, z in windows)]
-    layers_mod.render_layers(plan, b, d / "layers", status=status, only=need, weight=(0, 60), public=_public(d))
-    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
+    scale = base_scale(project, b, meta)
+    layers_mod.render_layers(plan, b, d / "layers", status=status, only=need, weight=(0, 60), public=_public(d), scale=scale)
+    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale)
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "sample.mp4"
     if len(windows) == 1:
@@ -458,9 +676,10 @@ def do_render(project: Path) -> Path:
     if "sample" not in (_json(d / "approvals.json", {}) or {}):
         raise SystemExit("Park 还没批样片，不渲染整条")
     status = d / "status.json"
-    layers_mod.render_layers(plan, b, d / "layers", status=status, only=layers_to_render(project, plan["shots"], b), weight=(0, 45),
-                             public=_public(d))
-    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers")
+    scale = base_scale(project, b, meta)
+    layers_mod.render_layers(plan, b, d / "layers", status=status, only=layers_to_render(project, plan["shots"], b, scale), weight=(0, 45),
+                             public=_public(d), scale=scale)
+    rp = layers_mod.render_plan(plan, b, base=_base(project, meta), layer_dir=d / "layers", scale=scale)
     (d / "render-plan.json").write_text(json.dumps(rp, ensure_ascii=False, indent=2), encoding="utf-8")
     out = d / "final.mp4"
     render_mod.render(rp, out, status, weight=(45, 90))
@@ -538,17 +757,27 @@ def main(argv: list[str]) -> int:
     if len(argv) > 1 and argv[1] in ("worktable", "hook"):
         return _main_cut(argv)
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("cmd", choices=("init", "prep", "check", "find", "compare", "sample", "approve", "render", "qa", "status", "evidence"))
+    ap.add_argument("cmd", choices=("init", "transcribe", "prep", "check", "find", "deviations", "compare", "sample", "approve", "render", "qa",
+                                    "status", "evidence"))
     ap.add_argument("project")
     ap.add_argument("gate", nargs="?")
     ap.add_argument("--video")
     ap.add_argument("--srt")
+    ap.add_argument("--pack")
     ap.add_argument("-m", "--message", default="")
     ap.add_argument("--detach", action="store_true")
     a = ap.parse_args(argv[1:])
     project = Path(a.project).expanduser()
     if a.cmd == "init":
-        print(init(project, video=a.video, srt=a.srt))
+        print(init(project, video=a.video, srt=a.srt, pack=a.pack))
+        meta = _json(_v2(project) / "project.json", {})
+        print(f"字幕：{meta['srt']}" if meta.get("srt") else "没找到 SRT：问用户有没有剪映导出的 SRT；确实没有就跑 transcribe", file=sys.stderr)
+    elif a.cmd == "transcribe":
+        print(transcribe(project))
+    elif a.cmd == "deviations":
+        st = deviations_state(project, _json(_v2(project) / "plan.json"))
+        print(json.dumps(st, ensure_ascii=False, indent=2))
+        return 1 if st["problem"] else 0
     elif a.cmd == "prep":
         do_prep(project)
     elif a.cmd == "check":
@@ -560,7 +789,8 @@ def main(argv: list[str]) -> int:
         return 1 if found else 0
     elif a.cmd == "find":
         words = (_json(_v2(project) / "words.json", {}) or {}).get("words") or []
-        print(json.dumps({"text": a.gate, "spoken_at": find(words, a.gate or "")}, ensure_ascii=False))
+        hits = find(words, a.gate or "")
+        print(json.dumps({"text": a.gate, "spoken_at": hits, **({} if hits else {"near": near(words, a.gate or "")})}, ensure_ascii=False))
     elif a.cmd in ("compare", "sample", "render"):
         if a.detach:
             _detach(argv, project)

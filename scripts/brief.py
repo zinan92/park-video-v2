@@ -17,6 +17,7 @@ USER_DEFAULTS_ENV = "PV2_USER_DEFAULTS"  # 测试时指到临时文件
 REQUIRED = ("video_type", "canvas", "motion_placement", "no_motion", "captions_burned_in")
 PLACEMENTS = ("overlay-sides", "broll", "fullscreen")
 DENSITY = {"low": (0.10, 0.20), "medium": (0.30, 0.40), "high": (0.50, 1.0)}  # 动效占可加动效时长的比例
+ALIASES = {"density": {"mid": "medium"}}  # 工作台渲染包的 settings.json 写过 mid
 
 
 class NeedsPark(Exception):
@@ -47,8 +48,14 @@ def defaults() -> dict[str, Any]:
     return {**_yaml(DEFAULTS), **_yaml(user_defaults_path())}
 
 
+def normalize(key: str, value: Any) -> Any:
+    """别名换成正式取值（density: mid → medium）；其余原样。"""
+    return ALIASES.get(key, {}).get(value, value) if isinstance(value, str) else value
+
+
 def check_value(key: str, value: Any) -> None:
     """按 settings.yaml 校验一个设置的取值；不认识的 key 不管（brief 里还有 face_box 之类）。"""
+    value = normalize(key, value)
     sc = schema()
     for sl in sc.get("sliders") or []:
         if sl["key"] == key:
@@ -80,7 +87,7 @@ def check_value(key: str, value: Any) -> None:
 
 def load(path: Path) -> dict[str, Any]:
     own = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-    data = {**defaults(), "banned_words": [], **own}
+    data = {k: normalize(k, v) for k, v in {**defaults(), "banned_words": [], **own}.items()}
     missing = [k for k in REQUIRED if k not in data]
     if data.get("motion_placement") == "overlay-sides" and "face_box" not in data:
         missing.append("face_box")
@@ -103,7 +110,12 @@ def coverage_range(b: dict[str, Any]) -> tuple[float, float]:
     if b.get("coverage"):
         lo, hi = b["coverage"]
         return float(lo), float(hi)
-    return DENSITY[b.get("density", "medium")]
+    return DENSITY[normalize("density", b.get("density", "medium"))]
+
+
+def min_text_px(b: dict[str, Any], base: int = 56) -> float:
+    """卡上主要文字的最小字号：1080p 画布是 base px，canvas 写成 4K 就跟着翻倍。"""
+    return base * (b.get("canvas") or [1920, 1080])[1] / 1080
 
 
 def side_zones(b: dict[str, Any], margin: int = 40) -> tuple[dict[str, int], dict[str, int]]:

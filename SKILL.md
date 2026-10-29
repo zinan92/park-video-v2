@@ -18,11 +18,12 @@ description: Park 的口播视频全流程：标 Hook、切 Hook、给口播加�
 | 2 | 标 Hook：出表，Park 在表里标开头用哪几句（顺手写视觉想法）→ **等 Park ①** | `pv2.py worktable <项目>` | `analysis/worktable.html` → Park 存回 `analysis/worktable.json` |
 | 3 | 切 Hook：原话对到词级时间，切点挪到停顿，切出的声音再听首尾字 | `pv2.py hook <项目>` | `part-a-hook/individual/h1.mp4…hN.mp4`、`edit.json`、`qa.json`（Park 拖进剪映拼到开头） |
 | **加动效** ||||
-| 4 | brief：建 v2/，问清这条的版式、哪些时间段不加、字幕是否烧录、不能出现的词 | `pv2.py init <项目> --video 粗剪 --srt SRT` | `v2/brief.yaml` |
+| 4 | brief：建 v2/，问清这条的版式、哪些时间段不加、字幕是否烧录、不能出现的词；有工作台的渲染包就一起放进来 | `pv2.py init <项目> --video 粗剪 [--pack 渲染包]`（SRT 自己找，找不到问用户，确实没有 `pv2.py transcribe`） | `v2/brief.yaml`、`v2/pack-beats.json` |
 | 5 | 对齐：SRT 对齐音频，拿到每个字的时间 | `pv2.py prep <项目>` | `v2/words.json` |
 | 6 | 写方案：逐个时刻判断这句要观众明白什么、用什么画面；**不需要画面就不放**（保留真人也是决定） | AI | `v2/plan.json` |
 | 7 | **ShotCraft 接入**：方案要的画面，组件库（`pv2.py catalog`）里没有的，去 Video-ShotCraft 挑卡（`pv2.py shotcraft`），照它的 demo 源码改编成组件、注册进库 | AI | `motion/src/library/` 新组件 |
-| 8 | 检查：程序查方案（时机、遮挡、密度、禁用词…）；精品档每个重点镜头和标杆左右对比 | `pv2.py check` / `pv2.py compare` | `check` 输出 `[]`、`v2/compare/` |
+| 8 | 检查：程序查方案（时机、遮挡、密度、禁用词、字号…）；精品档每个重点镜头和标杆左右对比 | `pv2.py check` / `pv2.py compare` | `check` 输出 `[]`、`v2/compare/` |
+| 8½ | 有渲染包 / motion-picks 时：没照方案做的每一镜 + 原因列给 Park → **他看过才出样片** | `pv2.py deviations <项目>`，认可后 `approve <项目> deviations -m "原话"` | `v2/deviations.json` |
 | 9 | 样片 → **等 Park ②** | `pv2.py sample <项目> --detach`，认可后 `approve <项目> sample -m "原话"` | `v2/sample.mp4` |
 | 10 | 整条：层 → 合成 → 终检 | `pv2.py render <项目> --detach` | `v2/final.mp4`、`qa.json`、`contact.jpg` |
 | 11 | 成片 → **等 Park ③** | `pv2.py approve <项目> final -m "原话"` | 批准记录 |
@@ -43,16 +44,34 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 ## 加动效（环节 4–11）
 
 1. **brief（Park 说，你不猜）**
-   `python3 scripts/pv2.py init <项目> --video <粗剪> --srt <剪映SRT>`，然后把 Park 的原话填进 `<项目>/v2/brief.yaml`。
+   `python3 scripts/pv2.py init <项目> --video <粗剪> [--pack <渲染包文件夹>]`，然后把 Park 的原话填进 `<项目>/v2/brief.yaml`。
+   - **字幕**：不给 `--srt` 时，`init` 在视频旁边找（同名 .srt → 旁边唯一一个 .srt → `subtitles/source.srt`），找到会打印路径。**没找到就问用户有没有剪映导出的 SRT**，有就 `init --srt`；确实没有，跑 `python3 scripts/pv2.py transcribe <项目>`，在本机转写一份 `v2/source.srt`（要 mlx-whisper），后面照常 prep。没有 SRT 的视频通常也没烧字幕，`captions_burned_in` 照实问。
+   - **4K 原片**：`canvas` 照旧写 `[1920, 1080]`，`face_box` / `caption_band` 在缩到 1920 宽的截图上量。`prep` 会读原片分辨率：同比例更大（4K）就合成时整体放大（动效层用 Remotion `--scale` 渲，字不糊），成片保住原分辨率，**不要先转 1080p 工作副本**；比例不同会直接报错，照提示改 canvas。
    每条视频只问 Park 这几项：视频类型、动效怎么放（`overlay-sides` 人脸居中两侧透明叠加 / `broll` / `fullscreen`）、哪些时间段不加动效、字幕是否已烧进画面、**不能出现在画面上的词**（客户名、地名…，写进项目的 `banned_words`，绝不写进本仓库）。
    人脸位置 `face_box` 和字幕带 `caption_band`：从粗剪的真实画面截两帧量，不要猜。
    风格和规则（**密度**、**努力程度**、卡片底色、强调色、能不能改写原话……）全部列在 `settings.yaml`，默认值在 `defaults.yaml`（Park 在工作台设的默认值在 `~/.config/park-video-v2/defaults.yaml`，优先），**不要再问**。他说这条要不一样，用 `pv2.py set <项目> --json '{...}'` 改（会先校验、还没做的档位会被拒），不要手改 yaml。`pv2.py settings <项目>` 看当前取值和来源。音效、背景音乐不在这个流程里（Park 在剪映加）。
 2. **prep**：`python3 scripts/pv2.py prep <项目>` → `v2/words.json`（SRT 对齐音频，约 30 秒）。
 3. **写 plan.json**（见下）→ `python3 scripts/pv2.py check <项目>`，输出 `[]` 才算过。
-4. **样片**（精品档先 `compare`，见下）：`python3 scripts/pv2.py sample <项目> --detach`，用 `status` 看进度。完成后**停下**，把 `v2/sample.mp4` 发给 Park。
-5. Park 认可后：`python3 scripts/pv2.py approve <项目> sample -m "<Park 原话>"`。
-6. **整条**：`python3 scripts/pv2.py render <项目> --detach`（层 → 合成 → 终检，`status` 里有真实百分比）。完成后把 `v2/final.mp4`、`v2/contact.jpg` 给 Park。
-7. Park 确认：`python3 scripts/pv2.py approve <项目> final -m "<Park 原话>"`。
+4. **偏离清单**（有渲染包或 `v2/motion-picks.json` 时，见下「有渲染包时」）：`pv2.py deviations <项目>` 没问题才往下走。
+5. **样片**（精品档先 `compare`，见下）：`python3 scripts/pv2.py sample <项目> --detach`，用 `status` 看进度。完成后**停下**，把 `v2/sample.mp4` 发给 Park。
+6. Park 认可后：`python3 scripts/pv2.py approve <项目> sample -m "<Park 原话>"`。
+7. **整条**：`python3 scripts/pv2.py render <项目> --detach`（层 → 合成 → 终检，`status` 里有真实百分比）。完成后把 `v2/final.mp4`、`v2/contact.jpg` 给 Park。
+8. Park 确认：`python3 scripts/pv2.py approve <项目> final -m "<Park 原话>"`。
+
+## 有渲染包时：渲染包就是方案，不是参考
+
+渲染包是用户在选题工作台看过、挑过的镜头表（每镜 `line` 原句 / `motion` ShotCraft 卡 / `why` / `preview`）。`init --pack` 把它放进 `v2/pack-beats.json`，`settings.json` 里的密度、努力合进 brief（`density: mid` 按 `medium` 读）。`v2/motion-picks.json` 同样对待。
+
+1. **每一镜都照它的 `motion` 做。** 先按意思把 `line` 落到录音时刻：`pv2.py find <项目> "原句"`；找不到时它会给 `near`（意思最接近的几处和他实际说的话）。在 plan.json 里给这个镜头标 `"beat": <n>`。
+2. **卡上的字以录音（SRT / words.json）为准，不抄渲染包的 `line`。** 稿子写「十分好用」、他录的是「非常好用」，卡上就是「非常好用」，照样只删不换（`rewrite: trim-only`）。
+3. **组件库里没有这张卡的组件（`pv2.py catalog` 里没有哪个组件的 `shotcraft` 写着它），就走第 7 环节去 ShotCraft 改编**，登记进 catalog 时把这张卡名写进 `shotcraft`。不准拿「效果最接近」的现成组件顶替。
+4. **努力档位按改编后的实际做工定，不按 ShotCraft 原档。** 花括号拉开这类文字动效，改编成区域组件后是 b 档就登记 b。渲染包的 motion 和 brief 的 effort 还是冲突（改编后确实超出这一档），**先问 Park**，不准自己降级替换。
+5. **做不了的（运镜要动原画面、改编不出来、和 brief 的规矩冲突），出样片之前列给 Park**：写进 `v2/deviations.json`：
+   ```json
+   [{"beat": 2, "motion": "brace-expand", "instead": "IconList", "why": "为什么做不了 / 为什么这样换"}]
+   ```
+   全照做了就写 `[]`。跑 `pv2.py deviations <项目>`：没标 `beat` 或没照方案做、又不在清单里的镜头会被点名。把清单发给 Park，他认可后 `pv2.py approve <项目> deviations -m "<原话>"`。**`sample` 会拒绝**：有渲染包却没有清单、清单漏了镜头、清单没批或批过又改了。
+6. 密度、字数、交替、no_motion 这些规矩照样要过 check；方案和规矩冲突时同样写进偏离清单问 Park，不在最后汇报里顺带一句。
 
 ## 精品档（effort c / d）的流程：先意思、功夫集中在 2–3 个重点时刻、每张都过标杆
 
@@ -71,12 +90,21 @@ Park 的判断：组件做得再细，表达错了就是 10–20 分；16 张卡
 
 先读 brief（含 defaults.yaml 合并后的值），照着规则写，**一次写对，不要靠 check 报错再改**。check 会拦下所有违反下面规则的镜头。
 
-- **有 `v2/motion-picks.json` 就照它挑。** 那是 Park 在内容工作台「AI 排动效」里看过（可能亲手换过）的方案：每句原话（`line`）配哪张 ShotCraft 卡（`shotcraft`）、引擎里现成的组件（`component`，空 = 还没接进引擎）、为什么（`why`）。先用 `pv2.py find` 把这几句落到时刻，镜头照它放；有 `component` 直接用，没有就选效果最接近的组件或照那张卡改编。下面这些规矩（密度、努力、字数、交替、no_motion）照样优先：冲突时按规矩来，回执里说哪几句没照方案、为什么。
+- **有 `v2/motion-picks.json` 或渲染包（`v2/pack-beats.json`）就照它做**，规则见上面「有渲染包时」：每句原话（`line`）配哪张 ShotCraft 卡（`shotcraft` / `motion`）、引擎里现成的组件（`component`，空 = 还没接进引擎）、为什么（`why`）。有 `component` 直接用，没有就照那张卡改编；做不了的写进偏离清单，Park 看过才出样片。
 - **只用他说出口的话和数字。** 每段文字的出现时刻 = 他说出这句话的时刻：`python3 scripts/pv2.py find <项目> "原话"` 查。
 - `rewrite: trim-only`：卡上每一段字（含 kicker、标题）都只能从原话里删字得到，不能换词、不能加词。「非常重要」不能写成「最重要」。
 - `banned_words`：一个都不能出现在卡上。
 - `max_items`：lines / items / notes 每样不超过这么多条。`text_amount: one-point`：一张卡一个重点，卡上字加起来不超过 24 个。
-- **一行要短**：TextLines 每行不折行、按区域宽度定字号，字号低于 56px 会被拦下。右侧窄区一行大约 7 个字以内，长句拆成两三行。
+- **一行要短**：带字的组件每行都不折行、按区域宽度缩字号，主要文字低于 56px（1080p；canvas 写 4K 时是 112px）会被拦下（`text-too-small`，TextLines、Quote、ListSteps、IconPoint、IconList、Flow、Bars、Cycle、Funnel、Compare 都查；c 档组件看 `min_zone_w` 和 `limits`）。区域宽度由 face_box 推出，下面是一行最多几个汉字（数字、英文约 0.6 个字）：
+
+  | 区域宽 | TextLines / Quote / IconPoint | IconList | Flow | Compare | ListSteps | Bars 标签 | Funnel（自上而下） | Cycle 节点 |
+  |---|---|---|---|---|---|---|---|---|
+  | 440px | 只有 TextLines 第一行 ≤5 字，第 2 行起放不下 | 放不下 | 放不下 | 放不下 | 放不下 | 放不下 | 放不下 | 放不下 |
+  | 560px | 7（Quote / IconPoint 第 2 行起放不下） | 5 | 6 | 6 | 放不下 | 放不下 | 放不下 | 放不下 |
+  | 620px | 8 | 6 | 7 | 7 | 7 | 8 | 6 / 5 / 4 | 3 |
+  | 760px | 10 | 8 | 9 | 9 | 8 | 10 | 7 / 6 / 5 | 4 |
+
+  窄的一侧（440px 这种）只放一个短词的 TextLines、数字卡或截图，内容多的卡放宽的一侧；长句拆成两三行。kicker、注释、来源这些小字是固定小号，不查。
 - **两把主旋钮**：
   - `density` 管**多少**：动效时长占可加动效时长（去掉 no_motion）的比例，low 10–20% / medium 30–40% / high 50% 以上；brief 里写 `coverage: [下限, 上限]` 可以直接指定。check 不在区间就拦。按内容挑够卡、每张停够时间来凑比例，不要塞空卡。
   - `effort` 管**多精**：a 文字卡 / b 图表、示意图、图标 / c 层次丰富、像专业 AE / d 先用 Codex 画图再做动画。组件的努力程度见 `motion/src/library/catalog.json`，不能超过 brief 的档；低于这一档的卡最多占 40%（精品档例外：只要求重点时刻是 c 档以上）。
@@ -160,4 +188,4 @@ Park 说的样式名对不上组件时，查 `pv2.py catalog`：每个组件有�
 
 卡片外观（毛玻璃 / 纸卡 / 深色 / 无卡片、强调色、能不能冲过头）由 brief 决定，组件里用 `useLook()` 取颜色和弹出曲线，不要写死颜色。毛玻璃的模糊在合成时由 `render.py` 用原画面做。
 
-需要新样式：从 Video-ShotCraft（主库，Park 的私有快照 `~/work/video-shotcraft-snapshot`，`pv2.py shotcraft` 列全部卡）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记努力程度和形式（ShotCraft 级的多层质感是 `c`，先用 Codex 画图再做动画的是 `d`，`d` 的组件还没有）。新的 c 组件：所有光晕、阴影收在卡片里，动作在 settle 内做完后一帧不动（`tests/test_layers.py` 的 still_after 测试会实测）。
+需要新样式：从 Video-ShotCraft（主库，Park 的私有快照 `~/work/video-shotcraft-snapshot`，`pv2.py shotcraft` 列全部卡）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记努力程度、形式和 `shotcraft`（从哪张卡改编的）。努力程度按改编后的实际做工定，不照搬 ShotCraft 原档：文字类、单层动作的是 `b`，多层质感、像专业 AE 的是 `c`，先用 Codex 画图再做动画的是 `d`（`d` 的组件还没有）。新的 c 组件：所有光晕、阴影收在卡片里，动作在 settle 内做完后一帧不动（`tests/test_layers.py` 的 still_after 测试会实测）。

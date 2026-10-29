@@ -37,7 +37,7 @@ CATALOG_FILE = MOTION / "src" / "library" / "catalog.json"
 ICON_DIR = MOTION / "node_modules" / "lucide-react" / "dist" / "esm" / "icons"
 EFFORT = {"a": 0, "b": 1, "c": 2, "d": 3}
 LISTS = ("lines", "items", "notes", "nodes", "layers", "bars", "steps")
-MIN_TEXT_PX = 56  # TextLines 每行不折行、按卡片宽度定字号；比这小就看不清，要拆行
+MIN_TEXT_PX = 56  # 带字组件每行不折行、按卡片宽度缩字号；1080p 下比这小就看不清，要拆短（canvas 是 4K 时按比例翻倍）
 SHADOW_MARGIN, PAD_X = 28, 42  # 和 motion/src/kit/Card.tsx 一致
 
 
@@ -169,6 +169,52 @@ def line_px(text: str, zone_w: int, i: int) -> int:
     k = (zone_w - 2 * SHADOW_MARGIN) / 600
     inner = zone_w - 2 * SHADOW_MARGIN - 2 * PAD_X * k
     return int(min((96 if i == 0 else 72) * k, inner // max(1.0, _em_width(text))))
+
+
+def _fit(text: str, top: float, avail: float) -> int:
+    """和 motion/src/kit/parts.tsx 的 fit 一致：不超过 top，一行放得下。"""
+    return int(min(top, avail // max(1.0, _em_width(text))))
+
+
+def text_px(component: str, props: dict[str, Any], zone_w: int) -> list[tuple[str, int]]:
+    """组件上每段主要文字实际会用的字号（px），照各组件 .tsx 里的公式算。小字（kicker、注释、来源、数字下的说明）是设计好的固定小号，不算。
+    c 档组件不在这里：它们有自己的 min_zone_w 和每段字数上限（catalog.json 的 limits）。"""
+    k = (zone_w - 2 * SHADOW_MARGIN) / 600
+    inner = zone_w - 2 * SHADOW_MARGIN - 2 * PAD_X * k
+    u = lambda px: px * k  # noqa: E731
+
+    def same(texts: list[str], top: float, avail: float) -> list[tuple[str, int]]:  # 一张卡里所有条用同一个字号（取最小）
+        size = min((_fit(t, top, avail) for t in texts), default=0)
+        return [(t, size) for t in texts]
+
+    def texts(key: str) -> list[str]:
+        return [x["text"] if isinstance(x, dict) else x for x in props.get(key) or [] if isinstance(x, (dict, str))]
+
+    lines = [t for t in props.get("lines") or [] if isinstance(t, str)]
+    if component == "TextLines":
+        return [(t, line_px(t, zone_w, i)) for i, t in enumerate(lines)]
+    if component == "Quote":
+        return [(t, _fit(t, u(76 if i == 0 else 64), inner - u(34))) for i, t in enumerate(lines)]
+    if component == "IconPoint":
+        return [(t, _fit(t, u(84 if i == 0 else 64), inner)) for i, t in enumerate(lines)]
+    if component == "ListSteps":
+        return same(texts("items"), u(60), inner - u(64) - u(24))
+    if component == "IconList":
+        return same(texts("items"), u(76), inner - u(104) - u(24))
+    if component == "Flow":
+        return same(texts("steps"), u(72), inner - u(60))
+    if component == "Bars":
+        return same([b.get("label", "") for b in props.get("bars") or [] if isinstance(b, dict)], u(64), inner)
+    if component == "Cycle":
+        return same(texts("nodes"), u(60), min(inner, u(600)) * 0.38)
+    if component == "Funnel":
+        layers = texts("layers")
+        n = len(layers)
+        return [(t, _fit(t, u(64), inner * (1 - 0.38 * (i + 1) / n) * 0.8)) for i, t in enumerate(layers)]
+    if component == "Compare":
+        titles = [x.get("title", "") for x in (props.get("top"), props.get("bottom")) if isinstance(x, dict)]
+        return same(titles, u(68), inner - u(58))
+    return []
 
 
 def coverage(plan: dict[str, Any], b: dict[str, Any]) -> float:
@@ -307,11 +353,12 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
         n = sum(len(_clean(t)) for t in _texts(props))
         if n > ONE_POINT_CHARS:
             add("not-one-point", s, f"卡上一共 {n} 个字，一张卡一个重点最多 {ONE_POINT_CHARS} 个")
-    if s.get("component") == "TextLines":
-        w = _zone(s, b)["w"]
-        for i, line in enumerate(props.get("lines") or []):
-            if line_px(line, w, i) < MIN_TEXT_PX:
-                add("text-too-small", s, f"「{line}」在这块区域里只能用 {line_px(line, w, i)}px 字号，拆短一点（至少 {MIN_TEXT_PX}px）")
+    floor = brief_mod.min_text_px(b, MIN_TEXT_PX)
+    w = _zone(s, b)["w"]
+    for text, px in text_px(s.get("component", ""), props, w):
+        if text and px < floor - 1e-9:
+            add("text-too-small", s, f"「{text}」在 {w}px 宽的区域里 {s.get('component')} 只能用 {px}px 字号（至少 {round(floor)}px）："
+                                     "拆短、换到更宽的一侧，或换组件")
     entry = _catalog().get(s.get("component", ""), {})
     if s.get("component") in (b.get("avoid") or []):
         add("avoided-component", s, f"{s.get('component')}（{entry.get('name', '')}）在「不用的样式」里")

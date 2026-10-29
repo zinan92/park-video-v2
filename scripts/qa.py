@@ -75,8 +75,9 @@ def hold_is_static(layer: Path, *, hold_offset: float, end_offset: float) -> boo
 
 def placement_checks(plan: dict[str, Any], b: dict[str, Any]) -> list[dict[str, str]]:
     out = []
-    band = b.get("caption_band")
-    face = b.get("face_box") if b.get("motion_placement") == "overlay-sides" else None
+    k = plan.get("scale") or 1  # render-plan 是原片像素，brief 量的是 canvas 像素
+    band = [round(v * k) for v in b["caption_band"]] if b.get("caption_band") else None
+    face = [round(v * k) for v in b["face_box"]] if b.get("face_box") and b.get("motion_placement") == "overlay-sides" else None
     for s in plan.get("shots") or []:
         _x, _y, w, h = s["src_rect"]
         p = fit((w, h), s["zone"])

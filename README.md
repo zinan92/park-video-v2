@@ -8,7 +8,7 @@ Park 的口播视频全流程：标 Hook、切 Hook、加动效、出样片和�
 ```bash
 python3 scripts/pv2.py worktable <项目>        # 字幕 → 标 Hook 的表 analysis/worktable.html，Park 标完存回 worktable.json
 python3 scripts/pv2.py hook   <项目>            # 照表切 Hook → part-a-hook/individual/h1.mp4…，拖进剪映拼
-python3 scripts/pv2.py init   <项目> --video 粗剪.mov --srt source.srt   # 然后填 v2/brief.yaml
+python3 scripts/pv2.py init   <项目> --video 粗剪.mov [--pack 渲染包]   # SRT 在视频旁边自己找；然后填 v2/brief.yaml
 python3 scripts/pv2.py prep   <项目>
 python3 scripts/pv2.py check  <项目>            # AI 写好 v2/plan.json 后
 python3 scripts/pv2.py compare <项目>           # 精品档：重点镜头和标杆左右对比，不低于标杆才往下

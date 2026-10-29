@@ -86,3 +86,18 @@ def test_density_maps_to_a_coverage_range_and_can_be_overridden(tmp_path):
     p.write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8") + "effort: e\n", encoding="utf-8")
     with pytest.raises(ValueError, match="effort"):
         brief.load(p)
+
+
+def test_mid_from_the_render_pack_is_read_as_medium(tmp_path):
+    brief.check_value("density", "mid")  # 工作台渲染包的 settings.json 写的是 mid
+    p = tmp_path / "brief.yaml"
+    p.write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8") + "density: mid\n", encoding="utf-8")
+    assert brief.load(p)["density"] == "medium"
+    assert brief.coverage_range({"density": "mid"}) == brief.DENSITY["medium"]
+    with pytest.raises(ValueError):
+        brief.check_value("density", "middle")
+
+
+def test_min_text_size_follows_the_canvas():
+    assert brief.min_text_px({"canvas": [1920, 1080]}) == 56
+    assert brief.min_text_px({"canvas": [3840, 2160]}) == 112

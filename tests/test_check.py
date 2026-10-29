@@ -1,3 +1,5 @@
+import pytest
+
 import check
 
 WORDS = {"words": [
@@ -299,3 +301,37 @@ def test_premium_non_key_cards_may_be_plain():
     """功夫集中在重点时刻：其余的卡用 b 档、甚至文字卡，不算偷懒。"""
     assert "effort-too-low" not in rules(_premium(), effort="c", rewrite="summarize")
     assert "effort-too-low" in rules(card(), effort="b")
+
+
+def test_icon_list_in_the_narrow_left_zone_is_too_small():
+    # 10/29 样片：V02 图标列表放在左侧 440px，一条 11 个字，整张卡的字被缩到二十来 px，check 没拦
+    narrow = {"x": 40, "y": 40, "w": 440, "h": 788}
+    v02 = card(component="IconList", zone=narrow, reveals=[],
+               props={"items": [{"icon": "users", "text": "重要的问题", "at": 10.3}]})
+    assert "text-too-small" in rules(v02, rewrite="summarize")
+    assert "text-too-small" not in rules({**v02, "zone": "right"}, rewrite="summarize")  # 右侧 620px 放得下这一条
+
+
+@pytest.mark.parametrize("component,props", [
+    ("IconPoint", {"icon": "users", "iconAt": 10.3, "lines": ["两件非常重要的问题"], "ats": [10.3]}),
+    ("Flow", {"steps": [{"text": "两件非常重要的问题", "at": 10.3}]}),
+    ("Funnel", {"layers": [{"text": "两件", "at": 10.3}, {"text": "非常重要的问题", "at": 10.6}]}),
+    ("Compare", {"top": {"title": "两件非常重要的问题", "at": 10.3}, "bottom": {"title": "问题", "at": 10.6},
+                 "symbol": "≠", "symbolAt": 10.5}),
+    ("ListSteps", {"items": ["两件非常重要的问题"], "ats": [10.3]}),
+    ("Quote", {"lines": ["两件非常重要的问题"], "ats": [10.3]}),
+])
+def test_every_text_component_gets_the_size_check(component, props):
+    assert "text-too-small" in rules(card(component=component, reveals=[], props=props), rewrite="summarize")
+    assert all(px > 0 for _t, px in check.text_px(component, props, 560))
+
+
+def test_text_floor_doubles_on_a_4k_canvas():
+    # canvas 直接写 4K：区域宽一倍、字号大一倍，下限也翻倍，结论和 1080p 一样
+    item = {"items": [{"icon": "users", "text": "重要的问题", "at": 10.3}]}
+    wide = card(component="IconList", reveals=[], props=item, zone={"x": 2520, "y": 80, "w": 1240, "h": 1576})
+    assert "text-too-small" not in rules(wide, rewrite="summarize", canvas=[3840, 2160], caption_band=[1736, 2000],
+                                         face_box=[1400, 280, 1040, 1520])
+    narrow = {**wide, "zone": {"x": 80, "y": 80, "w": 880, "h": 1576}}
+    assert "text-too-small" in rules(narrow, rewrite="summarize", canvas=[3840, 2160], caption_band=[1736, 2000],
+                                     face_box=[1400, 280, 1040, 1520])
