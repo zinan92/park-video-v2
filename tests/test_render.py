@@ -170,3 +170,24 @@ def test_slow_push_zooms_the_footage_and_cuts_back(tmp_path):
     assert diff(0.5) < 2 and diff(1.2) < 2  # 推之前一样；刚开始推得很慢（越推越快）
     assert diff(3.9) > 8  # 快推到头：画面明显放大
     assert diff(4.5) < 2  # 到点硬切回原样
+
+
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="needs ffmpeg")
+def test_panel_goes_behind_a_layer_and_fades_with_the_shot(tmp_path):
+    base = tmp_path / "base.mp4"
+    layer = tmp_path / "layer.mov"
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=gray:size=320x180:rate=30:duration=3",
+                    "-f", "lavfi", "-i", "sine=duration=3", "-shortest", "-pix_fmt", "yuv420p", str(base)], check=True)
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=black@0.0:size=320x180:rate=30:duration=3,format=rgba",
+                    "-c:v", "qtrle", str(layer)], check=True)  # 全透明的层：画面上只看得到垫的底
+    shot = {"id": "P", "start": 1.0, "end": 2.5, "layer": str(layer), "src_rect": [0, 0, 320, 180],
+            "zone": {"x": 20, "y": 20, "w": 100, "h": 60}, "panel": [20, 22, 28, 255], "radius": 8}
+    out = tmp_path / "out.mp4"
+    render.render({"base": str(base), "canvas": [320, 180], "shots": [shot]}, out, None, start=0.0, end=3.0)
+
+    def pixel(t):
+        r = subprocess.run(["ffmpeg", "-v", "error", "-ss", str(t), "-i", str(out), "-frames:v", "1", "-vf", "crop=2:2:70:50",
+                            "-f", "rawvideo", "-pix_fmt", "gray", "-"], capture_output=True, check=True)
+        return r.stdout[0]
+    assert pixel(0.5) > 100 and pixel(2.0) < 60 and pixel(2.8) > 100  # 镜头前是灰的，镜头里垫了深色底，走了又回到灰
+    assert not list(tmp_path.glob("*.panel-*.png"))  # 底图用完就删

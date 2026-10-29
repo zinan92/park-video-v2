@@ -80,7 +80,7 @@ def test_banned_words_never_ship_in_the_public_defaults():
 
 def test_density_maps_to_a_coverage_range_and_can_be_overridden(tmp_path):
     assert brief.coverage_range({"density": "low"}) == (0.10, 0.20)
-    assert brief.coverage_range({"density": "high"}) == (0.50, 1.0)
+    assert brief.coverage_range({"density": "high"}) == (0.50, 0.60)  # 10/29 定的标准：高也不超过 60%，人脸要留够
     assert brief.coverage_range({"density": "medium", "coverage": [0.25, 0.35]}) == (0.25, 0.35)
     p = tmp_path / "brief.yaml"
     p.write_text((ROOT / "brief.example.yaml").read_text(encoding="utf-8") + "effort: e\n", encoding="utf-8")
@@ -101,3 +101,11 @@ def test_mid_from_the_render_pack_is_read_as_medium(tmp_path):
 def test_min_text_size_follows_the_canvas():
     assert brief.min_text_px({"canvas": [1920, 1080]}) == 56
     assert brief.min_text_px({"canvas": [3840, 2160]}) == 112
+
+
+def test_density_turns_into_a_number_of_cards():
+    """10/29 Park：低中高要有标准。比例是标准，张数从它换算（一张卡平均 5 秒）。3 分半中密度 13–16 张，不是 27 张。"""
+    assert brief.cards_for(210, "medium") == (13, 16)
+    assert brief.cards_for(210, "mid") == (13, 16)
+    assert brief.cards_for(210, "low") == (5, 8)
+    assert brief.cards_for(210, "high") == (21, 25)

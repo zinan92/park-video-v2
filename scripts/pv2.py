@@ -22,6 +22,8 @@
   pv2.py catalog                        动效图鉴：每个组件的中文名、形式、努力程度、演示片段，JSON
   pv2.py gallery [组件名 ...]           重新渲染图鉴里组件的演示片段（gallery/；不写组件名就全部）
   pv2.py shotcraft                      Video-ShotCraft 全部样式卡的名字、一句话、分类、预览：Park 叫不出名字时翻它挑
+  pv2.py shotcraft-sync                 跟 ShotCraft 原仓库同步（拉最新、生成注册表），报告新增 / 下架的卡
+  pv2.py shotcraft-measure [卡 ...]     量卡：能放侧边 / 只能全屏 / 用不了、卡上有哪些字可换 → motion/src/shotcraft/manifest.json
 
 进度：样片写 v2/sample-status.json，整条写 v2/status.json，都是 {state, stage, done, total, unit, percent}。
 --detach 在独立进程组里跑：调它的 agent 退出也不会把渲染带走。
@@ -453,23 +455,34 @@ SHOTCRAFT_INSTALLED = Path.home() / ".agents" / "skills" / "video-shotcraft"
 
 
 def shotcraft_home() -> Path:
+    """ShotCraft 在哪：10/29 起跟原仓库同步（scripts/shotcraft.py sync 拉到本机缓存）；没同步过才退回旧快照。"""
+    import shotcraft as sc
     if os.environ.get(SHOTCRAFT_ENV):
         return Path(os.environ[SHOTCRAFT_ENV]).expanduser()
+    if (sc.repo() / "references").is_dir():
+        return sc.repo()
     return SHOTCRAFT_SNAPSHOT if SHOTCRAFT_SNAPSHOT.is_dir() else SHOTCRAFT_INSTALLED
 
 
 def shotcraft() -> list[dict[str, Any]]:
-    """Video-ShotCraft 的全部样式卡（它自己的 gallery/api/library.json）：名字、一句话、适用、分类、
-    海报图、预览视频本地有就给路径（预览是快照里在本机重渲的）。改编成我们的组件时按 name 找源码。"""
+    """Video-ShotCraft 的全部样式卡：名字、一句话、适用、分类、海报图、预览视频（本地有就给路径），
+    已经手工改编成哪些组件（adapted_as），直通时每个样式能怎么用（pass：side / full / skip）。"""
+    import shotcraft as sc
     home = shotcraft_home()
     lib = _json(home / "gallery" / "api" / "library.json") or {}
+    passes = sc.manifest().get("styles") or {}  # 直通：每个样式能放侧边 / 只能全屏 / 用不了
     cats = lib.get("categories") or {}
     adapted = {}
     for c in catalog():
         for name in c.get("shotcraft") or []:
             adapted.setdefault(name, []).append(c["key"])
     out = []
-    for card in lib.get("cards") or []:
+    # 现行的卡以原仓库 references/shots 为准（gallery 的 library.json 可能还留着已下架的卡）
+    current = {c["name"]: c for c in sc.cards(home)} if (home / "references" / "shots").is_dir() else None
+    listed = [c for c in lib.get("cards") or [] if current is None or c["name"] in current]
+    listed += [{"name": n, "summary": c["summary"], "use": c["use"], "category": c["category"], "styles": [{"key": s["key"]} for s in c["styles"]]}
+               for n, c in (current or {}).items() if n not in {x["name"] for x in listed}]
+    for card in listed:
         poster = home / "gallery" / "media" / "poster" / f"{card['name']}.jpg"
         # 一张卡有几个样式时，取第一个有预览的
         keys = [st.get("key") for st in card.get("styles") or [] if st.get("key")] or [card["name"]]
@@ -480,7 +493,8 @@ def shotcraft() -> list[dict[str, Any]]:
                     "poster": str(poster) if poster.is_file() else None,
                     "video": str(video) if video.is_file() else None,
                     "source": card.get("source", ""),
-                    "adapted_as": adapted.get(card["name"], [])})
+                    "adapted_as": adapted.get(card["name"], []),
+                    "pass": {k: st.get("verdict") or st.get("auto") for k, st in passes.items() if st.get("card") == card["name"]}})
     return out
 
 
@@ -839,6 +853,9 @@ def _main_cut(argv: list[str]) -> int:
 
 
 def main(argv: list[str]) -> int:
+    if len(argv) > 1 and argv[1] in ("shotcraft-sync", "shotcraft-measure"):
+        import shotcraft as sc
+        return sc.main([argv[0], argv[1].split("-", 1)[1], *argv[2:]])
     if len(argv) > 1 and argv[1] in ("settings", "set", "catalog", "gallery", "shotcraft"):
         return _main_settings(argv)
     if len(argv) > 1 and argv[1] in ("worktable", "hook"):

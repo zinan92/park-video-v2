@@ -1,0 +1,9432 @@
+{
+ "rev": "5a2e98d",
+ "styles": {
+  "anime-impact": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "impact-feedback",
+   "category": "effects",
+   "cover": 1.0,
+   "error": null,
+   "file": "effects/impact-feedback/AnimeImpact.tsx",
+   "form": "diagram",
+   "frames": 120,
+   "looks": false,
+   "slots": [],
+   "summary": "命中反馈两式——hit-counter 连招计数（顿帧+伤害数字+combo 跳字）、anime-impact 动漫打击帧（负片+集中线+色散）",
+   "verdict": null
+  },
+  "assemble-then-type-flyin": {
+   "auto": "full",
+   "box": [
+    110,
+    56,
+    1722,
+    980
+   ],
+   "card": "assemble-then-type-flyin",
+   "category": "effects",
+   "cover": 0.5353,
+   "error": null,
+   "file": "effects/assemble-then-type-flyin/AssembleThenTypeFlyin.tsx",
+   "form": "diagram",
+   "frames": 168,
+   "looks": true,
+   "slots": [
+    {
+     "em": 7.8,
+     "text": "Frame motion."
+    },
+    {
+     "em": 5.4,
+     "text": "Craft the"
+    },
+    {
+     "em": 3.0,
+     "text": "shot."
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 5.4,
+     "text": "Workbench"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 4.2,
+     "text": "Install"
+    },
+    {
+     "em": 18.6,
+     "text": "AGENT SKILL · BUILT ON REMOTION"
+    },
+    {
+     "em": 28.8,
+     "text": "Cinematic product videos, crafted by your agent."
+    },
+    {
+     "em": 7.2,
+     "text": "Make a promo"
+    },
+    {
+     "em": 8.4,
+     "text": "Watch the reel"
+    },
+    {
+     "em": 4.8,
+     "text": "1 prompt"
+    },
+    {
+     "em": 3.6,
+     "text": "30 fps"
+    },
+    {
+     "em": 9.0,
+     "text": "TO A FULL PROMO"
+    },
+    {
+     "em": 7.2,
+     "text": "CAMERA MOVES"
+    },
+    {
+     "em": 9.6,
+     "text": "BEAT-SYNCED CUTS"
+    },
+    {
+     "em": 10.8,
+     "text": "SHOT 04 · DOLLY IN"
+    },
+    {
+     "em": 2.4,
+     "text": "LIFT"
+    },
+    {
+     "em": 3.0,
+     "text": "GAMMA"
+    },
+    {
+     "em": 2.4,
+     "text": "GAIN"
+    },
+    {
+     "em": 3.0,
+     "text": "stat1"
+    },
+    {
+     "em": 3.0,
+     "text": "stat2"
+    },
+    {
+     "em": 3.0,
+     "text": "stat3"
+    }
+   ],
+   "summary": "空的暗底网格上，无文字的组件骨架先从四面八方飞入贴合；随后各处文字逐字从 3D 空间旋转着飞来落位，先大标题后小标注，全部落位后页面成形",
+   "verdict": null
+  },
+  "attention-bounce": {
+   "auto": "full",
+   "box": [
+    8,
+    102,
+    1904,
+    942
+   ],
+   "card": "icon-performance-moves",
+   "category": "effects",
+   "cover": 0.7084,
+   "error": null,
+   "file": "effects/icon-performance-moves/AttentionBounce.tsx",
+   "form": "diagram",
+   "frames": 156,
+   "looks": true,
+   "slots": [
+    {
+     "em": 7.2,
+     "text": "Hero push-in"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 4.2,
+     "text": "12 cuts"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 3.0,
+     "text": "+ SFX"
+    },
+    {
+     "em": 3.6,
+     "text": "New in"
+    },
+    {
+     "em": 10.8,
+     "text": "Every shot, tuned."
+    }
+   ],
+   "summary": "图标表演——attention-bounce 求关注弹跳（图标连跳递增+落地压扁+镜头被吸引）",
+   "verdict": null
+  },
+  "aurora-bloom-bg-flip": {
+   "auto": "full",
+   "box": [
+    6,
+    524,
+    1802,
+    556
+   ],
+   "card": "aurora-bloom-bg-flip",
+   "category": "effects",
+   "cover": 0.3915,
+   "error": null,
+   "file": "effects/aurora-bloom-bg-flip/AuroraBloomBgFlip.tsx",
+   "form": "diagram",
+   "frames": 156,
+   "looks": false,
+   "slots": [
+    {
+     "em": 10.2,
+     "text": "Promos took weeks"
+    },
+    {
+     "em": 2.4,
+     "text": "Meet"
+    }
+   ],
+   "summary": "浅灰底从底部升起紫橙柔焦 blob，随后整个底色在约 0.36s 内压暗到近黑、blob 压成余晖；文案同步 blur-out 换句 blur-in，换句间留空档不 cross-fade",
+   "verdict": null
+  },
+  "autolayout-gap-dial": {
+   "auto": "full",
+   "box": [
+    134,
+    154,
+    1646,
+    744
+   ],
+   "card": "autolayout-gap-dial",
+   "category": "interaction",
+   "cover": 0.1742,
+   "error": null,
+   "file": "interaction/autolayout-gap-dial/AutolayoutGapDial.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.2,
+     "text": "Recipes"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 5.4,
+     "text": "Workbench"
+    },
+    {
+     "em": 4.8,
+     "text": "Showcase"
+    },
+    {
+     "em": 4.2,
+     "text": "Install"
+    },
+    {
+     "em": 10.2,
+     "text": "Auto layout · Gap"
+    },
+    {
+     "em": 5.4,
+     "text": "Nav links"
+    }
+   ],
+   "summary": "间距拨盘驱动布局——一排链接块带框选描边+缝隙间距标注，徽章数字逐格跳动、块被参数实时推开再弹簧回弹归位；\"参数驱动布局\"的可视化",
+   "verdict": null
+  },
+  "avatar-bracket-carousel": {
+   "auto": "side",
+   "box": [
+    412,
+    170,
+    1110,
+    758
+   ],
+   "card": "avatar-bracket-carousel",
+   "category": "ui-entrance",
+   "cover": 0.1171,
+   "error": null,
+   "file": "ui-entrance/avatar-bracket-carousel/AvatarBracketCarousel.tsx",
+   "form": "diagram",
+   "frames": 156,
+   "looks": false,
+   "slots": [
+    {
+     "em": 4.8,
+     "text": "Director"
+    },
+    {
+     "em": 3.6,
+     "text": "Editor"
+    },
+    {
+     "em": 4.8,
+     "text": "Animator"
+    },
+    {
+     "em": 3.0,
+     "text": "Sound"
+    },
+    {
+     "em": 2.4,
+     "text": "Your"
+    }
+   ],
+   "summary": "\"Your ___ agent\" 填空排版，四角对焦框钉在句中不动，头像队列在框内垂直 spring 轮换三次，入框放大清晰、出框按距离缩小淡化模糊，角色标签同步更换，切换瞬间对焦框呼吸 7%",
+   "verdict": null
+  },
+  "axis-rescale-shock-v2": {
+   "auto": "full",
+   "box": [
+    82,
+    96,
+    1746,
+    868
+   ],
+   "card": "chart-live-moves",
+   "category": "data",
+   "cover": 0.1462,
+   "error": null,
+   "file": "data/chart-live-moves/AxisRescaleShockV2.tsx",
+   "form": "chart",
+   "frames": 168,
+   "looks": true,
+   "slots": [
+    {
+     "em": 1.8,
+     "text": "Jan"
+    },
+    {
+     "em": 1.8,
+     "text": "Feb"
+    },
+    {
+     "em": 1.8,
+     "text": "Mar"
+    },
+    {
+     "em": 1.8,
+     "text": "Apr"
+    },
+    {
+     "em": 1.8,
+     "text": "May"
+    },
+    {
+     "em": 1.8,
+     "text": "Jun"
+    },
+    {
+     "em": 1.8,
+     "text": "Jul"
+    },
+    {
+     "em": 1.8,
+     "text": "Aug"
+    },
+    {
+     "em": 1.8,
+     "text": "Sep"
+    },
+    {
+     "em": 1.8,
+     "text": "Oct"
+    },
+    {
+     "em": 1.8,
+     "text": "Nov"
+    },
+    {
+     "em": 1.8,
+     "text": "Dec"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 4.8,
+     "text": "· FY2026"
+    },
+    {
+     "em": 9.0,
+     "text": "Monthly renders"
+    },
+    {
+     "em": 4.8,
+     "text": "FY total"
+    }
+   ],
+   "summary": "活体图表三式——oscilloscope-stream 示波流线（曲线右端实时写入+突发尖峰）、unit-dot-swarm-regroup 点阵重组（点群三幕迁徙聚成数字）、axis-rescale-shock 轴爆表重标（新值冲出画框逼 y 轴重标）",
+   "verdict": null
+  },
+  "barn-door-split": {
+   "auto": "side",
+   "box": [
+    302,
+    2,
+    1316,
+    1076
+   ],
+   "card": "page-turn-transitions",
+   "category": "transition",
+   "cover": 0.4659,
+   "error": null,
+   "file": "transition/page-turn-transitions/BarnDoorSplit.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 7.8,
+     "text": "Median render"
+    },
+    {
+     "em": 9.6,
+     "text": "Manual keyframes"
+    },
+    {
+     "em": 6.6,
+     "text": "Preview fps"
+    },
+    {
+     "em": 9.0,
+     "text": "Current release"
+    },
+    {
+     "em": 6.6,
+     "text": "Shotcraft 3"
+    },
+    {
+     "em": 18.6,
+     "text": "Shot recipes for product films."
+    },
+    {
+     "em": 6.6,
+     "text": "Introducing"
+    },
+    {
+     "em": 5.4,
+     "text": "Shotcraft"
+    },
+    {
+     "em": 18.6,
+     "text": "One prompt to a finished promo."
+    },
+    {
+     "em": 4.2,
+     "text": "to left"
+    },
+    {
+     "em": 4.8,
+     "text": "to right"
+    }
+   ],
+   "summary": "整页体块转场——barn-door-split 对开门裂幕（旧页裂两半滑出、新页迎上）",
+   "verdict": null
+  },
+  "basic-3d-scene": {
+   "auto": "side",
+   "box": [
+    284,
+    144,
+    1424,
+    928
+   ],
+   "card": "basic-3d-scene",
+   "category": "camera",
+   "cover": 0.5665,
+   "error": null,
+   "file": "camera/basic-3d-scene/Basic3DScene.tsx",
+   "form": "diagram",
+   "frames": 225,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "Frame"
+    },
+    {
+     "em": 3.6,
+     "text": "Frame."
+    },
+    {
+     "em": 25.2,
+     "text": "Real page captures, staged for the camera."
+    },
+    {
+     "em": 3.0,
+     "text": "Craft"
+    },
+    {
+     "em": 3.6,
+     "text": "Craft."
+    },
+    {
+     "em": 23.4,
+     "text": "Shot recipe cards turn moves into code."
+    },
+    {
+     "em": 2.4,
+     "text": "Ship"
+    },
+    {
+     "em": 3.0,
+     "text": "Ship."
+    },
+    {
+     "em": 18.6,
+     "text": "One prompt to a finished promo."
+    },
+    {
+     "em": 5.4,
+     "text": "Chapter ·"
+    },
+    {
+     "em": 15.6,
+     "text": "· Three chapters, one film"
+    },
+    {
+     "em": 9.0,
+     "text": "Craft the shot."
+    },
+    {
+     "em": 24.6,
+     "text": "Shot recipes for cinematic product films."
+    }
+   ],
+   "summary": "impress.js 式空间演示：卡片以不同位置/旋转/缩放散布 3D 空间，相机取各步姿态之逆依次飞行对齐，末步拉到 OVERVIEW 总览",
+   "verdict": null
+  },
+  "beat-step-list-theme-cycle": {
+   "auto": "full",
+   "box": [
+    6,
+    2,
+    1908,
+    1076
+   ],
+   "card": "beat-step-list-theme-cycle",
+   "category": "rhythm",
+   "cover": 0.6829,
+   "error": null,
+   "file": "rhythm/beat-step-list-theme-cycle/BeatStepListThemeCycle.tsx",
+   "form": "text",
+   "frames": 140,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.6,
+     "text": "yours."
+    },
+    {
+     "em": 2.4,
+     "text": "Bone"
+    },
+    {
+     "em": 5.4,
+     "text": "Tangerine"
+    },
+    {
+     "em": 2.4,
+     "text": "Iris"
+    },
+    {
+     "em": 2.4,
+     "text": "Mint"
+    },
+    {
+     "em": 1.8,
+     "text": "Sun"
+    },
+    {
+     "em": 4.2,
+     "text": "Make it"
+    },
+    {
+     "em": 3.0,
+     "text": "THEME"
+    }
+   ],
+   "summary": "三通道节拍器——深色场形容词列表逐拍上移一行，视口中央固定胶囊\"接住\"下一个词并换色，整场底色同拍跟换；行、色、场三通道锁死同一拍点",
+   "verdict": null
+  },
+  "before-after-slider-scrub": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1882,
+    1056
+   ],
+   "card": "before-after-slider-scrub",
+   "category": "data",
+   "cover": 0.8899,
+   "error": null,
+   "file": "data/before-after-slider-scrub/BeforeAfterSliderScrub.tsx",
+   "form": "chart",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 3.6,
+     "text": "Before"
+    },
+    {
+     "em": 3.0,
+     "text": "After"
+    }
+   ],
+   "summary": "前后对比拉杆——\"处理前/后\"两版叠放，分割杆先猛甩后慢扫，杆过处新版\"显影\"揭出",
+   "verdict": null
+  },
+  "bento-light-up": {
+   "auto": "side",
+   "box": [
+    162,
+    220,
+    1598,
+    746
+   ],
+   "card": "wall-reveal-moves",
+   "category": "ui-entrance",
+   "cover": 0.542,
+   "error": null,
+   "file": "ui-entrance/wall-reveal-moves/BentoLightUp.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": false,
+   "slots": [],
+   "summary": "整墙批量入场两式——bento 逐格点亮、蓝图描线成形，全部原位显形不位移，与 deck-deal-flyin 的飞入位移型互补成品类矩阵",
+   "verdict": null
+  },
+  "bezier-source-converge-merge": {
+   "auto": "side",
+   "box": [
+    36,
+    126,
+    1458,
+    836
+   ],
+   "card": "bezier-source-converge-merge",
+   "category": "ui-entrance",
+   "cover": 0.0944,
+   "error": null,
+   "file": "ui-entrance/bezier-source-converge-merge/BezierSourceConvergeMerge.tsx",
+   "form": "diagram",
+   "frames": 168,
+   "looks": false,
+   "slots": [
+    {
+     "em": 16.2,
+     "text": "From screenshot to showreel"
+    }
+   ],
+   "summary": "左侧四个来源节点各有一条细贝塞尔曲线连向右侧同一汇聚点，曲线先错峰由左向右 draw-on，节点沿自己的曲线滑向汇聚点并三段式加速缩小到消失，强调色数据包全程沿路径滑行，吞并完成后曲线从左端反向擦除只留品牌标志（demo：白瓷圆片托 video-shotcraft 镜刻标志）",
+   "verdict": null
+  },
+  "blinds-slice": {
+   "auto": "full",
+   "box": [
+    96,
+    4,
+    1696,
+    1072
+   ],
+   "card": "wipe-transitions",
+   "category": "transition",
+   "cover": 0.3155,
+   "error": null,
+   "file": "transition/wipe-transitions/BlindsSlice.tsx",
+   "form": "diagram",
+   "frames": 132,
+   "looks": true,
+   "slots": [
+    {
+     "em": 11.4,
+     "text": "Shot Recipe Journal"
+    },
+    {
+     "em": 6.0,
+     "text": "Chapter 01"
+    },
+    {
+     "em": 3.0,
+     "text": "Frame"
+    },
+    {
+     "em": 24.6,
+     "text": "Shot recipes for\ncinematic product films."
+    },
+    {
+     "em": 6.0,
+     "text": "Chapter 02"
+    },
+    {
+     "em": 3.0,
+     "text": "Craft"
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film.\nLet the agent shoot it."
+    }
+   ],
+   "summary": "几何擦除转场——blinds-slice 百叶窗切条（12 根 3D 叶片错峰翻面成波，波扫过后整页由 A 换成 B）",
+   "verdict": null
+  },
+  "blur-slide": {
+   "auto": "side",
+   "box": [
+    172,
+    100,
+    1526,
+    910
+   ],
+   "card": "blur-slide",
+   "category": "typography",
+   "cover": 0.0828,
+   "error": null,
+   "file": "typography/blur-slide/BlurSlide.tsx",
+   "form": "text",
+   "frames": 120,
+   "looks": true,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "Make"
+    },
+    {
+     "em": 6.0,
+     "text": "cinematic."
+    },
+    {
+     "em": 31.8,
+     "text": "Shot recipes and camera moves, crafted by your agent."
+    },
+    {
+     "em": 12.4,
+     "text": "N° 07 — OCTOBER 2026"
+    },
+    {
+     "em": 4.2,
+     "text": "PAGE 07"
+    },
+    {
+     "em": 7.8,
+     "text": "RELEASE NOTES"
+    }
+   ],
+   "summary": "标题逐词入场，y 0.38em→0 + blur 18→0 + opacity 0→1 三通道走同一条 ease-out 同步收敛，词间隔约 4f；副标题在标题收完前就错峰跟进",
+   "verdict": null
+  },
+  "bottom-push-stack-wipe": {
+   "auto": "full",
+   "box": [
+    48,
+    78,
+    1824,
+    910
+   ],
+   "card": "bottom-push-stack-wipe",
+   "category": "transition",
+   "cover": 0.3808,
+   "error": null,
+   "file": "transition/bottom-push-stack-wipe/BottomPushStackWipe.tsx",
+   "form": "diagram",
+   "frames": 170,
+   "looks": true,
+   "slots": [
+    {
+     "em": 6.6,
+     "text": "Agent skill"
+    },
+    {
+     "em": 3.6,
+     "text": "Prompt"
+    },
+    {
+     "em": 12.6,
+     "text": "One prompt.\nOne film."
+    },
+    {
+     "em": 32.4,
+     "text": "Describe the promo. Your agent storyboards every shot."
+    },
+    {
+     "em": 3.6,
+     "text": "Rhythm"
+    },
+    {
+     "em": 9.6,
+     "text": "Cut on\nthe beat."
+    },
+    {
+     "em": 28.2,
+     "text": "Every shot lands on the music, frame for frame."
+    },
+    {
+     "em": 4.8,
+     "text": "Delivery"
+    },
+    {
+     "em": 12.0,
+     "text": "Delivery,\nautomated."
+    },
+    {
+     "em": 31.2,
+     "text": "Render, export and publish the moment the cut locks."
+    },
+    {
+     "em": 1.2,
+     "text": "MK"
+    },
+    {
+     "em": 2.4,
+     "text": "Maya"
+    },
+    {
+     "em": 5.4,
+     "text": "Shotcraft"
+    },
+    {
+     "em": 5.4,
+     "text": "3 members"
+    },
+    {
+     "em": 1.2,
+     "text": "IR"
+    },
+    {
+     "em": 2.4,
+     "text": "Ines"
+    },
+    {
+     "em": 7.0,
+     "text": "Render it ↗"
+    },
+    {
+     "em": 2.4,
+     "text": "Hook"
+    },
+    {
+     "em": 2.4,
+     "text": "Zoom"
+    },
+    {
+     "em": 2.4,
+     "text": "Whip"
+    },
+    {
+     "em": 3.0,
+     "text": "Sting"
+    },
+    {
+     "em": 11.4,
+     "text": "Beat sync · 128 BPM"
+    },
+    {
+     "em": 4.2,
+     "text": "Preview"
+    },
+    {
+     "em": 3.6,
+     "text": "Render"
+    },
+    {
+     "em": 11.4,
+     "text": "Render 1080p master"
+    },
+    {
+     "em": 12.6,
+     "text": "Export JianYing draft"
+    },
+    {
+     "em": 11.4,
+     "text": "Post to the gallery"
+    },
+    {
+     "em": 4.2,
+     "text": "Trigger"
+    },
+    {
+     "em": 10.8,
+     "text": "When the cut locks"
+    }
+   ],
+   "summary": "底边上推换章——新场景连底色整屏从底边向上推入，把旧场景物理顶出画外，连推数章各配一种饱和底色，内容钉死在各自色底坐标系里随底色走",
+   "verdict": null
+  },
+  "brace-expand": {
+   "auto": "side",
+   "box": [
+    214,
+    280,
+    1496,
+    460
+   ],
+   "card": "brace-expand",
+   "category": "typography",
+   "cover": 0.0377,
+   "error": null,
+   "file": "typography/brace-expand/BraceExpand.tsx",
+   "form": "text",
+   "frames": 120,
+   "looks": true,
+   "slots": [],
+   "summary": "一对紧贴的小花括号先在正中出现，随即带一次过冲向左右弹开并放大到标题级，文字 clip 宽度严格绑括号内缘、像被拉开幕布般从中间揭示，落定后字距再细微松弛",
+   "verdict": null
+  },
+  "brand-frame-snap": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "brand-frame-snap",
+   "category": "effects",
+   "cover": 0.884,
+   "error": null,
+   "file": "effects/brand-frame-snap/BrandFrameSnap.tsx",
+   "form": "diagram",
+   "frames": 140,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.2,
+     "text": "Landing"
+    },
+    {
+     "em": 6.0,
+     "text": "Promo card"
+    },
+    {
+     "em": 3.6,
+     "text": "Design"
+    },
+    {
+     "em": 1.8,
+     "text": "Dev"
+    },
+    {
+     "em": 3.6,
+     "text": "Layers"
+    },
+    {
+     "em": 3.6,
+     "text": "Header"
+    },
+    {
+     "em": 3.0,
+     "text": "Price"
+    },
+    {
+     "em": 4.8,
+     "text": "Features"
+    },
+    {
+     "em": 10.8,
+     "text": "Render launch film"
+    },
+    {
+     "em": 4.8,
+     "text": "Footnote"
+    },
+    {
+     "em": 3.6,
+     "text": "Tokens"
+    },
+    {
+     "em": 3.6,
+     "text": "Assets"
+    },
+    {
+     "em": 3.6,
+     "text": "Export"
+    },
+    {
+     "em": 3.0,
+     "text": "Frame"
+    },
+    {
+     "em": 2.4,
+     "text": "Fill"
+    },
+    {
+     "em": 6.6,
+     "text": "Auto layout"
+    },
+    {
+     "em": 4.2,
+     "text": "Effects"
+    },
+    {
+     "em": 6.6,
+     "text": "Drop shadow"
+    },
+    {
+     "em": 5.4,
+     "text": "Prototype"
+    },
+    {
+     "em": 3.6,
+     "text": "On tap"
+    },
+    {
+     "em": 7.2,
+     "text": "Render queue"
+    },
+    {
+     "em": 1.8,
+     "text": "CSS"
+    },
+    {
+     "em": 4.2,
+     "text": "Compose"
+    },
+    {
+     "em": 5.4,
+     "text": "Copy code"
+    },
+    {
+     "em": 6.6,
+     "text": "Open source"
+    },
+    {
+     "em": 14.4,
+     "text": "Your product, in motion."
+    },
+    {
+     "em": 10.2,
+     "text": "Shot recipe cards"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 13.2,
+     "text": "Promo card · 468 × 600"
+    },
+    {
+     "em": 4.8,
+     "text": "DEV MODE"
+    },
+    {
+     "em": 3.6,
+     "text": "DESIGN"
+    }
+   ],
+   "summary": "品牌色画框语法——一圈粗纯色画框先于内容长出包住全屏，录屏窗口落进框内；模式切换时整圈画框同帧硬翻色+窗内布局同帧换，一个 borderColor 干完章节导航/状态提示/品牌露出三件事",
+   "verdict": null
+  },
+  "bullet-time-freeze-orbit": {
+   "auto": "side",
+   "box": [
+    328,
+    174,
+    1362,
+    854
+   ],
+   "card": "tension-camera-moves",
+   "category": "camera",
+   "cover": 0.5087,
+   "error": null,
+   "file": "camera/tension-camera-moves/BulletTimeFreezeOrbit.tsx",
+   "form": "diagram",
+   "frames": 170,
+   "looks": true,
+   "slots": [
+    {
+     "em": 1.8,
+     "text": "Mon"
+    },
+    {
+     "em": 1.8,
+     "text": "Tue"
+    },
+    {
+     "em": 1.8,
+     "text": "Wed"
+    },
+    {
+     "em": 1.8,
+     "text": "Thu"
+    },
+    {
+     "em": 1.8,
+     "text": "Fri"
+    },
+    {
+     "em": 1.8,
+     "text": "Sat"
+    },
+    {
+     "em": 1.8,
+     "text": "Sun"
+    },
+    {
+     "em": 11.4,
+     "text": "Render farm · promo"
+    },
+    {
+     "em": 9.0,
+     "text": "Frames rendered"
+    }
+   ],
+   "summary": "情绪运镜两式——bullet-time 冻结环绕、pull-back 拉远孤立，相机替观众\"感受\"而非\"看\"",
+   "verdict": null
+  },
+  "card-flip-reveal": {
+   "auto": "side",
+   "box": [
+    174,
+    128,
+    1574,
+    950
+   ],
+   "card": "card-flip-reveal",
+   "category": "transition",
+   "cover": 0.5763,
+   "error": null,
+   "file": "transition/card-flip-reveal/CardFlipReveal.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.6,
+     "text": "Prompt"
+    },
+    {
+     "em": 18.0,
+     "text": "One line in, a whole film out."
+    },
+    {
+     "em": 9.6,
+     "text": "faster first cut"
+    },
+    {
+     "em": 3.6,
+     "text": "48 min"
+    },
+    {
+     "em": 3.6,
+     "text": "15 min"
+    },
+    {
+     "em": 4.2,
+     "text": "Recipes"
+    },
+    {
+     "em": 14.4,
+     "text": "Camera moves, pre-tuned."
+    },
+    {
+     "em": 12.6,
+     "text": "time spent keyframing"
+    },
+    {
+     "em": 4.2,
+     "text": "Library"
+    },
+    {
+     "em": 16.8,
+     "text": "Every shot, one search away."
+    },
+    {
+     "em": 13.2,
+     "text": "to find the right move"
+    },
+    {
+     "em": 12.0,
+     "text": "open on a crash zoom"
+    },
+    {
+     "em": 13.2,
+     "text": "end on the logo sting."
+    },
+    {
+     "em": 1.8,
+     "text": "Tab"
+    },
+    {
+     "em": 5.4,
+     "text": "to accept"
+    },
+    {
+     "em": 11.4,
+     "text": "Recipe · crash zoom"
+    },
+    {
+     "em": 11.2,
+     "text": "Push 1 → 1.6 in 6f"
+    },
+    {
+     "em": 11.4,
+     "text": "Blur rides the snap"
+    },
+    {
+     "em": 12.0,
+     "text": "Land on the downbeat"
+    },
+    {
+     "em": 6.0,
+     "text": "crash zoom"
+    },
+    {
+     "em": 9.6,
+     "text": "Crash zoom punch"
+    },
+    {
+     "em": 2.4,
+     "text": "Card"
+    },
+    {
+     "em": 7.2,
+     "text": "Zoom-through"
+    },
+    {
+     "em": 6.0,
+     "text": "Dolly zoom"
+    },
+    {
+     "em": 3.0,
+     "text": "Style"
+    },
+    {
+     "em": 4.2,
+     "text": "Feature"
+    },
+    {
+     "em": 3.6,
+     "text": "Before"
+    },
+    {
+     "em": 6.6,
+     "text": "left bottom"
+    },
+    {
+     "em": 18.6,
+     "text": "Three features. Three outcomes."
+    }
+   ],
+   "summary": "功能卡 3D 翻面揭示——卡片沿 Y 轴翻 180°，正面 UI 翻到侧棱最薄处掠过一道随角度移动的受光，背面揭出大号结论数字，逐张错峰扫过整排",
+   "verdict": null
+  },
+  "card-flock-tumble": {
+   "auto": "full",
+   "box": [
+    122,
+    70,
+    1662,
+    1008
+   ],
+   "card": "card-flock-tumble",
+   "category": "transition",
+   "cover": 0.6431,
+   "error": null,
+   "file": "transition/card-flock-tumble/CardFlockTumble.tsx",
+   "form": "diagram",
+   "frames": 135,
+   "looks": true,
+   "slots": [
+    {
+     "em": 33.0,
+     "text": "CRAFT THE SHOT  ·  CRAFT THE SHOT  ·  CRAFT THE SHOT  ·"
+    },
+    {
+     "em": 2.4,
+     "text": "Home"
+    },
+    {
+     "em": 3.0,
+     "text": "Inbox"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 1.2,
+     "text": "AK"
+    },
+    {
+     "em": 4.2,
+     "text": "Ana Kim"
+    },
+    {
+     "em": 17.4,
+     "text": "Approved shot 04 · crash zoom"
+    },
+    {
+     "em": 1.2,
+     "text": "MR"
+    },
+    {
+     "em": 6.0,
+     "text": "Marco Ruiz"
+    },
+    {
+     "em": 21.6,
+     "text": "Can we render the launch film today?"
+    },
+    {
+     "em": 1.2,
+     "text": "JL"
+    },
+    {
+     "em": 5.4,
+     "text": "Jamie Lee"
+    },
+    {
+     "em": 18.2,
+     "text": "Assigned you “Cursor flyover”"
+    },
+    {
+     "em": 1.2,
+     "text": "SO"
+    },
+    {
+     "em": 5.4,
+     "text": "Sam Ortiz"
+    },
+    {
+     "em": 17.4,
+     "text": "Left a note on the storyboard"
+    },
+    {
+     "em": 1.2,
+     "text": "TN"
+    },
+    {
+     "em": 5.4,
+     "text": "Tara Nair"
+    },
+    {
+     "em": 18.0,
+     "text": "Approved the sound design pass"
+    },
+    {
+     "em": 9.6,
+     "text": "Crash zoom punch"
+    },
+    {
+     "em": 2.4,
+     "text": "Done"
+    },
+    {
+     "em": 8.4,
+     "text": "Cursor flyover"
+    },
+    {
+     "em": 5.4,
+     "text": "Rendering"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 3.0,
+     "text": "To do"
+    },
+    {
+     "em": 10.2,
+     "text": "Sound design pass"
+    },
+    {
+     "em": 2.4,
+     "text": "SHOT"
+    },
+    {
+     "em": 3.6,
+     "text": "STATUS"
+    },
+    {
+     "em": 10.8,
+     "text": "Rendered this week"
+    },
+    {
+     "em": 9.0,
+     "text": "4 ahead of plan"
+    },
+    {
+     "em": 3.0,
+     "text": "+ New"
+    },
+    {
+     "em": 9.6,
+     "text": "5 unread · Today"
+    },
+    {
+     "em": 12.6,
+     "text": "Launch film · 5 shots"
+    },
+    {
+     "em": 11.4,
+     "text": "Good morning, Jamie"
+    },
+    {
+     "em": 5.4,
+     "text": "CINEMATIC"
+    }
+   ],
+   "summary": "三张 UI 页卡从侧棱薄边 3D 翻飞成阶梯站定（全程清晰、样条连续丝滑），站定后保持慢转不停，快速收束吸入中心，炸出单个湍流烟雾环扩散，巨字横贯收场",
+   "verdict": null
+  },
+  "card-stack": {
+   "auto": "full",
+   "box": [
+    16,
+    182,
+    1888,
+    886
+   ],
+   "card": "card-stack",
+   "category": "ui-entrance",
+   "cover": 0.5432,
+   "error": null,
+   "file": "ui-entrance/card-stack/CardStack.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 9.0,
+     "text": "EDIT · 6 TRACKS"
+    },
+    {
+     "em": 8.4,
+     "text": "Bar chart rise"
+    },
+    {
+     "em": 7.8,
+     "text": "DATA · 7 BARS"
+    },
+    {
+     "em": 9.6,
+     "text": "Growth line draw"
+    },
+    {
+     "em": 10.2,
+     "text": "CHART · LIVE DRAW"
+    },
+    {
+     "em": 7.8,
+     "text": "Gauge readout"
+    },
+    {
+     "em": 8.4,
+     "text": "DATA · 3 RINGS"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 11.4,
+     "text": "TEMPLATE · FEATURED"
+    },
+    {
+     "em": 7.2,
+     "text": "Render queue"
+    },
+    {
+     "em": 8.4,
+     "text": "QUEUE · 6 JOBS"
+    },
+    {
+     "em": 9.0,
+     "text": "Storyboard grid"
+    },
+    {
+     "em": 10.2,
+     "text": "BOARD · 35 FRAMES"
+    },
+    {
+     "em": 5.4,
+     "text": "Shot list"
+    },
+    {
+     "em": 7.8,
+     "text": "PLAN · 3 ACTS"
+    },
+    {
+     "em": 7.8,
+     "text": "Stat count-up"
+    },
+    {
+     "em": 6.0,
+     "text": "DATA · KPI"
+    },
+    {
+     "em": 15.0,
+     "text": "Start from a shot recipe."
+    },
+    {
+     "em": 27.0,
+     "text": "Nine shot recipes. Every one ready to render."
+    },
+    {
+     "em": 3.6,
+     "text": "Launch"
+    }
+   ],
+   "summary": "一组模板卡（demo 9 张）从屏幕下方逐张 spring 弹入、越落越快叠成一摞，全员落位后整摞一次性展成扇面——每张按序号偏转 6.5°、横移 138px，最后中心卡被抽出",
+   "verdict": null
+  },
+  "carousel-3d": {
+   "auto": "side",
+   "box": [
+    396,
+    238,
+    1130,
+    734
+   ],
+   "card": "carousel-3d",
+   "category": "ui-entrance",
+   "cover": 0.3489,
+   "error": null,
+   "file": "ui-entrance/carousel-3d/Carousel3D.tsx",
+   "form": "diagram",
+   "frames": 168,
+   "looks": true,
+   "slots": [
+    {
+     "em": 5.4,
+     "text": "Beat Cuts"
+    },
+    {
+     "em": 10.8,
+     "text": "EDIT · ON THE BEAT"
+    },
+    {
+     "em": 6.0,
+     "text": "Steep Tilt"
+    },
+    {
+     "em": 8.4,
+     "text": "CAMERA · GLIDE"
+    },
+    {
+     "em": 7.2,
+     "text": "Sound Design"
+    },
+    {
+     "em": 2.4,
+     "text": "LUFS"
+    },
+    {
+     "em": 10.8,
+     "text": "SFX · HIT + WHOOSH"
+    },
+    {
+     "em": 7.8,
+     "text": "Gauge Readout"
+    },
+    {
+     "em": 8.4,
+     "text": "DATA · 3 RINGS"
+    },
+    {
+     "em": 6.0,
+     "text": "Flash Cuts"
+    },
+    {
+     "em": 7.8,
+     "text": "EDIT · STROBE"
+    },
+    {
+     "em": 6.0,
+     "text": "Chart Rise"
+    },
+    {
+     "em": 9.0,
+     "text": "DATA · BAR RACE"
+    },
+    {
+     "em": 6.6,
+     "text": "Ease Curves"
+    },
+    {
+     "em": 9.0,
+     "text": "MOTION · SNAPPY"
+    },
+    {
+     "em": 6.6,
+     "text": "Camera Path"
+    },
+    {
+     "em": 8.4,
+     "text": "FLYOVER · 2.5D"
+    },
+    {
+     "em": 8.4,
+     "text": "1080P · 30 FPS"
+    },
+    {
+     "em": 1.8,
+     "text": "FPS"
+    }
+   ],
+   "summary": "8 张卡排成圆环整环自转一圈（匀速底 + 每 45° 一次停靠的分步），每卡只绕 Y 公转、自身 billboard 朝外，正反两层同向贴图配 backface-visibility:hidden 保证任何时刻都正立不倒置，正前方卡被点亮、环下字幕随之换字，相机全程钉在浅俯角",
+   "verdict": null
+  },
+  "changelog-scroll-brake": {
+   "auto": "side",
+   "box": [
+    458,
+    98,
+    1006,
+    950
+   ],
+   "card": "scroll-brake-moves",
+   "category": "data",
+   "cover": 0.433,
+   "error": null,
+   "file": "data/scroll-brake-moves/ChangelogScrollBrake.tsx",
+   "form": "chart",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 12.0,
+     "text": "Crash zoom shot card"
+    },
+    {
+     "em": 13.8,
+     "text": "Faster Remotion renders"
+    },
+    {
+     "em": 13.2,
+     "text": "Beat grid from any BGM"
+    },
+    {
+     "em": 12.0,
+     "text": "Dolly zoom shot card"
+    },
+    {
+     "em": 10.8,
+     "text": "Real page captures"
+    },
+    {
+     "em": 12.6,
+     "text": "Gallery style filters"
+    },
+    {
+     "em": 5.4,
+     "text": "Whip pans"
+    },
+    {
+     "em": 10.8,
+     "text": "Ink Press template"
+    },
+    {
+     "em": 12.0,
+     "text": "Improved SFX ducking"
+    },
+    {
+     "em": 14.4,
+     "text": "Storyboard from a prompt"
+    },
+    {
+     "em": 12.0,
+     "text": "Inline shot previews"
+    },
+    {
+     "em": 11.4,
+     "text": "Poster frame picker"
+    },
+    {
+     "em": 12.6,
+     "text": "Parallax depth layers"
+    },
+    {
+     "em": 13.2,
+     "text": "Beat-synced flash cuts"
+    },
+    {
+     "em": 10.8,
+     "text": "Film grain overlay"
+    },
+    {
+     "em": 7.2,
+     "text": "Lower thirds"
+    },
+    {
+     "em": 10.8,
+     "text": "Faster cold render"
+    },
+    {
+     "em": 9.6,
+     "text": "Showcase gallery"
+    },
+    {
+     "em": 6.6,
+     "text": "Light leaks"
+    },
+    {
+     "em": 12.0,
+     "text": "Per-shot color looks"
+    },
+    {
+     "em": 11.4,
+     "text": "Offline asset cache"
+    },
+    {
+     "em": 9.0,
+     "text": "JianYing export"
+    },
+    {
+     "em": 4.2,
+     "text": "Feature"
+    },
+    {
+     "em": 4.8,
+     "text": "Improved"
+    },
+    {
+     "em": 1.8,
+     "text": "Fix"
+    },
+    {
+     "em": 1.8,
+     "text": "Jan"
+    },
+    {
+     "em": 1.8,
+     "text": "Feb"
+    },
+    {
+     "em": 1.8,
+     "text": "Mar"
+    },
+    {
+     "em": 1.8,
+     "text": "Apr"
+    },
+    {
+     "em": 1.8,
+     "text": "May"
+    },
+    {
+     "em": 1.8,
+     "text": "Jun"
+    },
+    {
+     "em": 1.8,
+     "text": "Jul"
+    },
+    {
+     "em": 1.8,
+     "text": "Aug"
+    },
+    {
+     "em": 1.8,
+     "text": "Sep"
+    },
+    {
+     "em": 3.6,
+     "text": "Launch"
+    },
+    {
+     "em": 9.6,
+     "text": "Motion workbench"
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    },
+    {
+     "em": 3.0,
+     "text": "Today"
+    },
+    {
+     "em": 4.2,
+     "text": "Planned"
+    },
+    {
+     "em": 9.6,
+     "text": "Brand kit import"
+    },
+    {
+     "em": 9.0,
+     "text": "Multi-track SFX"
+    },
+    {
+     "em": 7.8,
+     "text": "Batch renders"
+    },
+    {
+     "em": 13.2,
+     "text": "On the roadmap for Q4."
+    },
+    {
+     "em": 31.2,
+     "text": "Rolled out to every project with no action required."
+    },
+    {
+     "em": 1.8,
+     "text": "NEW"
+    },
+    {
+     "em": 5.4,
+     "text": "Changelog"
+    }
+   ],
+   "summary": "长卷急刹两式——changelog-scroll-brake 基本款（高速长卷指数减速精准停位+目标抬升）与 brake-reticle-lock 组合款（急刹帧同帧准星咬合）",
+   "verdict": null
+  },
+  "chip-grid-single-select-blackout": {
+   "auto": "side",
+   "box": [
+    354,
+    180,
+    1214,
+    594
+   ],
+   "card": "chip-grid-single-select-blackout",
+   "category": "interaction",
+   "cover": 0.1445,
+   "error": null,
+   "file": "interaction/chip-grid-single-select-blackout/ChipGridSingleSelectBlackout.tsx",
+   "form": "diagram",
+   "frames": 165,
+   "looks": true,
+   "slots": [
+    {
+     "em": 8.4,
+     "text": "Annual billing"
+    },
+    {
+     "em": 9.0,
+     "text": "Monthly billing"
+    },
+    {
+     "em": 11.4,
+     "text": "Two-year commitment"
+    },
+    {
+     "em": 4.2,
+     "text": "Student"
+    },
+    {
+     "em": 8.4,
+     "text": "Nonprofit rate"
+    },
+    {
+     "em": 9.0,
+     "text": "· Billing cycle"
+    },
+    {
+     "em": 15.6,
+     "text": "How would you like to pay?"
+    }
+   ],
+   "summary": "五个选项 chip 以 3+2 居中排布逐个淡入；选中帧先插一帧灰色按压块，紧接数帧内底色变墨黑、文字变白并做 1→1.04→1 极轻回弹，其余 chip 淡到 18% 但位置锁死；随后余项归零，黑 chip 上移收窄，下方升起结算价格",
+   "verdict": null
+  },
+  "circle-match-iris": {
+   "auto": "side",
+   "box": [
+    210,
+    54,
+    1540,
+    828
+   ],
+   "card": "circle-match-iris",
+   "category": "transition",
+   "cover": 0.2847,
+   "error": null,
+   "file": "transition/circle-match-iris/CircleMatchIris.tsx",
+   "form": "diagram",
+   "frames": 165,
+   "looks": true,
+   "slots": [
+    {
+     "em": 1.2,
+     "text": "JO"
+    },
+    {
+     "em": 7.2,
+     "text": "Jonas Ortega"
+    },
+    {
+     "em": 9.6,
+     "text": "Lisbon · 7 films"
+    },
+    {
+     "em": 1.2,
+     "text": "AS"
+    },
+    {
+     "em": 5.4,
+     "text": "Aiko Sato"
+    },
+    {
+     "em": 9.0,
+     "text": "Osaka · 6 films"
+    },
+    {
+     "em": 1.2,
+     "text": "MK"
+    },
+    {
+     "em": 1.8,
+     "text": "You"
+    },
+    {
+     "em": 9.6,
+     "text": "Berlin · 6 films"
+    },
+    {
+     "em": 1.2,
+     "text": "LB"
+    },
+    {
+     "em": 6.6,
+     "text": "Lena Brandt"
+    },
+    {
+     "em": 9.6,
+     "text": "Berlin · 5 films"
+    },
+    {
+     "em": 1.2,
+     "text": "TN"
+    },
+    {
+     "em": 7.8,
+     "text": "Theo Nakamura"
+    },
+    {
+     "em": 11.4,
+     "text": "Vancouver · 4 films"
+    },
+    {
+     "em": 4.8,
+     "text": "Rendered"
+    },
+    {
+     "em": 5.4,
+     "text": "This week"
+    },
+    {
+     "em": 6.0,
+     "text": "Avg render"
+    },
+    {
+     "em": 9.0,
+     "text": "· Berlin Studio"
+    },
+    {
+     "em": 4.2,
+     "text": "Week 41"
+    },
+    {
+     "em": 8.4,
+     "text": "Shots rendered"
+    },
+    {
+     "em": 9.0,
+     "text": "of 54-shot goal"
+    },
+    {
+     "em": 11.4,
+     "text": "Your week · Mara K."
+    },
+    {
+     "em": 7.8,
+     "text": "Almost there."
+    },
+    {
+     "em": 19.0,
+     "text": "7 shots left — one more render."
+    },
+    {
+     "em": 14.4,
+     "text": "6 shots to pass Aiko for"
+    }
+   ],
+   "summary": "圆心匹配光圈切——光圈从页面上圆形元素的圆心炸开，圈内新页的圆形图表接在同一个圆上；匹配剪辑给光圈一个语义锚点",
+   "verdict": null
+  },
+  "cloner-depth-echo": {
+   "auto": "full",
+   "box": [
+    154,
+    202,
+    1694,
+    724
+   ],
+   "card": "cloner-depth-echo",
+   "category": "ui-entrance",
+   "cover": 0.3329,
+   "error": null,
+   "file": "ui-entrance/cloner-depth-echo/ClonerDepthEcho.tsx",
+   "form": "diagram",
+   "frames": 138,
+   "looks": true,
+   "slots": [
+    {
+     "em": 6.6,
+     "text": "One prompt."
+    },
+    {
+     "em": 7.2,
+     "text": "Eight shots."
+    },
+    {
+     "em": 7.8,
+     "text": "shot rendered"
+    },
+    {
+     "em": 16.2,
+     "text": "shots rendered · one prompt"
+    }
+   ],
+   "summary": "克隆纵队——主卡瞬间\"复印\"出 7 个半透明分身沿斜向纵深排开成队，停一拍后全体加速吸回本体合一+弹跳",
+   "verdict": null
+  },
+  "comic-panel-split": {
+   "auto": "full",
+   "box": [
+    98,
+    4,
+    1818,
+    1074
+   ],
+   "card": "panel-grid-moves",
+   "category": "rhythm",
+   "cover": 0.8139,
+   "error": null,
+   "file": "rhythm/panel-grid-moves/ComicPanelSplit.tsx",
+   "form": "text",
+   "frames": 156,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "soft2"
+    },
+    {
+     "em": 9.0,
+     "text": "Craft\nthe shot."
+    },
+    {
+     "em": 18.0,
+     "text": "Three angles, cut on the beat."
+    },
+    {
+     "em": 8.4,
+     "text": "Shot 01 · Wide"
+    },
+    {
+     "em": 7.8,
+     "text": "Frame motion."
+    },
+    {
+     "em": 9.0,
+     "text": "Shot 02 · Close"
+    },
+    {
+     "em": 9.0,
+     "text": "Shot 03 · Macro"
+    }
+   ],
+   "summary": "分格节奏——comic-panel-split 漫画斜格劈出同一主体的三个机位，咔咔咔三格定格后末格斜边吃屏成海报",
+   "verdict": null
+  },
+  "contact-shadow-lift": {
+   "auto": "side",
+   "box": [
+    212,
+    114,
+    1552,
+    960
+   ],
+   "card": "element-body-moves",
+   "category": "ui-entrance",
+   "cover": 0.5173,
+   "error": null,
+   "file": "ui-entrance/element-body-moves/ContactShadowLift.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.8,
+     "text": "Whip pan"
+    },
+    {
+     "em": 22.8,
+     "text": "A blurred hand-off between two scenes."
+    },
+    {
+     "em": 6.0,
+     "text": "Crash zoom"
+    },
+    {
+     "em": 21.6,
+     "text": "Punch in on the number that matters."
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 22.2,
+     "text": "Lands the mark on the final downbeat."
+    },
+    {
+     "em": 15.6,
+     "text": "SHOT RECIPES · LAUNCH FILM"
+    },
+    {
+     "em": 9.0,
+     "text": "Pick your shot."
+    }
+   ],
+   "summary": "元素身体感——contact-shadow-lift 接触阴影离面抬升：卡抬起时桌上的阴影同步放大变淡，纸片离桌被阴影证明",
+   "verdict": null
+  },
+  "corner-spotlight-reveal": {
+   "auto": "side",
+   "box": [
+    2,
+    2,
+    1340,
+    1076
+   ],
+   "card": "spotlight-sweep-moves",
+   "category": "effects",
+   "cover": 0.2782,
+   "error": null,
+   "file": "effects/spotlight-sweep-moves/CornerSpotlightReveal.tsx",
+   "form": "diagram",
+   "frames": 130,
+   "looks": false,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 1.8,
+     "text": "All"
+    },
+    {
+     "em": 3.6,
+     "text": "Camera"
+    },
+    {
+     "em": 4.2,
+     "text": "Effects"
+    },
+    {
+     "em": 2.4,
+     "text": "Data"
+    },
+    {
+     "em": 3.0,
+     "text": "Outro"
+    }
+   ],
+   "summary": "暗场聚光显影三式——A 醒睡扫过（光到即亮光走即暗）、B 贴边泛光横摇（紫光贴 UI 边缘渗入+聚光匀速右移）、C 角落匀速显影（径向聚光从角落匀速扩张点亮全屏）；黑场里\"光即叙事\"的 UI 展示",
+   "verdict": null
+  },
+  "countdown-arc-scatter": {
+   "auto": "side",
+   "box": [
+    150,
+    112,
+    1540,
+    710
+   ],
+   "card": "countdown-arc-scatter",
+   "category": "typography",
+   "cover": 0.0762,
+   "error": null,
+   "file": "typography/countdown-arc-scatter/CountdownArcScatter.tsx",
+   "form": "text",
+   "frames": 100,
+   "looks": true,
+   "slots": [
+    {
+     "em": 6.0,
+     "text": "SETUP TIME"
+    }
+   ],
+   "summary": "纸面表盘 9 个等大数字沿大弧切向排布，整盘扫过 96° 后减速急停，\"5\" 停在弧顶随即平移落位成标题首字符，其余数字带 blur 原地散去，标题逐词模糊淡入、末词转强调色",
+   "verdict": null
+  },
+  "crane-rise-reveal": {
+   "auto": "full",
+   "box": [
+    16,
+    28,
+    1876,
+    1026
+   ],
+   "card": "crane-rise-reveal",
+   "category": "opening",
+   "cover": 0.864,
+   "error": null,
+   "file": "opening/crane-rise-reveal/CraneRiseReveal.tsx",
+   "form": "text",
+   "frames": 165,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.2,
+     "text": "SH-0401"
+    },
+    {
+     "em": 5.4,
+     "text": "Cold open"
+    },
+    {
+     "em": 2.4,
+     "text": "Logo"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0402"
+    },
+    {
+     "em": 2.4,
+     "text": "Hero"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0403"
+    },
+    {
+     "em": 5.4,
+     "text": "Dashboard"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0404"
+    },
+    {
+     "em": 3.6,
+     "text": "Search"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0405"
+    },
+    {
+     "em": 4.2,
+     "text": "Results"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0406"
+    },
+    {
+     "em": 3.6,
+     "text": "Detail"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0407"
+    },
+    {
+     "em": 3.0,
+     "text": "Chart"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0408"
+    },
+    {
+     "em": 3.0,
+     "text": "Voice"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0409"
+    },
+    {
+     "em": 2.4,
+     "text": "Team"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0410"
+    },
+    {
+     "em": 3.6,
+     "text": "Launch"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0411"
+    },
+    {
+     "em": 3.0,
+     "text": "Outro"
+    },
+    {
+     "em": 4.2,
+     "text": "SH-0412"
+    },
+    {
+     "em": 3.6,
+     "text": "Lockup"
+    },
+    {
+     "em": 5.4,
+     "text": "Rendering"
+    },
+    {
+     "em": 5.4,
+     "text": "In review"
+    },
+    {
+     "em": 4.8,
+     "text": "Rendered"
+    },
+    {
+     "em": 3.6,
+     "text": "Queued"
+    },
+    {
+     "em": 3.0,
+     "text": "en-US"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 7.2,
+     "text": "Render queue"
+    },
+    {
+     "em": 4.8,
+     "text": "Timeline"
+    },
+    {
+     "em": 5.4,
+     "text": "Workbench"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 8.2,
+     "text": "Search shots…"
+    },
+    {
+     "em": 10.8,
+     "text": "LIVE · RENDER FARM"
+    },
+    {
+     "em": 28.8,
+     "text": "Updated live · 1080p · 30 fps · 4 render workers"
+    },
+    {
+     "em": 12.6,
+     "text": "frames rendered today"
+    },
+    {
+     "em": 2.4,
+     "text": "SHOT"
+    },
+    {
+     "em": 1.8,
+     "text": "CUT"
+    },
+    {
+     "em": 6.6,
+     "text": "RECIPE CARD"
+    },
+    {
+     "em": 1.8,
+     "text": "ETA"
+    },
+    {
+     "em": 3.6,
+     "text": "STATUS"
+    },
+    {
+     "em": 4.8,
+     "text": "PROGRESS"
+    },
+    {
+     "em": 3.6,
+     "text": "FRAMES"
+    }
+   ],
+   "summary": "升降臂拉升揭示——开场怼在一行数据特写，相机沿 Y 轴减速升起后拉，行行涌入直到整面 dashboard 铺满全幅",
+   "verdict": null
+  },
+  "cursor-cast-ensemble": {
+   "auto": "full",
+   "box": [
+    32,
+    58,
+    1864,
+    1014
+   ],
+   "card": "collab-cursor-moves",
+   "category": "interaction",
+   "cover": 0.558,
+   "error": null,
+   "file": "interaction/collab-cursor-moves/CursorCastEnsemble.tsx",
+   "form": "diagram",
+   "frames": 156,
+   "looks": true,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "Ines"
+    },
+    {
+     "em": 2.4,
+     "text": "Kofi"
+    },
+    {
+     "em": 1.8,
+     "text": "Mei"
+    },
+    {
+     "em": 3.0,
+     "text": "Tomás"
+    },
+    {
+     "em": 2.4,
+     "text": "Rita"
+    },
+    {
+     "em": 17.4,
+     "text": "Ship a launch film by Friday."
+    },
+    {
+     "em": 12.0,
+     "text": "Open on a crash zoom"
+    },
+    {
+     "em": 4.2,
+     "text": "4 votes"
+    },
+    {
+     "em": 9.6,
+     "text": "Logo sting outro"
+    },
+    {
+     "em": 5.4,
+     "text": "In review"
+    },
+    {
+     "em": 11.4,
+     "text": "Beat map at 120 BPM"
+    },
+    {
+     "em": 6.0,
+     "text": "2 comments"
+    },
+    {
+     "em": 10.8,
+     "text": "Real page captures"
+    },
+    {
+     "em": 4.2,
+     "text": "Due Wed"
+    },
+    {
+     "em": 6.0,
+     "text": "Live count"
+    },
+    {
+     "em": 4.8,
+     "text": "SFX pass"
+    },
+    {
+     "em": 5.4,
+     "text": "Needs mix"
+    },
+    {
+     "em": 7.8,
+     "text": "Project brief"
+    },
+    {
+     "em": 9.0,
+     "text": "Due Thu, Oct 16"
+    },
+    {
+     "em": 3.0,
+     "text": "Ready"
+    },
+    {
+     "em": 3.0,
+     "text": "Draft"
+    },
+    {
+     "em": 11.4,
+     "text": "3 owners · 12 shots"
+    },
+    {
+     "em": 11.4,
+     "text": "Launch Film Kickoff"
+    },
+    {
+     "em": 3.0,
+     "text": "Share"
+    },
+    {
+     "em": 17.4,
+     "text": "M6 5h14v10l-5 5H6zM15 20v-5h5"
+    },
+    {
+     "em": 36.6,
+     "text": "M5 21l1.2-4.6L17 5.6a2 2 0 0 1 2.8 2.8L9 19.2zM15 7.6l3.4 3.4"
+    }
+   ],
+   "summary": "协作光标当演员——cast-ensemble 五光标群演氛围层（错峰飞入+正弦漂移+打字 cameo+聚拢围观）",
+   "verdict": null
+  },
+  "cursor-flyover": {
+   "auto": "full",
+   "box": [
+    6,
+    2,
+    1908,
+    1076
+   ],
+   "card": "cursor-flyover",
+   "category": "camera",
+   "cover": 0.9826,
+   "error": null,
+   "file": "camera/cursor-flyover/CursorFlyover.tsx",
+   "form": "diagram",
+   "frames": 240,
+   "looks": true,
+   "slots": [
+    {
+     "em": 9.0,
+     "text": "Frames rendered"
+    },
+    {
+     "em": 7.2,
+     "text": "Last 90 days"
+    },
+    {
+     "em": 7.2,
+     "text": "Last 30 days"
+    },
+    {
+     "em": 7.8,
+     "text": "Shot previews"
+    },
+    {
+     "em": 7.2,
+     "text": "Weekly · Sep"
+    },
+    {
+     "em": 4.8,
+     "text": "cf2-area"
+    },
+    {
+     "em": 3.0,
+     "text": "Sep 1"
+    },
+    {
+     "em": 3.0,
+     "text": "Sep 8"
+    },
+    {
+     "em": 3.6,
+     "text": "Sep 15"
+    },
+    {
+     "em": 3.6,
+     "text": "Sep 22"
+    },
+    {
+     "em": 3.6,
+     "text": "Sep 29"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 19.2,
+     "text": "Snap every cut to the music grid"
+    },
+    {
+     "em": 8.4,
+     "text": "Film-grade SFX"
+    },
+    {
+     "em": 19.2,
+     "text": "Layer whooshes and hits per shot"
+    },
+    {
+     "em": 9.0,
+     "text": "JianYing export"
+    },
+    {
+     "em": 19.8,
+     "text": "Open the edit as a JianYing draft"
+    },
+    {
+     "em": 8.4,
+     "text": "Release · v4.2"
+    },
+    {
+     "em": 7.8,
+     "text": "Feature flags"
+    },
+    {
+     "em": 7.8,
+     "text": "Rolling out ·"
+    },
+    {
+     "em": 6.0,
+     "text": "Crash zoom"
+    },
+    {
+     "em": 3.6,
+     "text": "Camera"
+    },
+    {
+     "em": 8.4,
+     "text": "Cursor flyover"
+    },
+    {
+     "em": 7.2,
+     "text": "Text as mask"
+    },
+    {
+     "em": 4.2,
+     "text": "Opening"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 3.0,
+     "text": "Outro"
+    },
+    {
+     "em": 5.4,
+     "text": "Top shots"
+    },
+    {
+     "em": 12.6,
+     "text": "By renders this month"
+    },
+    {
+     "em": 4.8,
+     "text": "Overview"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 4.8,
+     "text": "Releases"
+    },
+    {
+     "em": 9.4,
+     "text": "Search shots ⌘K"
+    }
+   ],
+   "summary": "整页俯瞰后，相机依次飞到四个功能区 zoom-in 特写，SVG 光标先一步到位指点、点击留下涟漪并触发界面响应，最后拉回俯瞰",
+   "verdict": null
+  },
+  "diagram-cascade-build": {
+   "auto": "side",
+   "box": [
+    164,
+    62,
+    1592,
+    882
+   ],
+   "card": "canvas-materialize-moves",
+   "category": "interaction",
+   "cover": 0.5004,
+   "error": null,
+   "file": "interaction/canvas-materialize-moves/DiagramCascadeBuild.tsx",
+   "form": "diagram",
+   "frames": 180,
+   "looks": true,
+   "slots": [
+    {
+     "em": 19.2,
+     "text": "Map the data model for Shotcraft"
+    },
+    {
+     "em": 4.2,
+     "text": "Project"
+    },
+    {
+     "em": 1.2,
+     "text": "PK"
+    },
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 4.2,
+     "text": "proj_id"
+    },
+    {
+     "em": 1.2,
+     "text": "FK"
+    },
+    {
+     "em": 2.4,
+     "text": "Shot"
+    },
+    {
+     "em": 4.8,
+     "text": "board_id"
+    },
+    {
+     "em": 3.6,
+     "text": "Recipe"
+    },
+    {
+     "em": 4.2,
+     "text": "shot_id"
+    },
+    {
+     "em": 3.6,
+     "text": "Output"
+    },
+    {
+     "em": 3.6,
+     "text": "job_id"
+    },
+    {
+     "em": 3.6,
+     "text": "Preset"
+    },
+    {
+     "em": 10.8,
+     "text": "7 tables · 6 links"
+    }
+   ],
+   "summary": "内容\"物化上画布\"两式——panel-to-canvas 行倒卡（面板表格行沿弧线飞出、跨容器变形成画布卡片）与 diagram-cascade 级联生成树（prompt 打字后节点逐层弹出、连线先于节点生长）",
+   "verdict": null
+  },
+  "doc-park-left-pill-deal": {
+   "auto": "full",
+   "box": [
+    2,
+    192,
+    1612,
+    702
+   ],
+   "card": "doc-park-left-pill-deal",
+   "category": "ui-entrance",
+   "cover": 0.3369,
+   "error": null,
+   "file": "ui-entrance/doc-park-left-pill-deal/DocParkLeftPillDeal.tsx",
+   "form": "diagram",
+   "frames": 174,
+   "looks": false,
+   "slots": [
+    {
+     "em": 21.0,
+     "text": "Launch film brief · video-shotcraft"
+    },
+    {
+     "em": 34.2,
+     "text": "Prepared by the Shotcraft agent  ·  Oct 2  ·  12 captures"
+    },
+    {
+     "em": 4.2,
+     "text": "PRODUCT"
+    },
+    {
+     "em": 37.2,
+     "text": "Agent skill for Claude Code and Codex, rendered with Remotion."
+    },
+    {
+     "em": 38.4,
+     "text": "Takes a frontend repo, real page captures and a one-line prompt."
+    },
+    {
+     "em": 36.6,
+     "text": "Ships a 1080p promo with beat-synced cuts and film-grade SFX."
+    },
+    {
+     "em": 3.6,
+     "text": "OPENER"
+    },
+    {
+     "em": 38.4,
+     "text": "Wants a bold opener that hits the hero number on the first beat."
+    },
+    {
+     "em": 39.0,
+     "text": "Asked twice for camera moves instead of static slide transitions."
+    },
+    {
+     "em": 36.6,
+     "text": "The hook has to read in two seconds on a muted autoplay feed."
+    },
+    {
+     "em": 3.6,
+     "text": "MIDDLE"
+    },
+    {
+     "em": 36.0,
+     "text": "The shot recipe library is the proof point viewers remember."
+    },
+    {
+     "em": 37.8,
+     "text": "Cards should pour in fast enough to feel like a full catalogue."
+    },
+    {
+     "em": 3.6,
+     "text": "ENDING"
+    },
+    {
+     "em": 37.8,
+     "text": "Every cut should resolve on the Frame Chisel mark at the close."
+    },
+    {
+     "em": 37.8,
+     "text": "Hold the final lockup for a full second before the music tails."
+    },
+    {
+     "em": 3.0,
+     "text": "AUDIO"
+    },
+    {
+     "em": 37.8,
+     "text": "A whoosh on every camera move, one heavy hit on the logo sting."
+    },
+    {
+     "em": 6.0,
+     "text": "NEXT STEPS"
+    },
+    {
+     "em": 37.8,
+     "text": "Render the crash zoom, deck deal and logo sting as a first cut."
+    },
+    {
+     "em": 37.2,
+     "text": "Open the workbench to tune timing and swap shots beat by beat."
+    },
+    {
+     "em": 34.2,
+     "text": "Export a JianYing draft for the final pass with the team."
+    },
+    {
+     "em": 6.0,
+     "text": "Crash Zoom"
+    },
+    {
+     "em": 15.6,
+     "text": "Zoom lands the hero number"
+    },
+    {
+     "em": 5.4,
+     "text": "Deck Deal"
+    },
+    {
+     "em": 18.6,
+     "text": "Deal shows off the shot library"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo Sting"
+    },
+    {
+     "em": 16.8,
+     "text": "Sting ends on the brand mark"
+    }
+   ],
+   "summary": "文档不淡出而是向左滑出只露约 35% 宽并微缩到 0.92，右侧按旁白节奏慢速发牌三张白底描边药丸（outBack 弹入），每张落定后其下方字幕逐词加深、下一张到来前整句淡出，左侧文档全程极缓慢自动滚动保持\"正在被读\"",
+   "verdict": null
+  },
+  "draw-svg-trace": {
+   "auto": "side",
+   "box": [
+    394,
+    208,
+    1134,
+    686
+   ],
+   "card": "draw-svg-trace",
+   "category": "ui-entrance",
+   "cover": 0.3765,
+   "error": null,
+   "file": "ui-entrance/draw-svg-trace/DrawSvgTrace.tsx",
+   "form": "diagram",
+   "frames": 132,
+   "looks": true,
+   "slots": [
+    {
+     "em": 12.0,
+     "text": "LAUNCH FILM · RENDER"
+    },
+    {
+     "em": 9.6,
+     "text": "Cuts on the beat"
+    },
+    {
+     "em": 36.6,
+     "text": "Every cut snaps to the downbeat. Rendered by video-shotcraft."
+    },
+    {
+     "em": 10.2,
+     "text": "ENERGY · PER SHOT"
+    },
+    {
+     "em": 13.8,
+     "text": "agent · rendered 2m ago"
+    }
+   ],
+   "summary": "描边生长圈注——一条带笔头的墨线沿元素轮廓跑一圈把它\"画\"出来，闭合瞬间闪黑交棒、内容淡入；同套路可给标题画下划线",
+   "verdict": null
+  },
+  "drone-dive-landing": {
+   "auto": "full",
+   "box": [
+    264,
+    90,
+    1652,
+    988
+   ],
+   "card": "space-camera-moves",
+   "category": "camera",
+   "cover": 0.7227,
+   "error": null,
+   "file": "camera/space-camera-moves/DroneDiveLanding.tsx",
+   "form": "diagram",
+   "frames": 105,
+   "looks": false,
+   "slots": [],
+   "summary": "3D 空间化运镜两式——exploded-view 爆炸分解（构件沿 Z 炸开再合体）、drone-dive-landing 无人机俯冲降落",
+   "verdict": null
+  },
+  "exploded-view": {
+   "auto": "side",
+   "box": [
+    160,
+    152,
+    1598,
+    924
+   ],
+   "card": "space-camera-moves",
+   "category": "camera",
+   "cover": 0.3635,
+   "error": null,
+   "file": "camera/space-camera-moves/ExplodedView.tsx",
+   "form": "diagram",
+   "frames": 170,
+   "looks": true,
+   "slots": [
+    {
+     "em": 6.0,
+     "text": "Navigation"
+    },
+    {
+     "em": 15.6,
+     "text": "Every shot, one click away"
+    },
+    {
+     "em": 4.8,
+     "text": "Insights"
+    },
+    {
+     "em": 14.4,
+     "text": "Renders, timing and pace"
+    },
+    {
+     "em": 5.4,
+     "text": "Assistant"
+    },
+    {
+     "em": 14.4,
+     "text": "Drafts shots you approve"
+    },
+    {
+     "em": 7.2,
+     "text": "Live metrics"
+    },
+    {
+     "em": 12.0,
+     "text": "Updated every second"
+    },
+    {
+     "em": 6.6,
+     "text": "Command bar"
+    },
+    {
+     "em": 13.2,
+     "text": "Add a shot in one line"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 4.8,
+     "text": "Timeline"
+    },
+    {
+     "em": 3.0,
+     "text": "Sound"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 4.8,
+     "text": "Settings"
+    },
+    {
+     "em": 17.8,
+     "text": "Add a shot or search recipes…"
+    },
+    {
+     "em": 9.6,
+     "text": "Avg. render time"
+    },
+    {
+     "em": 8.4,
+     "text": "Shots rendered"
+    },
+    {
+     "em": 9.6,
+     "text": "Cuts on the beat"
+    },
+    {
+     "em": 7.8,
+     "text": "Render volume"
+    },
+    {
+     "em": 7.2,
+     "text": "Last 14 days"
+    },
+    {
+     "em": 30.0,
+     "text": "Hero shot lands 6f late. Snap the cut to the kick?"
+    },
+    {
+     "em": 34.2,
+     "text": "“Moved the crash zoom to f240, right on the beat, and…”"
+    },
+    {
+     "em": 4.2,
+     "text": "Approve"
+    },
+    {
+     "em": 2.4,
+     "text": "Edit"
+    },
+    {
+     "em": 9.6,
+     "text": "Built in layers."
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    }
+   ],
+   "summary": "3D 空间化运镜两式——exploded-view 爆炸分解（构件沿 Z 炸开再合体）、drone-dive-landing 无人机俯冲降落",
+   "verdict": null
+  },
+  "flying-words": {
+   "auto": "full",
+   "box": [
+    22,
+    20,
+    1874,
+    1036
+   ],
+   "card": "flying-words",
+   "category": "typography",
+   "cover": 0.3148,
+   "error": null,
+   "file": "typography/flying-words/FlyingWords.tsx",
+   "form": "text",
+   "frames": 180,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.8,
+     "text": "Timeline"
+    },
+    {
+     "em": 5.4,
+     "text": "Keyframes"
+    },
+    {
+     "em": 3.6,
+     "text": "Easing"
+    },
+    {
+     "em": 3.6,
+     "text": "Camera"
+    },
+    {
+     "em": 3.0,
+     "text": "Depth"
+    },
+    {
+     "em": 4.8,
+     "text": "Parallax"
+    },
+    {
+     "em": 6.6,
+     "text": "Motion blur"
+    },
+    {
+     "em": 4.2,
+     "text": "Springs"
+    },
+    {
+     "em": 3.6,
+     "text": "Layers"
+    },
+    {
+     "em": 6.0,
+     "text": "Shot cards"
+    },
+    {
+     "em": 6.0,
+     "text": "Typography"
+    },
+    {
+     "em": 4.8,
+     "text": "Lighting"
+    },
+    {
+     "em": 3.0,
+     "text": "Grain"
+    },
+    {
+     "em": 4.8,
+     "text": "Remotion"
+    },
+    {
+     "em": 5.4,
+     "text": "Beat grid"
+    },
+    {
+     "em": 4.2,
+     "text": "Stagger"
+    },
+    {
+     "em": 6.6,
+     "text": "Transitions"
+    },
+    {
+     "em": 3.0,
+     "text": "Color"
+    },
+    {
+     "em": 5.4,
+     "text": "Workbench"
+    },
+    {
+     "em": 6.0,
+     "text": "Audio sync"
+    },
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 3.0,
+     "text": "Orbit"
+    }
+   ],
+   "summary": "22 个关键词按黄金角铺在扁椭圆截面上，沿 z 轴从远处飞到相机前擦身而过，透明度走 [0,1,0.5,0.2,0] 生命曲线，跑满 2 整圈首尾无缝",
+   "verdict": null
+  },
+  "flyline-arc": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1886,
+    1058
+   ],
+   "card": "glow-flyline-moves",
+   "category": "effects",
+   "cover": 0.9157,
+   "error": null,
+   "file": "effects/glow-flyline-moves/FlylineArc.tsx",
+   "form": "diagram",
+   "frames": 140,
+   "looks": false,
+   "slots": [],
+   "summary": "暗场光斑与飞线三式——glow-orb-ambient 光斑底噪、flyline-arc 飞线连接、orb-flyline-relay 同帧共振组合",
+   "verdict": null
+  },
+  "font-weight-pump": {
+   "auto": "side",
+   "box": [
+    372,
+    116,
+    1224,
+    886
+   ],
+   "card": "type-rhythm-sync",
+   "category": "typography",
+   "cover": 0.23,
+   "error": null,
+   "file": "typography/type-rhythm-sync/FontWeightPump.tsx",
+   "form": "text",
+   "frames": 165,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.6,
+     "text": "LOUDER"
+    },
+    {
+     "em": 4.2,
+     "text": "128 BPM"
+    },
+    {
+     "em": 21.6,
+     "text": "Beat-synced cuts, right on the drop."
+    },
+    {
+     "em": 2.4,
+     "text": "Drop"
+    }
+   ],
+   "summary": "文字随声同步两式——font-weight-pump 字重脉冲（笔画随鼓点变粗弹回）与 karaoke-fill-sync 卡拉OK填色（词随旁白逐个点亮）",
+   "verdict": null
+  },
+  "fracture": {
+   "auto": "full",
+   "box": [
+    196,
+    28,
+    1710,
+    1020
+   ],
+   "card": "fracture",
+   "category": "opening",
+   "cover": 0.7362,
+   "error": null,
+   "file": "opening/fracture/Fracture.tsx",
+   "form": "text",
+   "frames": 156,
+   "looks": false,
+   "slots": [
+    {
+     "em": 6.6,
+     "text": "INTRODUCING"
+    }
+   ],
+   "summary": "5×5 瓦片从 3D 碎片态按中心波纹逐圈聚合成整面海报，停一拍亮字，随后全部碎片背离中心加速旋转飞出画面",
+   "verdict": null
+  },
+  "glass-pill-dictation-typing": {
+   "auto": "side",
+   "box": [
+    330,
+    172,
+    1364,
+    774
+   ],
+   "card": "glass-pill-dictation-typing",
+   "category": "interaction",
+   "cover": 0.2875,
+   "error": null,
+   "file": "interaction/glass-pill-dictation-typing/GlassPillDictationTyping.tsx",
+   "form": "diagram",
+   "frames": 100,
+   "looks": true,
+   "slots": [
+    {
+     "em": 16.8,
+     "text": "Cut a launch film for my app"
+    },
+    {
+     "em": 9.0,
+     "text": "· speak or type"
+    }
+   ],
+   "summary": "一条定宽玻璃胶囊以约 1.25 倍略大弹出后缓落到位，内部自左淡到右浓铺一层强调色暖光；光标先行、随后匀速打出听写句，光（连同胶囊背后的环境光）随打字进度渐渐退去，收尾成一条中性的磨砂玻璃条",
+   "verdict": null
+  },
+  "glitch-cycle": {
+   "auto": "side",
+   "box": [
+    398,
+    384,
+    1116,
+    478
+   ],
+   "card": "glitch-cycle",
+   "category": "typography",
+   "cover": 0.0816,
+   "error": null,
+   "file": "typography/glitch-cycle/GlitchCycle.tsx",
+   "form": "text",
+   "frames": 168,
+   "looks": true,
+   "slots": [
+    {
+     "em": 7.8,
+     "text": "STORYBOARDING"
+    },
+    {
+     "em": 10.2,
+     "text": "LOCKING BEAT GRID"
+    },
+    {
+     "em": 9.6,
+     "text": "RENDERING FRAMES"
+    },
+    {
+     "em": 7.8,
+     "text": "READY TO SHIP"
+    },
+    {
+     "em": 4.8,
+     "text": "RENDERED"
+    },
+    {
+     "em": 5.4,
+     "text": "RENDERING"
+    },
+    {
+     "em": 2.4,
+     "text": "STEP"
+    },
+    {
+     "em": 7.2,
+     "text": "Crafted with"
+    }
+   ],
+   "summary": "同一行等宽槽位循环轮播 4 条状态短语，每条头尾按概率关键帧 [1,0,0,0.1,0,0,1] 全乱码、中段偶发单字抖动，切换瞬间叠 RGB 分离与整行位移；末条概率收 0 保证收尾干净",
+   "verdict": null
+  },
+  "glitch-displace": {
+   "auto": "full",
+   "box": [
+    42,
+    68,
+    1836,
+    946
+   ],
+   "card": "tear-streak-transitions",
+   "category": "transition",
+   "cover": 0.2606,
+   "error": null,
+   "file": "transition/tear-streak-transitions/GlitchDisplace.tsx",
+   "form": "diagram",
+   "frames": 135,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "38 ms"
+    },
+    {
+     "em": 3.0,
+     "text": "44 ms"
+    },
+    {
+     "em": 10.6,
+     "text": "draining traffic…"
+    },
+    {
+     "em": 12.6,
+     "text": "uptime during rollout"
+    },
+    {
+     "em": 9.0,
+     "text": "failed requests"
+    },
+    {
+     "em": 10.8,
+     "text": "global propagation"
+    },
+    {
+     "em": 4.8,
+     "text": "Releases"
+    },
+    {
+     "em": 6.6,
+     "text": "LIVE · prod"
+    },
+    {
+     "em": 9.6,
+     "text": "DEPLOYING · prod"
+    },
+    {
+     "em": 19.2,
+     "text": "RELEASE 4.0.0 · 18 OF 18 REGIONS"
+    },
+    {
+     "em": 15.6,
+     "text": "RELEASE 4.0.0 · BUILD 2047"
+    },
+    {
+     "em": 5.4,
+     "text": "Shotcraft"
+    },
+    {
+     "em": 6.6,
+     "text": "Rolling out"
+    },
+    {
+     "em": 3.0,
+     "text": "live."
+    },
+    {
+     "em": 11.4,
+     "text": "p95 latency, global"
+    },
+    {
+     "em": 9.0,
+     "text": "traffic shifted"
+    },
+    {
+     "em": 11.4,
+     "text": "4.0.0 · SHA 9F3C2E1"
+    },
+    {
+     "em": 9.6,
+     "text": "ROLLOUT COMPLETE"
+    },
+    {
+     "em": 9.4,
+     "text": "CANARY → GLOBAL"
+    }
+   ],
+   "summary": "撕裂转场——glitch-displace 噪声撕裂（16 横条错位抖动中硬切），数字故障语义的条带级撕裂",
+   "verdict": null
+  },
+  "glow-orb-ambient": {
+   "auto": "full",
+   "box": [
+    40,
+    2,
+    1868,
+    1062
+   ],
+   "card": "glow-flyline-moves",
+   "category": "effects",
+   "cover": 0.8222,
+   "error": null,
+   "file": "effects/glow-flyline-moves/GlowOrbAmbient.tsx",
+   "form": "diagram",
+   "frames": 170,
+   "looks": true,
+   "slots": [
+    {
+     "em": 6.6,
+     "text": "Now playing"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 19.8,
+     "text": "Beat-synced cuts · film-grade SFX"
+    },
+    {
+     "em": 5.4,
+     "text": "Remaining"
+    }
+   ],
+   "summary": "暗场光斑与飞线三式——glow-orb-ambient 光斑底噪、flyline-arc 飞线连接、orb-flyline-relay 同帧共振组合",
+   "verdict": null
+  },
+  "glow-wake-sleep-panel": {
+   "auto": "side",
+   "box": [
+    318,
+    4,
+    1596,
+    1072
+   ],
+   "card": "spotlight-sweep-moves",
+   "category": "effects",
+   "cover": 0.7868,
+   "error": null,
+   "file": "effects/spotlight-sweep-moves/GlowWakeSleepPanel.tsx",
+   "form": "diagram",
+   "frames": 140,
+   "looks": false,
+   "slots": [],
+   "summary": "暗场聚光显影三式——A 醒睡扫过（光到即亮光走即暗）、B 贴边泛光横摇（紫光贴 UI 边缘渗入+聚光匀速右移）、C 角落匀速显影（径向聚光从角落匀速扩张点亮全屏）；黑场里\"光即叙事\"的 UI 展示",
+   "verdict": null
+  },
+  "gradient-transition": {
+   "auto": "side",
+   "box": [
+    152,
+    308,
+    1596,
+    670
+   ],
+   "card": "gradient-transition",
+   "category": "transition",
+   "cover": 0.0366,
+   "error": null,
+   "file": "transition/gradient-transition/GradientTransition.tsx",
+   "form": "diagram",
+   "frames": 200,
+   "looks": true,
+   "slots": [
+    {
+     "em": 6.6,
+     "text": "Bend light."
+    },
+    {
+     "em": 5.4,
+     "text": "Focus it."
+    },
+    {
+     "em": 6.6,
+     "text": "Introducing"
+    }
+   ],
+   "summary": "背景在 linear、radial、conic 三类 CSS 渐变间平滑过渡——角度、色标、中心、半径逐参数插值，段间交叉淡化换类型",
+   "verdict": null
+  },
+  "gradient-word-sweep": {
+   "auto": "side",
+   "box": [
+    320,
+    368,
+    1240,
+    262
+   ],
+   "card": "gradient-word-sweep",
+   "category": "typography",
+   "cover": 0.0965,
+   "error": null,
+   "file": "typography/gradient-word-sweep/GradientWordSweep.tsx",
+   "form": "text",
+   "frames": 105,
+   "looks": false,
+   "slots": [
+    {
+     "em": 7.2,
+     "text": "Supercharged"
+    },
+    {
+     "em": 7.8,
+     "text": "product films"
+    },
+    {
+     "em": 5.4,
+     "text": "made with"
+    }
+   ],
+   "summary": "黑底标语里关键词被渐变彩光从左到右快速扫过\"充能\"——波前字符辉光最强向后衰减，填满后字符间勾连细紫红闪电、整词稳态泛光呼吸",
+   "verdict": null
+  },
+  "grain-dissolve": {
+   "auto": "side",
+   "box": [
+    262,
+    288,
+    1396,
+    504
+   ],
+   "card": "grain-dissolve",
+   "category": "outro",
+   "cover": 0.0469,
+   "error": null,
+   "file": "outro/grain-dissolve/GrainDissolve.tsx",
+   "form": "text",
+   "frames": 60,
+   "looks": false,
+   "slots": [],
+   "summary": "整行字爆裂成沸腾颗粒噪点并浮现斜纹选区框，噪点云急速凝聚成更大号发光短字标，位移衰减归零定格",
+   "verdict": null
+  },
+  "graze-face-tour": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "graze-face-tour",
+   "category": "camera",
+   "cover": 0.7131,
+   "error": null,
+   "file": "camera/graze-face-tour/GrazeFaceTour.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 27.0,
+     "text": "M7 3h7l4 4v14H7zM14 3v4h4M9.5 12h6M9.5 15.5h6"
+    },
+    {
+     "em": 34.2,
+     "text": "M4 13.5l2.5-8h11l2.5 8v5H4zM4 13.5h4.5l1.2 2h4.6l1.2-2H20"
+    },
+    {
+     "em": 63.0,
+     "text": "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3.5 19a5.5 5.5 0 0 1 11 0M16 5.5a3 3 0 0 1 0 5.5M17.5 14a5 5 0 0 1 3 5"
+    },
+    {
+     "em": 49.2,
+     "text": "M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 12h.01"
+    },
+    {
+     "em": 28.8,
+     "text": "M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4-4"
+    },
+    {
+     "em": 40.8,
+     "text": "M4.5 4.5h6v6h-6zM13.5 4.5h6v6h-6zM4.5 13.5h6v6h-6zM13.5 13.5h6v6h-6z"
+    },
+    {
+     "em": 2.4,
+     "text": "List"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 7.2,
+     "text": "Shot recipes"
+    },
+    {
+     "em": 6.6,
+     "text": "Storyboards"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 2.4,
+     "text": "More"
+    },
+    {
+     "em": 4.2,
+     "text": "Opening"
+    },
+    {
+     "em": 7.2,
+     "text": "Camera moves"
+    },
+    {
+     "em": 6.6,
+     "text": "Transitions"
+    },
+    {
+     "em": 9.0,
+     "text": "Recipe handbook"
+    },
+    {
+     "em": 5.4,
+     "text": "Whip pans"
+    },
+    {
+     "em": 6.0,
+     "text": "Match cuts"
+    },
+    {
+     "em": 3.0,
+     "text": "Takes"
+    },
+    {
+     "em": 3.0,
+     "text": "Demos"
+    },
+    {
+     "em": 3.6,
+     "text": "Frames"
+    },
+    {
+     "em": 3.6,
+     "text": "SPACES"
+    },
+    {
+     "em": 3.6,
+     "text": "Recent"
+    },
+    {
+     "em": 5.4,
+     "text": "Favorites"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 7.8,
+     "text": "Storyboard v3"
+    },
+    {
+     "em": 7.8,
+     "text": "Edited 2h ago"
+    },
+    {
+     "em": 12.6,
+     "text": "Add shot · crash zoom"
+    },
+    {
+     "em": 5.4,
+     "text": "Yesterday"
+    },
+    {
+     "em": 2.4,
+     "text": "Todo"
+    },
+    {
+     "em": 4.8,
+     "text": "Comments"
+    },
+    {
+     "em": 2.4,
+     "text": "Done"
+    },
+    {
+     "em": 3.0,
+     "text": "Inbox"
+    },
+    {
+     "em": 4.2,
+     "text": "Company"
+    },
+    {
+     "em": 8.4,
+     "text": "People & Teams"
+    },
+    {
+     "em": 3.0,
+     "text": "Goals"
+    },
+    {
+     "em": 2.4,
+     "text": "Docs"
+    },
+    {
+     "em": 10.2,
+     "text": "Shot recipe cards"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 7.2,
+     "text": "Render queue"
+    },
+    {
+     "em": 2.4,
+     "text": "Home"
+    },
+    {
+     "em": 13.6,
+     "text": "Search shots, recipes…"
+    },
+    {
+     "em": 10.8,
+     "text": "Render launch film"
+    },
+    {
+     "em": 3.0,
+     "text": "Today"
+    },
+    {
+     "em": 10.8,
+     "text": "Beat-sync the cuts"
+    },
+    {
+     "em": 4.8,
+     "text": "Tomorrow"
+    },
+    {
+     "em": 12.6,
+     "text": "Export JianYing draft"
+    },
+    {
+     "em": 1.8,
+     "text": "Fri"
+    },
+    {
+     "em": 5.4,
+     "text": "Delegated"
+    },
+    {
+     "em": 3.6,
+     "text": "Filter"
+    },
+    {
+     "em": 3.0,
+     "text": "Group"
+    },
+    {
+     "em": 2.4,
+     "text": "Sort"
+    },
+    {
+     "em": 3.0,
+     "text": "TODAY"
+    },
+    {
+     "em": 5.4,
+     "text": "TASK NAME"
+    },
+    {
+     "em": 4.8,
+     "text": "PROGRESS"
+    },
+    {
+     "em": 1.8,
+     "text": "DUE"
+    }
+   ],
+   "summary": "大倾角贴面游走特写——镜头贴着 UI 表面低飞掠过（侧栏树/顶栏/列表当地形），页面文字初始悬浮在界面上空带同形软影，随镜头行进先后加速贴落回界面",
+   "verdict": null
+  },
+  "hashtag-to-pill-materialize": {
+   "auto": "side",
+   "box": [
+    160,
+    102,
+    1550,
+    786
+   ],
+   "card": "hashtag-to-pill-materialize",
+   "category": "interaction",
+   "cover": 0.0955,
+   "error": null,
+   "file": "interaction/hashtag-to-pill-materialize/HashtagToPillMaterialize.tsx",
+   "form": "diagram",
+   "frames": 120,
+   "looks": false,
+   "slots": [
+    {
+     "em": 40.2,
+     "text": "Futura, 'Century Gothic', 'Avenir Next', 'Trebuchet MS', sans-serif"
+    },
+    {
+     "em": 3.0,
+     "text": "Notes"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 9.0,
+     "text": "Edited just now"
+    },
+    {
+     "em": 10.2,
+     "text": "My favorite shots"
+    },
+    {
+     "em": 23.4,
+     "text": "A few camera moves I keep stealing from"
+    },
+    {
+     "em": 22.2,
+     "text": "the whip pan. Welcome. Bring popcorn."
+    }
+   ],
+   "summary": "话题词打字实体化——居中打出 \"#word\"（红实心光标恒亮），1 帧硬切变成宽大胶囊标签，hold 后缩小左移落到页面标签位，再 1 帧硬切揭示成品页；\"两次硬切一次滑动\"的节奏骨架",
+   "verdict": null
+  },
+  "hit-counter": {
+   "auto": "full",
+   "box": [
+    170,
+    72,
+    1648,
+    850
+   ],
+   "card": "impact-feedback",
+   "category": "effects",
+   "cover": 0.3105,
+   "error": null,
+   "file": "effects/impact-feedback/HitCounter.tsx",
+   "form": "diagram",
+   "frames": 176,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.0,
+     "text": "−1 day"
+    },
+    {
+     "em": 4.6,
+     "text": "−3 days"
+    },
+    {
+     "em": 7.2,
+     "text": "Shot recipes"
+    },
+    {
+     "em": 19.2,
+     "text": "Pick a move, not a blank canvas."
+    },
+    {
+     "em": 4.8,
+     "text": "per shot"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 17.4,
+     "text": "Every cut lands on the music."
+    },
+    {
+     "em": 4.8,
+     "text": "per edit"
+    },
+    {
+     "em": 6.6,
+     "text": "2.5D camera"
+    },
+    {
+     "em": 16.8,
+     "text": "Real pages, filmed in depth."
+    },
+    {
+     "em": 5.4,
+     "text": "per promo"
+    },
+    {
+     "em": 6.4,
+     "text": "What’s new"
+    },
+    {
+     "em": 7.8,
+     "text": "bottom center"
+    },
+    {
+     "em": 7.8,
+     "text": "center bottom"
+    },
+    {
+     "em": 3.0,
+     "text": "Combo"
+    },
+    {
+     "em": 19.8,
+     "text": "Up to a week back on every promo."
+    }
+   ],
+   "summary": "命中反馈两式——hit-counter 连招计数（顿帧+伤害数字+combo 跳字）、anime-impact 动漫打击帧（负片+集中线+色散）",
+   "verdict": null
+  },
+  "icon-field-colorize": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "icon-field-colorize",
+   "category": "opening",
+   "cover": 1.0,
+   "error": null,
+   "file": "opening/icon-field-colorize/IconFieldColorize.tsx",
+   "form": "text",
+   "frames": 170,
+   "looks": true,
+   "slots": [
+    {
+     "em": 61.8,
+     "text": "M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z"
+    },
+    {
+     "em": 105.6,
+     "text": "M12 1.5l1.4 3.6h-2.8zM12 22.5l-1.4-3.6h2.8zM1.5 12l3.6-1.4v2.8zM22.5 12l-3.6 1.4v-2.8zM4.6 4.6l3.5 1.5-2 2zM19.4 19.4l-3.5-1.5 2-2zM19.4 4.6l-1.5 3.5-2-2zM4.6 19.4l1.5-3.5 2 2z"
+    },
+    {
+     "em": 6.6,
+     "text": "Every shot,"
+    },
+    {
+     "em": 6.0,
+     "text": "one place."
+    }
+   ],
+   "summary": "灰阶小图标点阵错峰浮现铺满全屏，停一拍后多道品牌色横带波纹极快向下扫翻全场——\"功能全景先摆满，品牌一瞬间点亮\"的开场/收束卡",
+   "verdict": null
+  },
+  "icon-flip-bloom-logo": {
+   "auto": "side",
+   "box": [
+    886,
+    400,
+    150,
+    312
+   ],
+   "card": "ui-to-brand-morph",
+   "category": "outro",
+   "cover": 0.0155,
+   "error": null,
+   "file": "outro/ui-to-brand-morph/IconFlipBloomLogo.tsx",
+   "form": "text",
+   "frames": 130,
+   "looks": false,
+   "slots": [],
+   "summary": "UI 变品牌两式——icon-flip-bloom 图标 Y 轴翻扁成竖线、从竖线撑开成品牌标志（琥珀斜切随后划入）+ wordmark 逐字落定，与 input-morph-assemble 输入框收缩成取景框竖笔、三块图元落进构造槽位拼成完整标志",
+   "verdict": null
+  },
+  "impact-burst-kit": {
+   "auto": "side",
+   "box": [
+    200,
+    274,
+    1522,
+    662
+   ],
+   "card": "slam-entrance-moves",
+   "category": "effects",
+   "cover": 0.4468,
+   "error": null,
+   "file": "effects/slam-entrance-moves/ImpactBurstKit.tsx",
+   "form": "diagram",
+   "frames": 140,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.6,
+     "text": "Teaser"
+    },
+    {
+     "em": 10.8,
+     "text": "For a social drop."
+    },
+    {
+     "em": 9.0,
+     "text": "Crash-zoom open"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 7.2,
+     "text": "Cut a teaser"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 14.4,
+     "text": "Your product, in motion."
+    },
+    {
+     "em": 10.8,
+     "text": "Real page captures"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    },
+    {
+     "em": 8.4,
+     "text": "Film-grade SFX"
+    },
+    {
+     "em": 10.8,
+     "text": "Render launch film"
+    },
+    {
+     "em": 6.6,
+     "text": "Walkthrough"
+    },
+    {
+     "em": 8.4,
+     "text": "with voiceover"
+    },
+    {
+     "em": 16.8,
+     "text": "Every feature, shot by shot."
+    },
+    {
+     "em": 9.0,
+     "text": "Cursor flyovers"
+    },
+    {
+     "em": 7.8,
+     "text": "Callout zooms"
+    },
+    {
+     "em": 9.0,
+     "text": "JianYing export"
+    },
+    {
+     "em": 7.8,
+     "text": "Storyboard it"
+    },
+    {
+     "em": 5.4,
+     "text": "· formats"
+    },
+    {
+     "em": 18.6,
+     "text": "One prompt to a finished promo."
+    },
+    {
+     "em": 8.4,
+     "text": "DIRECTOR'S CUT"
+    }
+   ],
+   "summary": "高能砸入三式——kanada-perspective-snap 金田透视急停、score-slam 比分砸落、impact-burst-kit 落点冲击套件（波及邻卡）",
+   "verdict": null
+  },
+  "ink-bleed-reveal": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "print-texture-transitions",
+   "category": "transition",
+   "cover": 1.0,
+   "error": null,
+   "file": "transition/print-texture-transitions/InkBleedReveal.tsx",
+   "form": "diagram",
+   "frames": 130,
+   "looks": false,
+   "slots": [
+    {
+     "em": 6.0,
+     "text": "CHAPTER 02"
+    },
+    {
+     "em": 7.8,
+     "text": "Frame motion."
+    },
+    {
+     "em": 9.0,
+     "text": "Craft the shot."
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    }
+   ],
+   "summary": "印刷质感转场——ink-bleed-reveal 墨渗揭示（须状渗边洇开吃掉旧景）",
+   "verdict": null
+  },
+  "input-morphs-into-logo": {
+   "auto": "full",
+   "box": [
+    122,
+    122,
+    1674,
+    834
+   ],
+   "card": "ui-to-brand-morph",
+   "category": "outro",
+   "cover": 0.0569,
+   "error": null,
+   "file": "outro/ui-to-brand-morph/InputMorphsIntoLogo.tsx",
+   "form": "text",
+   "frames": 168,
+   "looks": true,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "Maya"
+    },
+    {
+     "em": 2.4,
+     "text": "Theo"
+    },
+    {
+     "em": 21.0,
+     "text": "Crash zoom lands right on the beat."
+    },
+    {
+     "em": 6.0,
+     "text": "12 members"
+    },
+    {
+     "em": 19.2,
+     "text": "Render the launch film. Ship it."
+    }
+   ],
+   "summary": "UI 变品牌两式——icon-flip-bloom 图标 Y 轴翻扁成竖线、从竖线撑开成品牌标志（琥珀斜切随后划入）+ wordmark 逐字落定，与 input-morph-assemble 输入框收缩成取景框竖笔、三块图元落进构造槽位拼成完整标志",
+   "verdict": null
+  },
+  "integration-hub-map": {
+   "auto": "full",
+   "box": [
+    140,
+    122,
+    1674,
+    916
+   ],
+   "card": "integration-hub-map",
+   "category": "ui-entrance",
+   "cover": 0.4827,
+   "error": null,
+   "file": "ui-entrance/integration-hub-map/IntegrationHubMap.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 8.4,
+     "text": "Launch Film v3"
+    },
+    {
+     "em": 15.6,
+     "text": "Shot 04 · Crash Zoom Punch"
+    },
+    {
+     "em": 15.6,
+     "text": "Recipe card · Camera · 36f"
+    },
+    {
+     "em": 12.6,
+     "text": "Pricing Page Captures"
+    },
+    {
+     "em": 10.2,
+     "text": "Page capture · 2x"
+    },
+    {
+     "em": 10.2,
+     "text": "Hero Frame Design"
+    },
+    {
+     "em": 15.0,
+     "text": "Design File · Last Edited"
+    },
+    {
+     "em": 13.2,
+     "text": "Beat Grid · Soundtrack"
+    },
+    {
+     "em": 9.0,
+     "text": "Audio · 120 BPM"
+    },
+    {
+     "em": 8.4,
+     "text": "Render Archive"
+    },
+    {
+     "em": 15.0,
+     "text": "Archived · In Launch Film"
+    },
+    {
+     "em": 15.6,
+     "text": "Render launch film - 1080p"
+    },
+    {
+     "em": 24.6,
+     "text": "In Progress · In Render Queue · Yesterday"
+    },
+    {
+     "em": 1.8,
+     "text": "All"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 3.0,
+     "text": "Cards"
+    },
+    {
+     "em": 6.6,
+     "text": "Storyboards"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 3.0,
+     "text": "Audio"
+    },
+    {
+     "em": 4.8,
+     "text": "Captures"
+    },
+    {
+     "em": 4.2,
+     "text": "Exports"
+    },
+    {
+     "em": 3.6,
+     "text": "RECENT"
+    },
+    {
+     "em": 10.2,
+     "text": "+ Add Shot Filter"
+    },
+    {
+     "em": 7.8,
+     "text": "QUICK FILTERS"
+    },
+    {
+     "em": 8.4,
+     "text": "Assigned to Me"
+    },
+    {
+     "em": 7.8,
+     "text": "Created by Me"
+    },
+    {
+     "em": 7.2,
+     "text": "RENDER QUEUE"
+    },
+    {
+     "em": 3.6,
+     "text": "Queued"
+    },
+    {
+     "em": 4.8,
+     "text": "Rendered"
+    },
+    {
+     "em": 4.8,
+     "text": "Archived"
+    },
+    {
+     "em": 105.6,
+     "text": "Camera moves are 2.5D push-ins with a crash zoom on the hero. Sound design lands a whoosh on every cut, and the first full render is already queued for review in the workbench."
+    },
+    {
+     "em": 7.8,
+     "text": "Edited 2h ago"
+    },
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 4.8,
+     "text": "12 shots"
+    },
+    {
+     "em": 4.8,
+     "text": "Duration"
+    },
+    {
+     "em": 3.0,
+     "text": "Stage"
+    },
+    {
+     "em": 5.4,
+     "text": "Rendering"
+    },
+    {
+     "em": 3.0,
+     "text": "Ships"
+    },
+    {
+     "em": 3.6,
+     "text": "Sep 28"
+    },
+    {
+     "em": 4.8,
+     "text": "Director"
+    },
+    {
+     "em": 8.4,
+     "text": "Dana Whitfield"
+    },
+    {
+     "em": 4.2,
+     "text": "Summary"
+    },
+    {
+     "em": 6.0,
+     "text": "Next steps"
+    },
+    {
+     "em": 21.6,
+     "text": "Tune the crash zoom on the hero shot"
+    },
+    {
+     "em": 17.4,
+     "text": "Render the final cut at 1080p"
+    }
+   ],
+   "summary": "旧页面一次性快翻 180°（侧棱瞬间亮闪）落成新中枢页，五个集成 app 图标同帧弹现、随即五条彩虹光管同帧齐连，光管内输送脉冲持续流动——\"翻开新一页，生态一齐接入\"",
+   "verdict": null
+  },
+  "invisible-cut": {
+   "auto": "full",
+   "box": [
+    4,
+    20,
+    1820,
+    1040
+   ],
+   "card": "transition-hidden-cut",
+   "category": "transition",
+   "cover": 0.7201,
+   "error": null,
+   "file": "transition/transition-hidden-cut/InvisibleCut.tsx",
+   "form": "diagram",
+   "frames": 110,
+   "looks": true,
+   "slots": [
+    {
+     "em": 8.4,
+     "text": "xMidYMid slice"
+    },
+    {
+     "em": 4.2,
+     "text": "Shot 03"
+    },
+    {
+     "em": 7.8,
+     "text": "· Golden hour"
+    },
+    {
+     "em": 13.8,
+     "text": "Launch film · Final cut"
+    },
+    {
+     "em": 9.6,
+     "text": "Direct the film."
+    },
+    {
+     "em": 4.2,
+     "text": "Let the"
+    },
+    {
+     "em": 5.4,
+     "text": "shoot it."
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 4.2,
+     "text": "12 cuts"
+    },
+    {
+     "em": 3.6,
+     "text": "Length"
+    },
+    {
+     "em": 13.2,
+     "text": "h264 · beat-synced SFX"
+    },
+    {
+     "em": 6.4,
+     "text": "Rendering…"
+    },
+    {
+     "em": 3.6,
+     "text": "Render"
+    },
+    {
+     "em": 9.0,
+     "text": "Render complete"
+    },
+    {
+     "em": 5.2,
+     "text": "That’s a"
+    },
+    {
+     "em": 3.0,
+     "text": "wrap."
+    },
+    {
+     "em": 21.6,
+     "text": "Launch film · 12 shots, beat-synced,"
+    },
+    {
+     "em": 7.2,
+     "text": "crafted with"
+    },
+    {
+     "em": 27.0,
+     "text": "MP4 and JianYing project saved to your folder"
+    },
+    {
+     "em": 4.2,
+     "text": "SC-4821"
+    }
+   ],
+   "summary": "藏切点转场三式——前景遮挡隐形切、对撞开屏、暖色漏光，硬切藏进遮挡/撞击/光峰的 1-3 帧里，观众看不见剪刀",
+   "verdict": null
+  },
+  "jump-cut-punch-in": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "rhythm-interrupt-moves",
+   "category": "rhythm",
+   "cover": 0.9956,
+   "error": null,
+   "file": "rhythm/rhythm-interrupt-moves/JumpCutPunchIn.tsx",
+   "form": "text",
+   "frames": 135,
+   "looks": false,
+   "slots": [],
+   "summary": "打断节奏——jump-cut-punch-in 三级跳切推近：同构图三次无补间硬跳放大，逐级逼近目标",
+   "verdict": null
+  },
+  "kanada-perspective-snap": {
+   "auto": "full",
+   "box": [
+    22,
+    46,
+    1874,
+    880
+   ],
+   "card": "slam-entrance-moves",
+   "category": "effects",
+   "cover": 0.4617,
+   "error": null,
+   "file": "effects/slam-entrance-moves/KanadaPerspectiveSnap.tsx",
+   "form": "diagram",
+   "frames": 120,
+   "looks": true,
+   "slots": [
+    {
+     "em": 7.2,
+     "text": "FRAME MOTION"
+    },
+    {
+     "em": 8.4,
+     "text": "CRAFT THE SHOT"
+    },
+    {
+     "em": 4.8,
+     "text": "PREMIERE"
+    },
+    {
+     "em": 3.6,
+     "text": "Launch"
+    },
+    {
+     "em": 2.4,
+     "text": "Film"
+    },
+    {
+     "em": 14.4,
+     "text": "Your product, in motion."
+    },
+    {
+     "em": 5.4,
+     "text": "Watch now"
+    },
+    {
+     "em": 9.6,
+     "text": "Premieres Friday"
+    },
+    {
+     "em": 7.2,
+     "text": "·  shot with"
+    }
+   ],
+   "summary": "高能砸入三式——kanada-perspective-snap 金田透视急停、score-slam 比分砸落、impact-burst-kit 落点冲击套件（波及邻卡）",
+   "verdict": null
+  },
+  "karaoke-fill-sync": {
+   "auto": "side",
+   "box": [
+    400,
+    372,
+    1122,
+    538
+   ],
+   "card": "type-rhythm-sync",
+   "category": "typography",
+   "cover": 0.0676,
+   "error": null,
+   "file": "typography/type-rhythm-sync/KaraokeFillSync.tsx",
+   "form": "text",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "FRAME"
+    },
+    {
+     "em": 3.6,
+     "text": "MOTION"
+    },
+    {
+     "em": 3.0,
+     "text": "CRAFT"
+    },
+    {
+     "em": 3.0,
+     "text": "SHOTS"
+    }
+   ],
+   "summary": "文字随声同步两式——font-weight-pump 字重脉冲（笔画随鼓点变粗弹回）与 karaoke-fill-sync 卡拉OK填色（词随旁白逐个点亮）",
+   "verdict": null
+  },
+  "lead-word-zoom-assemble": {
+   "auto": "side",
+   "box": [
+    308,
+    430,
+    1306,
+    232
+   ],
+   "card": "lead-word-zoom-assemble",
+   "category": "typography",
+   "cover": 0.0844,
+   "error": null,
+   "file": "typography/lead-word-zoom-assemble/LeadWordZoomAssemble.tsx",
+   "form": "text",
+   "frames": 84,
+   "looks": false,
+   "slots": [
+    {
+     "em": 16.2,
+     "text": "Introducing video-shotcraft"
+    },
+    {
+     "em": 33.4,
+     "text": "One shot card, one motion recipe — copy, paste, render."
+    }
+   ],
+   "summary": "首词以 2.3 倍字号占据画面中央、hold 期间继续推近 6%，随后一条曲线同时完成「缩回终字号」与「整行左滑归位」，后续词各自从槽位右侧 0.5em 被推进来；支点横向钉首词中心、纵向钉基线（挂载时实测），整行上移的同一时窗副行浮出，停一拍后整幕 crash-zoom 推近失焦交棒",
+   "verdict": null
+  },
+  "letter-drop-physics": {
+   "auto": "side",
+   "box": [
+    204,
+    600,
+    1514,
+    110
+   ],
+   "card": "type-entrance-moves",
+   "category": "typography",
+   "cover": 0.004,
+   "error": null,
+   "file": "typography/type-entrance-moves/LetterDropPhysics.tsx",
+   "form": "text",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 17.4,
+     "text": "Every shot lands on the beat."
+    }
+   ],
+   "summary": "标题文字入场一式——letter-drop-physics 字符坠落（重力砸落、弹跳、歪斜站定，最后一拍集体立正归位）",
+   "verdict": null
+  },
+  "letterform-drift-assembly": {
+   "auto": "side",
+   "box": [
+    740,
+    630,
+    440,
+    30
+   ],
+   "card": "type-assembly-moves",
+   "category": "typography",
+   "cover": 0.0052,
+   "error": null,
+   "file": "typography/type-assembly-moves/LetterformDriftAssembly.tsx",
+   "form": "text",
+   "frames": 150,
+   "looks": false,
+   "slots": [],
+   "summary": "文字集结三式——split-text-stagger 逐字裂升、letterform-drift-assembly 漂移合拢、text-on-path 沿线流入",
+   "verdict": null
+  },
+  "letterform-zoom": {
+   "auto": "full",
+   "box": [
+    8,
+    2,
+    1906,
+    1076
+   ],
+   "card": "transition-travel",
+   "category": "transition",
+   "cover": 0.8273,
+   "error": null,
+   "file": "transition/transition-travel/LetterformZoom.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "EDITS"
+    },
+    {
+     "em": 2.4,
+     "text": "sh01"
+    },
+    {
+     "em": 7.8,
+     "text": "Invisible cut"
+    },
+    {
+     "em": 2.4,
+     "text": "sh02"
+    },
+    {
+     "em": 9.0,
+     "text": "Letterform zoom"
+    },
+    {
+     "em": 2.4,
+     "text": "sh03"
+    },
+    {
+     "em": 9.0,
+     "text": "Light leak burn"
+    },
+    {
+     "em": 2.4,
+     "text": "sh04"
+    },
+    {
+     "em": 6.6,
+     "text": "Versus slam"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 5.4,
+     "text": "Workbench"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 3.6,
+     "text": "Render"
+    },
+    {
+     "em": 13.8,
+     "text": "Launch film · Final cut"
+    },
+    {
+     "em": 6.6,
+     "text": "Every shot."
+    },
+    {
+     "em": 6.6,
+     "text": "One prompt."
+    },
+    {
+     "em": 38.8,
+     "text": "Storyboard, animate, sound-design and deliver — cut to the beat."
+    },
+    {
+     "em": 2.4,
+     "text": "Done"
+    },
+    {
+     "em": 8.4,
+     "text": "shots rendered"
+    },
+    {
+     "em": 6.0,
+     "text": "Chapter 02"
+    },
+    {
+     "em": 14.4,
+     "text": "Your product, in motion."
+    }
+   ],
+   "summary": "穿越式转场——字腔穿越：巨型章节标题的字形就是一扇窗，镜头钻进字形笔画完成换景",
+   "verdict": null
+  },
+  "letterspace-materialize": {
+   "auto": "full",
+   "box": [
+    6,
+    468,
+    1908,
+    612
+   ],
+   "card": "letterspace-materialize",
+   "category": "opening",
+   "cover": 0.5411,
+   "error": null,
+   "file": "opening/letterspace-materialize/LetterspaceMaterialize.tsx",
+   "form": "text",
+   "frames": 105,
+   "looks": false,
+   "slots": [],
+   "summary": "大字距字标全字符并行连续描画结晶——所有字母同帧起笔、笔画像手写一样连续生长、同帧齐收成词；氛围底景上的品牌字标显影",
+   "verdict": null
+  },
+  "light-leak-burn": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "transition-hidden-cut",
+   "category": "transition",
+   "cover": 1.0,
+   "error": null,
+   "file": "transition/transition-hidden-cut/LightLeakBurn.tsx",
+   "form": "diagram",
+   "frames": 130,
+   "looks": true,
+   "slots": [
+    {
+     "em": 7.8,
+     "text": "Frame motion."
+    },
+    {
+     "em": 9.0,
+     "text": "Craft the shot."
+    },
+    {
+     "em": 3.0,
+     "text": "NIGHT"
+    },
+    {
+     "em": 6.6,
+     "text": "GOLDEN HOUR"
+    },
+    {
+     "em": 4.8,
+     "text": "PORTRAIT"
+    },
+    {
+     "em": 4.8,
+     "text": "RAW · 24"
+    },
+    {
+     "em": 10.0,
+     "text": "02 — Golden hour"
+    },
+    {
+     "em": 6.4,
+     "text": "01 — Night"
+    }
+   ],
+   "summary": "藏切点转场三式——前景遮挡隐形切、对撞开屏、暖色漏光，硬切藏进遮挡/撞击/光峰的 1-3 帧里，观众看不见剪刀",
+   "verdict": null
+  },
+  "line-carry-transition": {
+   "auto": "side",
+   "box": [
+    170,
+    234,
+    1510,
+    578
+   ],
+   "card": "line-carry-transition",
+   "category": "transition",
+   "cover": 0.366,
+   "error": null,
+   "file": "transition/line-carry-transition/LineCarryTransition.tsx",
+   "form": "diagram",
+   "frames": 190,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "FRAME"
+    },
+    {
+     "em": 3.6,
+     "text": "MOTION"
+    },
+    {
+     "em": 9.0,
+     "text": "CRAFT THE SHOT."
+    },
+    {
+     "em": 15.0,
+     "text": "1920×1080 · 30 fps · h264"
+    },
+    {
+     "em": 7.8,
+     "text": "Ready to ship"
+    },
+    {
+     "em": 6.4,
+     "text": "Rendering…"
+    },
+    {
+     "em": 3.6,
+     "text": "Render"
+    },
+    {
+     "em": 4.8,
+     "text": "Premiere"
+    },
+    {
+     "em": 3.6,
+     "text": "Launch"
+    },
+    {
+     "em": 3.0,
+     "text": "film."
+    },
+    {
+     "em": 7.2,
+     "text": "Crafted with"
+    },
+    {
+     "em": 4.8,
+     "text": "· 30 fps"
+    }
+   ],
+   "summary": "线条接力横移转场——场景 A 的进度条延伸出画，镜头跟线横移，线在移动中拐角围出场景 B 的卡框，全程无剪切",
+   "verdict": null
+  },
+  "list-reveal": {
+   "auto": "side",
+   "box": [
+    164,
+    182,
+    1452,
+    700
+   ],
+   "card": "list-reveal",
+   "category": "ui-entrance",
+   "cover": 0.2749,
+   "error": null,
+   "file": "ui-entrance/list-reveal/ListReveal.tsx",
+   "form": "diagram",
+   "frames": 120,
+   "looks": true,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "Home"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 4.2,
+     "text": "Reviews"
+    },
+    {
+     "em": 4.8,
+     "text": "Settings"
+    },
+    {
+     "em": 4.8,
+     "text": "Sign out"
+    },
+    {
+     "em": 16.2,
+     "text": "video-shotcraft · workbench"
+    },
+    {
+     "em": 15.0,
+     "text": "Every shot,\nwithin reach."
+    },
+    {
+     "em": 33.6,
+     "text": "Every recipe, render and storyboard,\none keystroke away."
+    }
+   ],
+   "summary": "垂直菜单 6 项按 10f 的间隔依次 scale 找位、软 back 轻微过冲落定，同时整个列表容器全程匀速上移——逐项入场与整体漂移是两层不相干的运动",
+   "verdict": null
+  },
+  "logo-shrink-wordmark-lockup": {
+   "auto": "side",
+   "box": [
+    564,
+    308,
+    628,
+    464
+   ],
+   "card": "logo-shrink-wordmark-lockup",
+   "category": "outro",
+   "cover": 0.0091,
+   "error": null,
+   "file": "outro/logo-shrink-wordmark-lockup/LogoShrinkWordmarkLockup.tsx",
+   "form": "text",
+   "frames": 132,
+   "looks": false,
+   "slots": [],
+   "summary": "霓虹切口大环快速收束成中央实心小白 O、过冲刹车时换成 video-shotcraft 标志，图标左移让位，字标字母逐个滑入完成 lockup，强调色标语收尾",
+   "verdict": null
+  },
+  "magician-card-flourish": {
+   "auto": "side",
+   "box": [
+    318,
+    30,
+    1250,
+    1046
+   ],
+   "card": "magician-card-flourish",
+   "category": "opening",
+   "cover": 0.4086,
+   "error": null,
+   "file": "opening/magician-card-flourish/MagicianCardFlourish.tsx",
+   "form": "text",
+   "frames": 156,
+   "looks": true,
+   "slots": [
+    {
+     "em": 9.0,
+     "text": "SC 01 · TAKE 01"
+    },
+    {
+     "em": 10.8,
+     "text": "PREMIERE · REEL 01"
+    },
+    {
+     "em": 3.6,
+     "text": "Launch"
+    },
+    {
+     "em": 2.4,
+     "text": "Film"
+    },
+    {
+     "em": 5.4,
+     "text": "ADMIT ONE"
+    },
+    {
+     "em": 10.8,
+     "text": "1920×1080 · 30 FPS"
+    },
+    {
+     "em": 6.6,
+     "text": "NOW SHOWING"
+    },
+    {
+     "em": 9.0,
+     "text": "Craft\nthe shot."
+    },
+    {
+     "em": 28.8,
+     "text": "Cinematic product videos,\ncrafted by your agent."
+    }
+   ],
+   "summary": "午夜蓝暗场上蓝色星芒闪现 0.3s（X 形针状光束旋转 90°+中心辉光放射小光芒），卡片从闪光点弹射而出——极速自旋弧线飞向镜头、自旋随靠近衰减、瞬间硬定格（卡高 86% 画高）、光脉冲 + sheen 扫光，右侧文案随后逐行揭示",
+   "verdict": null
+  },
+  "marker-underline-title": {
+   "auto": "side",
+   "box": [
+    620,
+    500,
+    702,
+    112
+   ],
+   "card": "marker-underline-title",
+   "category": "typography",
+   "cover": 0.0176,
+   "error": null,
+   "file": "typography/marker-underline-title/MarkerUnderlineTitle.tsx",
+   "form": "text",
+   "frames": 75,
+   "looks": false,
+   "slots": [
+    {
+     "em": 4.8,
+     "text": "Meet the"
+    }
+   ],
+   "summary": "大标题落定后，关键词下方马克笔下划线从左到右快速描画——变宽笔形、毛糙边缘、微上斜跟随斜体字势，贴着字底",
+   "verdict": null
+  },
+  "mosaic-reframe": {
+   "auto": "full",
+   "box": [
+    104,
+    28,
+    1788,
+    1038
+   ],
+   "card": "mosaic-reframe",
+   "category": "transition",
+   "cover": 0.7452,
+   "error": null,
+   "file": "transition/mosaic-reframe/MosaicReframe.tsx",
+   "form": "diagram",
+   "frames": 214,
+   "looks": true,
+   "slots": [
+    {
+     "em": 8.4,
+     "text": "xMidYMid slice"
+    },
+    {
+     "em": 2.4,
+     "text": "Grid"
+    },
+    {
+     "em": 3.6,
+     "text": "Mosaic"
+    },
+    {
+     "em": 4.2,
+     "text": "Cascade"
+    },
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 6.6,
+     "text": "Every shot,"
+    },
+    {
+     "em": 7.2,
+     "text": "in sequence."
+    },
+    {
+     "em": 7.8,
+     "text": "Featured shot"
+    },
+    {
+     "em": 6.6,
+     "text": "Golden Hour"
+    },
+    {
+     "em": 16.8,
+     "text": "Shot 01 · Crash zoom · 4.5 s"
+    }
+   ],
+   "summary": "12 张瓦片在规则网格、feature mosaic、对角瀑布串三种排版间连续变形，位置宽高各自插值、逐片微错峰，段间留 hold",
+   "verdict": null
+  },
+  "needle-sweep-selftest": {
+   "auto": "side",
+   "box": [
+    190,
+    230,
+    1540,
+    684
+   ],
+   "card": "gauge-readout-moves",
+   "category": "data",
+   "cover": 0.5114,
+   "error": null,
+   "file": "data/gauge-readout-moves/NeedleSweepSelftest.tsx",
+   "form": "chart",
+   "frames": 140,
+   "looks": false,
+   "slots": [
+    {
+     "em": 1.8,
+     "text": "CPU"
+    },
+    {
+     "em": 1.8,
+     "text": "GPU"
+    },
+    {
+     "em": 4.2,
+     "text": "Network"
+    },
+    {
+     "em": 10.8,
+     "text": "Render node health"
+    },
+    {
+     "em": 16.8,
+     "text": "· render-node-02 · 3 sensors"
+    },
+    {
+     "em": 9.0,
+     "text": "Ready to render"
+    },
+    {
+     "em": 11.2,
+     "text": "Running self-test…"
+    }
+   ],
+   "summary": "仪表读数两式——needle-sweep-selftest 满弧扫针（点火自检指针甩满全弧再回落真值）与 tape-scroll-fixed-pointer 滚带定针（针不动刻度带滚过+冲刺刹车）",
+   "verdict": null
+  },
+  "neon-frame-forerun": {
+   "auto": "full",
+   "box": [
+    12,
+    6,
+    1744,
+    1068
+   ],
+   "card": "neon-frame-forerun",
+   "category": "ui-entrance",
+   "cover": 0.7316,
+   "error": null,
+   "file": "ui-entrance/neon-frame-forerun/NeonFrameForerun.tsx",
+   "form": "diagram",
+   "frames": 140,
+   "looks": true,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "Home"
+    },
+    {
+     "em": 3.0,
+     "text": "Inbox"
+    },
+    {
+     "em": 4.8,
+     "text": "My shots"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 6.6,
+     "text": "Shots today"
+    },
+    {
+     "em": 5.4,
+     "text": "2 to tune"
+    },
+    {
+     "em": 5.4,
+     "text": "Rendering"
+    },
+    {
+     "em": 4.2,
+     "text": "Avg. 4m"
+    },
+    {
+     "em": 9.0,
+     "text": "Films this week"
+    },
+    {
+     "em": 3.0,
+     "text": "Today"
+    },
+    {
+     "em": 1.2,
+     "text": "DW"
+    },
+    {
+     "em": 12.6,
+     "text": "Sync cuts to the beat"
+    },
+    {
+     "em": 6.6,
+     "text": "In progress"
+    },
+    {
+     "em": 1.2,
+     "text": "MK"
+    },
+    {
+     "em": 14.4,
+     "text": "Capture the pricing page"
+    },
+    {
+     "em": 4.2,
+     "text": "Blocked"
+    },
+    {
+     "em": 1.2,
+     "text": "JS"
+    },
+    {
+     "em": 10.8,
+     "text": "Render launch film"
+    },
+    {
+     "em": 1.8,
+     "text": "Fri"
+    },
+    {
+     "em": 1.2,
+     "text": "AL"
+    },
+    {
+     "em": 10.8,
+     "text": "Good morning, Dana"
+    },
+    {
+     "em": 6.6,
+     "text": "Tue, Oct 14"
+    },
+    {
+     "em": 3.0,
+     "text": "TODAY"
+    }
+   ],
+   "summary": "强透视直角霓虹框自左缘两头奔画先行成型，页面在框内由暗转亮，同时框内组件/文字从 3D 上空带同形软影错峰贴落、随页面点亮同步完成贴合，背景霓虹群（demo 为同形框纵深回声隧道）终段熄灭让位",
+   "verdict": null
+  },
+  "neon-frame-forerun-orbit": {
+   "auto": "full",
+   "box": [
+    22,
+    34,
+    1840,
+    1032
+   ],
+   "card": "neon-frame-orbit-drop",
+   "category": "ui-entrance",
+   "cover": 0.6921,
+   "error": null,
+   "file": "ui-entrance/neon-frame-orbit-drop/NeonFrameForerunOrbit.tsx",
+   "form": "diagram",
+   "frames": 140,
+   "looks": false,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "Home"
+    },
+    {
+     "em": 3.0,
+     "text": "Inbox"
+    },
+    {
+     "em": 4.8,
+     "text": "My Shots"
+    },
+    {
+     "em": 4.2,
+     "text": "Recipes"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 3.0,
+     "text": "Goals"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 6.0,
+     "text": "Promo reel"
+    },
+    {
+     "em": 6.0,
+     "text": "Explainers"
+    },
+    {
+     "em": 7.2,
+     "text": "Sound design"
+    },
+    {
+     "em": 7.8,
+     "text": "Page captures"
+    },
+    {
+     "em": 8.4,
+     "text": "Launch film v3"
+    },
+    {
+     "em": 11.4,
+     "text": "Storyboard · 2h ago"
+    },
+    {
+     "em": 5.4,
+     "text": "Shot list"
+    },
+    {
+     "em": 7.8,
+     "text": "List · 4h ago"
+    },
+    {
+     "em": 7.2,
+     "text": "Render queue"
+    },
+    {
+     "em": 12.6,
+     "text": "Dashboard · Yesterday"
+    },
+    {
+     "em": 10.2,
+     "text": "Crash zoom recipe"
+    },
+    {
+     "em": 9.0,
+     "text": "Doc · Yesterday"
+    },
+    {
+     "em": 5.4,
+     "text": "Beat grid"
+    },
+    {
+     "em": 6.6,
+     "text": "Board · Mon"
+    },
+    {
+     "em": 6.6,
+     "text": "Hero frames"
+    },
+    {
+     "em": 9.6,
+     "text": "Whiteboard · Mon"
+    },
+    {
+     "em": 8.4,
+     "text": "Ship the promo"
+    },
+    {
+     "em": 9.6,
+     "text": "Goal · Last week"
+    },
+    {
+     "em": 5.4,
+     "text": "In review"
+    },
+    {
+     "em": 3.0,
+     "text": "Today"
+    },
+    {
+     "em": 19.2,
+     "text": "Sync cuts to the soundtrack beat"
+    },
+    {
+     "em": 6.6,
+     "text": "In progress"
+    },
+    {
+     "em": 4.8,
+     "text": "Tomorrow"
+    },
+    {
+     "em": 16.2,
+     "text": "Capture checkout page at 2x"
+    },
+    {
+     "em": 4.2,
+     "text": "Blocked"
+    },
+    {
+     "em": 15.0,
+     "text": "Tune the 2.5D camera move"
+    },
+    {
+     "em": 1.8,
+     "text": "Fri"
+    },
+    {
+     "em": 16.2,
+     "text": "Render launch film at 1080p"
+    },
+    {
+     "em": 3.0,
+     "text": "To do"
+    },
+    {
+     "em": 1.8,
+     "text": "Mon"
+    },
+    {
+     "em": 13.8,
+     "text": "Export JianYing project"
+    },
+    {
+     "em": 5.4,
+     "text": "Next week"
+    },
+    {
+     "em": 3.6,
+     "text": "SPACES"
+    },
+    {
+     "em": 10.8,
+     "text": "Good morning, Dana"
+    },
+    {
+     "em": 9.0,
+     "text": "Tuesday, Oct 14"
+    },
+    {
+     "em": 20.8,
+     "text": "Search shots, recipes and renders…"
+    },
+    {
+     "em": 4.2,
+     "text": "My Work"
+    },
+    {
+     "em": 4.8,
+     "text": "Assigned"
+    },
+    {
+     "em": 4.8,
+     "text": "Comments"
+    },
+    {
+     "em": 2.4,
+     "text": "Done"
+    },
+    {
+     "em": 1.2,
+     "text": "DW"
+    },
+    {
+     "em": 1.2,
+     "text": "MK"
+    },
+    {
+     "em": 1.2,
+     "text": "JS"
+    },
+    {
+     "em": 1.2,
+     "text": "AL"
+    }
+   ],
+   "summary": "霓虹框先行描框后，镜头绕页面左→右弧线旋转，页面全部组件/文字**同帧**从空中往下贴合（同形软影同步收敛）——整体登场式的框内安放",
+   "verdict": null
+  },
+  "neon-triple-marquee": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "neon-triple-marquee",
+   "category": "outro",
+   "cover": 0.9311,
+   "error": null,
+   "file": "outro/neon-triple-marquee/NeonTripleMarquee.tsx",
+   "form": "text",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "FRAME"
+    },
+    {
+     "em": 3.0,
+     "text": "CRAFT"
+    },
+    {
+     "em": 2.4,
+     "text": "SHIP"
+    }
+   ],
+   "summary": "三行对向霓虹跑马灯 recap——三连词空心霓虹灯管巨字上中下排满一面斜拍的砖墙，奇偶行反向匀速无限横滚，三行按 1/3 相位轮流点亮，结尾逐行断电",
+   "verdict": null
+  },
+  "orb-flyline-relay": {
+   "auto": "full",
+   "box": [
+    8,
+    28,
+    1788,
+    898
+   ],
+   "card": "glow-flyline-moves",
+   "category": "effects",
+   "cover": 0.5279,
+   "error": null,
+   "file": "effects/glow-flyline-moves/OrbFlylineRelay.tsx",
+   "form": "diagram",
+   "frames": 165,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "Brief"
+    },
+    {
+     "em": 11.4,
+     "text": "One prompt · 1 page"
+    },
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 12.6,
+     "text": "8 shots · beat-synced"
+    },
+    {
+     "em": 2.4,
+     "text": "Ship"
+    }
+   ],
+   "summary": "暗场光斑与飞线三式——glow-orb-ambient 光斑底噪、flyline-arc 飞线连接、orb-flyline-relay 同帧共振组合",
+   "verdict": null
+  },
+  "orbit-ring-title-open": {
+   "auto": "full",
+   "box": [
+    22,
+    60,
+    1872,
+    1014
+   ],
+   "card": "orbit-ring-title-open",
+   "category": "opening",
+   "cover": 0.7577,
+   "error": null,
+   "file": "opening/orbit-ring-title-open/OrbitRingTitleOpen.tsx",
+   "form": "text",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 8,
+     "text": "让镜头卡替你想好"
+    },
+    {
+     "em": 5,
+     "text": "每一个动效"
+    },
+    {
+     "em": 10.2,
+     "text": "SHOT RECIPE CARDS"
+    },
+    {
+     "em": 10.2,
+     "text": "Arial, sans-serif"
+    },
+    {
+     "em": 11.4,
+     "text": "RELEASE NOTES · 4.2"
+    },
+    {
+     "em": 6.6,
+     "text": "left center"
+    },
+    {
+     "em": 11.4,
+     "text": "Motion, considered."
+    },
+    {
+     "em": 21.6,
+     "text": "Every card ships with timing, easing"
+    },
+    {
+     "em": 19.2,
+     "text": "and a validated reference build."
+    },
+    {
+     "em": 12.0,
+     "text": "Draft the storyboard"
+    },
+    {
+     "em": 9.0,
+     "text": "Pick shot cards"
+    },
+    {
+     "em": 10.8,
+     "text": "Tune easing curves"
+    },
+    {
+     "em": 9.0,
+     "text": "Render & review"
+    },
+    {
+     "em": 6.0,
+     "text": "ETA 12 min"
+    },
+    {
+     "em": 15.6,
+     "text": "$ npx remotion render Open"
+    },
+    {
+     "em": 13.6,
+     "text": "Rendering frames 0–149"
+    },
+    {
+     "em": 8.4,
+     "text": "WEEKLY SUMMARY"
+    },
+    {
+     "em": 10.2,
+     "text": "12 shots approved"
+    },
+    {
+     "em": 18.0,
+     "text": "3 pending review · 1 re-render"
+    },
+    {
+     "em": 4.2,
+     "text": "Summary"
+    },
+    {
+     "em": 8.4,
+     "text": "Q3 launch plan"
+    },
+    {
+     "em": 11.4,
+     "text": "Owner · Studio team"
+    },
+    {
+     "em": 6.0,
+     "text": "Due Oct 18"
+    },
+    {
+     "em": 4.2,
+     "text": "GO LIVE"
+    },
+    {
+     "em": 4.8,
+     "text": "top left"
+    }
+   ],
+   "summary": "石墨暗场上八张 16:9 暗色内容卡按 45° 均布在 720×380 椭圆上匀速公转（卡身永不倾斜，纵深只由 sin θ 给出 ±12% 缩放、z 序与远处压暗失焦），环撑开期间卡内容冻结首帧、f24 之后八张一起开播；居中两级标题逐字解糊下沉落定，关键词到位那一刻荧光马克块自左横扫铺满、扫过处字反白为墨，mono 副行随后浮出；可选末段整行失焦淡出、环继续转着交棒下一镜",
+   "verdict": null
+  },
+  "oscilloscope-stream-v2": {
+   "auto": "full",
+   "box": [
+    84,
+    88,
+    1742,
+    890
+   ],
+   "card": "chart-live-moves",
+   "category": "data",
+   "cover": 0.2576,
+   "error": null,
+   "file": "data/chart-live-moves/OscilloscopeStreamV2.tsx",
+   "form": "chart",
+   "frames": 165,
+   "looks": true,
+   "slots": [
+    {
+     "em": 14.4,
+     "text": "render-farm · prod · fps"
+    },
+    {
+     "em": 2.4,
+     "text": "Live"
+    },
+    {
+     "em": 3.6,
+     "text": "Paused"
+    },
+    {
+     "em": 6.6,
+     "text": "left bottom"
+    },
+    {
+     "em": 8.4,
+     "text": "p99 frame time"
+    },
+    {
+     "em": 6.6,
+     "text": "Failed jobs"
+    },
+    {
+     "em": 3.0,
+     "text": "Burst"
+    }
+   ],
+   "summary": "活体图表三式——oscilloscope-stream 示波流线（曲线右端实时写入+突发尖峰）、unit-dot-swarm-regroup 点阵重组（点群三幕迁徙聚成数字）、axis-rescale-shock 轴爆表重标（新值冲出画框逼 y 轴重标）",
+   "verdict": null
+  },
+  "outline-word-fill": {
+   "auto": "full",
+   "box": [
+    108,
+    102,
+    1704,
+    870
+   ],
+   "card": "outline-word-fill",
+   "category": "typography",
+   "cover": 0.0529,
+   "error": null,
+   "file": "typography/outline-word-fill/OutlineWordFill.tsx",
+   "form": "text",
+   "frames": 90,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.6,
+     "text": "Faster"
+    },
+    {
+     "em": 3.6,
+     "text": "BEFORE"
+    },
+    {
+     "em": 3.6,
+     "text": "1 week"
+    },
+    {
+     "em": 3.0,
+     "text": "AFTER"
+    },
+    {
+     "em": 3.0,
+     "text": "4 hrs"
+    },
+    {
+     "em": 18.6,
+     "text": "One prompt to a finished promo."
+    }
+   ],
+   "summary": "空心词（细暖灰描边、500 字重）从 3.2 倍急缓收缩落位，虚线大圆随后从 2.8 倍收到字周围并缓慢自转，左右水平虚线从画框边缘内伸；描边先微微增亮，实心白热字在一帧内硬切点亮，一闪辉光即定格",
+   "verdict": null
+  },
+  "overhead-tabletop-drop": {
+   "auto": "full",
+   "box": [
+    18,
+    6,
+    1892,
+    928
+   ],
+   "card": "overhead-camera-moves",
+   "category": "camera",
+   "cover": 0.5796,
+   "error": null,
+   "file": "camera/overhead-camera-moves/OverheadTabletopDrop.tsx",
+   "form": "diagram",
+   "frames": 140,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.2,
+     "text": "Product"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 5.4,
+     "text": "Changelog"
+    },
+    {
+     "em": 2.4,
+     "text": "Docs"
+    },
+    {
+     "em": 8.4,
+     "text": "View on GitHub"
+    },
+    {
+     "em": 2.4,
+     "text": "Open"
+    },
+    {
+     "em": 2.4,
+     "text": "Hook"
+    },
+    {
+     "em": 2.4,
+     "text": "Demo"
+    },
+    {
+     "em": 3.0,
+     "text": "Proof"
+    },
+    {
+     "em": 3.0,
+     "text": "Outro"
+    },
+    {
+     "em": 6.6,
+     "text": "Tilt reveal"
+    },
+    {
+     "em": 6.0,
+     "text": "Crash zoom"
+    },
+    {
+     "em": 4.8,
+     "text": "Whip pan"
+    },
+    {
+     "em": 6.0,
+     "text": "Drone dive"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 6.0,
+     "text": "Title card"
+    },
+    {
+     "em": 4.8,
+     "text": "End card"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 5.4,
+     "text": "Hero shot"
+    },
+    {
+     "em": 7.8,
+     "text": "Frame motion."
+    },
+    {
+     "em": 9.0,
+     "text": "Craft the shot."
+    },
+    {
+     "em": 46.2,
+     "text": "Cinematic product videos, crafted by your agent. From screenshot to showreel."
+    },
+    {
+     "em": 7.8,
+     "text": "Get the skill"
+    },
+    {
+     "em": 10.0,
+     "text": "Watch the film →"
+    },
+    {
+     "em": 5.4,
+     "text": "60 frames"
+    },
+    {
+     "em": 24.0,
+     "text": "Punch in on the one number that matters."
+    },
+    {
+     "em": 6.0,
+     "text": "120 frames"
+    },
+    {
+     "em": 27.6,
+     "text": "Fall from the overview straight into the hero."
+    },
+    {
+     "em": 5.4,
+     "text": "30 frames"
+    },
+    {
+     "em": 19.2,
+     "text": "Cut between pages at full speed."
+    },
+    {
+     "em": 7.2,
+     "text": "Pick a shot."
+    },
+    {
+     "em": 24.6,
+     "text": "Shot recipes for cinematic product films."
+    },
+    {
+     "em": 3.6,
+     "text": "Sep 12"
+    },
+    {
+     "em": 9.6,
+     "text": "Motion workbench"
+    },
+    {
+     "em": 33.6,
+     "text": "Tune every shot on a timeline, then render in one click."
+    },
+    {
+     "em": 3.6,
+     "text": "Aug 28"
+    },
+    {
+     "em": 9.0,
+     "text": "JianYing export"
+    },
+    {
+     "em": 33.0,
+     "text": "Hand the finished cut to your editor as a native draft."
+    },
+    {
+     "em": 3.6,
+     "text": "Aug 09"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 27.0,
+     "text": "Every cut lands on the music, frame-accurate."
+    },
+    {
+     "em": 3.0,
+     "text": "SHOTS"
+    },
+    {
+     "em": 2.4,
+     "text": "HOME"
+    },
+    {
+     "em": 5.4,
+     "text": "CHANGELOG"
+    }
+   ],
+   "summary": "俯拍揭示两式——tilt-reveal 俯仰抬正揭示、overhead-tabletop-drop 桌面卡阵横滑骤降扎入",
+   "verdict": null
+  },
+  "palette-theme-ripple": {
+   "auto": "full",
+   "box": [
+    4,
+    12,
+    1890,
+    1066
+   ],
+   "card": "theme-switch-moves",
+   "category": "interaction",
+   "cover": 0.7032,
+   "error": null,
+   "file": "interaction/theme-switch-moves/PaletteThemeRipple.tsx",
+   "form": "diagram",
+   "frames": 156,
+   "looks": true,
+   "slots": [
+    {
+     "em": 7.2,
+     "text": "Horizon Push"
+    },
+    {
+     "em": 7.8,
+     "text": "Camera · 2.5D"
+    },
+    {
+     "em": 5.4,
+     "text": "Ink Press"
+    },
+    {
+     "em": 4.2,
+     "text": "Opening"
+    },
+    {
+     "em": 7.2,
+     "text": "Neon Marquee"
+    },
+    {
+     "em": 3.0,
+     "text": "Outro"
+    },
+    {
+     "em": 6.0,
+     "text": "Glow Bloom"
+    },
+    {
+     "em": 4.2,
+     "text": "Effects"
+    },
+    {
+     "em": 4.8,
+     "text": "Whip Pan"
+    },
+    {
+     "em": 6.0,
+     "text": "Transition"
+    },
+    {
+     "em": 2.4,
+     "text": "Home"
+    },
+    {
+     "em": 6.0,
+     "text": "Shot cards"
+    },
+    {
+     "em": 5.4,
+     "text": "Workbench"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 5.4,
+     "text": "All shots"
+    },
+    {
+     "em": 3.6,
+     "text": "Camera"
+    },
+    {
+     "em": 7.2,
+     "text": "Made for you"
+    },
+    {
+     "em": 19.2,
+     "text": "1080p · 30fps · sorted by recent"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch Film"
+    },
+    {
+     "em": 10.2,
+     "text": "Preview · Shot 04"
+    },
+    {
+     "em": 15.0,
+     "text": "Switch to dark appearance"
+    },
+    {
+     "em": 13.8,
+     "text": "Match system appearance"
+    },
+    {
+     "em": 3.0,
+     "text": "Theme"
+    },
+    {
+     "em": 12.4,
+     "text": "Appearance settings…"
+    },
+    {
+     "em": 4.8,
+     "text": "Settings"
+    },
+    {
+     "em": 10.0,
+     "text": "Search commands…"
+    },
+    {
+     "em": 7.4,
+     "text": "↑↓ Navigate"
+    },
+    {
+     "em": 3.4,
+     "text": "↵ Run"
+    },
+    {
+     "em": 10.8,
+     "text": "Shotcraft Commands"
+    }
+   ],
+   "summary": "主题切换两式——theme-sweep 斜向扫场（边界扫过处就地换肤）与 palette-ripple 组合款（⌘K 面板收缩成点、涟漪从点荡开换肤）",
+   "verdict": null
+  },
+  "panel-to-canvas-materialize": {
+   "auto": "full",
+   "box": [
+    98,
+    90,
+    1748,
+    928
+   ],
+   "card": "canvas-materialize-moves",
+   "category": "interaction",
+   "cover": 0.5546,
+   "error": null,
+   "file": "interaction/canvas-materialize-moves/PanelToCanvasMaterialize.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 11.4,
+     "text": "Crash zoom punch-in"
+    },
+    {
+     "em": 3.6,
+     "text": "Camera"
+    },
+    {
+     "em": 1.2,
+     "text": "AO"
+    },
+    {
+     "em": 5.4,
+     "text": "Ama Owusu"
+    },
+    {
+     "em": 19.4,
+     "text": "“Lands right on the beat drop.”"
+    },
+    {
+     "em": 5.4,
+     "text": "24 frames"
+    },
+    {
+     "em": 11.4,
+     "text": "Text as mask opener"
+    },
+    {
+     "em": 4.2,
+     "text": "Opening"
+    },
+    {
+     "em": 1.2,
+     "text": "LB"
+    },
+    {
+     "em": 5.4,
+     "text": "Lars Berg"
+    },
+    {
+     "em": 11.4,
+     "text": "Cursor flyover tour"
+    },
+    {
+     "em": 6.6,
+     "text": "Interaction"
+    },
+    {
+     "em": 1.2,
+     "text": "PS"
+    },
+    {
+     "em": 6.6,
+     "text": "Priya Sethi"
+    },
+    {
+     "em": 20.0,
+     "text": "“Reads like a real screen take.”"
+    },
+    {
+     "em": 5.4,
+     "text": "96 frames"
+    },
+    {
+     "em": 14.4,
+     "text": "Chart axis rescale shock"
+    },
+    {
+     "em": 2.4,
+     "text": "Data"
+    },
+    {
+     "em": 1.2,
+     "text": "TM"
+    },
+    {
+     "em": 6.0,
+     "text": "Tomás Mena"
+    },
+    {
+     "em": 22.2,
+     "text": "Rescales on the cut, holds two beats."
+    },
+    {
+     "em": 5.4,
+     "text": "72 frames"
+    },
+    {
+     "em": 12.0,
+     "text": "Grain dissolve outro"
+    },
+    {
+     "em": 3.0,
+     "text": "Outro"
+    },
+    {
+     "em": 7.2,
+     "text": "· Storyboard"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 7.2,
+     "text": "Shot recipes"
+    },
+    {
+     "em": 6.6,
+     "text": "5 suggested"
+    },
+    {
+     "em": 16.8,
+     "text": "Pick the shots for this cut."
+    },
+    {
+     "em": 7.2,
+     "text": "Add to board"
+    },
+    {
+     "em": 4.8,
+     "text": "On board"
+    }
+   ],
+   "summary": "内容\"物化上画布\"两式——panel-to-canvas 行倒卡（面板表格行沿弧线飞出、跨容器变形成画布卡片）与 diagram-cascade 级联生成树（prompt 打字后节点逐层弹出、连线先于节点生长）",
+   "verdict": null
+  },
+  "paparazzi-flash": {
+   "auto": "full",
+   "box": [
+    140,
+    34,
+    1614,
+    1042
+   ],
+   "card": "beat-cut-moves",
+   "category": "rhythm",
+   "cover": 0.4053,
+   "error": null,
+   "file": "rhythm/beat-cut-moves/PaparazziFlash.tsx",
+   "form": "text",
+   "frames": 140,
+   "looks": true,
+   "slots": [
+    {
+     "em": 12.6,
+     "text": "Best in Motion · 2026"
+    },
+    {
+     "em": 9.6,
+     "text": "Shot of the Year"
+    },
+    {
+     "em": 2.4,
+     "text": "Take"
+    },
+    {
+     "em": 4.2,
+     "text": "prompt,"
+    },
+    {
+     "em": 6.0,
+     "text": "final cut."
+    },
+    {
+     "em": 6.0,
+     "text": "RAW · 45MP"
+    },
+    {
+     "em": 6.6,
+     "text": "FLASH READY"
+    },
+    {
+     "em": 4.8,
+     "text": "CHARGING"
+    },
+    {
+     "em": 4.8,
+     "text": "ISO 1600"
+    },
+    {
+     "em": 4.6,
+     "text": "✓ SAVED"
+    }
+   ],
+   "summary": "硬切当节拍乐器——连闪定格：三次白闪各硬切同一画面的一个裁切（全景→卡片→特写），快门余韵沉降后停在特写收束",
+   "verdict": null
+  },
+  "picker-carousel-feature-cycle": {
+   "auto": "side",
+   "box": [
+    220,
+    438,
+    1330,
+    208
+   ],
+   "card": "picker-carousel-feature-cycle",
+   "category": "interaction",
+   "cover": 0.1085,
+   "error": null,
+   "file": "interaction/picker-carousel-feature-cycle/PickerCarouselFeatureCycle.tsx",
+   "form": "diagram",
+   "frames": 108,
+   "looks": false,
+   "slots": [
+    {
+     "em": 10.2,
+     "text": "Shot recipe cards"
+    },
+    {
+     "em": 10.8,
+     "text": "Real page captures"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 8.4,
+     "text": "Film-grade SFX"
+    },
+    {
+     "em": 9.6,
+     "text": "Motion workbench"
+    },
+    {
+     "em": 9.0,
+     "text": "Remotion render"
+    }
+   ],
+   "summary": "移动端风竖向选择器——焦点药丸不动、内容穿过它，每项带明显 outQuint 减速吸附后完全静止，按到中心距离分层控制透明度/字号/灰度，落定时药丸做 scaleY 极轻呼吸",
+   "verdict": null
+  },
+  "pill-chip-slot-cycle-handled": {
+   "auto": "side",
+   "box": [
+    252,
+    320,
+    1432,
+    440
+   ],
+   "card": "pill-chip-slot-cycle-handled",
+   "category": "typography",
+   "cover": 0.1186,
+   "error": null,
+   "file": "typography/pill-chip-slot-cycle-handled/PillChipSlotCycleHandled.tsx",
+   "form": "text",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 3.6,
+     "text": "Camera"
+    },
+    {
+     "em": 3.0,
+     "text": "Sound"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 20.4,
+     "text": "-apple-system,system-ui,sans-serif"
+    },
+    {
+     "em": 2.4,
+     "text": "Your"
+    },
+    {
+     "em": 4.2,
+     "text": "Handled"
+    }
+   ],
+   "summary": "白底句式 \"Your `chip` Handled\" 里深色胶囊内词竖向滚轮轮换，胶囊宽度按预量文本宽插值平滑伸缩、两侧文字被自然挤开收拢，胶囊上下露出 13% 透明度的灰色幽灵项",
+   "verdict": null
+  },
+  "product-card-progressive-assemble": {
+   "auto": "full",
+   "box": [
+    158,
+    112,
+    1622,
+    944
+   ],
+   "card": "product-card-progressive-assemble",
+   "category": "ui-entrance",
+   "cover": 0.7317,
+   "error": null,
+   "file": "ui-entrance/product-card-progressive-assemble/ProductCardProgressiveAssemble.tsx",
+   "form": "diagram",
+   "frames": 172,
+   "looks": true,
+   "slots": [
+    {
+     "em": 10.2,
+     "text": "Shot recipes that"
+    },
+    {
+     "em": 10.2,
+     "text": "direct every move"
+    },
+    {
+     "em": 4.8,
+     "text": "Built on"
+    },
+    {
+     "em": 10.8,
+     "text": "real page captures"
+    },
+    {
+     "em": 5.4,
+     "text": "and 2.5D,"
+    },
+    {
+     "em": 22.8,
+     "text": "cut to the beat, rendered in Remotion."
+    },
+    {
+     "em": 1.8,
+     "text": "Ink"
+    },
+    {
+     "em": 3.0,
+     "text": "Paper"
+    },
+    {
+     "em": 3.0,
+     "text": "Amber"
+    },
+    {
+     "em": 3.0,
+     "text": "Slate"
+    },
+    {
+     "em": 17.4,
+     "text": "VIDEO-SHOTCRAFT · AGENT SKILL"
+    },
+    {
+     "em": 5.4,
+     "text": "Shotcraft"
+    },
+    {
+     "em": 6.6,
+     "text": "Agent skill"
+    },
+    {
+     "em": 4.8,
+     "text": "Remotion"
+    },
+    {
+     "em": 7.2,
+     "text": "Shot recipes"
+    },
+    {
+     "em": 6.6,
+     "text": "left center"
+    },
+    {
+     "em": 2.4,
+     "text": "Free"
+    },
+    {
+     "em": 6.6,
+     "text": "OPEN SOURCE"
+    },
+    {
+     "em": 3.6,
+     "text": "Look ·"
+    },
+    {
+     "em": 7.8,
+     "text": "Get the skill"
+    },
+    {
+     "em": 4.8,
+     "text": "AUTOFILL"
+    }
+   ],
+   "summary": "详情卡像被逐字段抓取般自建——一枚\"填充光标\"领先跳格，图→标题→分类 pill 依次 pop→原价出现后被划线降级、强调色新价 spring 跳出→正文逐行揭示且高亮块由左向右刷过→色卡点亮→按钮填满，整卡全程极慢 scale 前推",
+   "verdict": null
+  },
+  "pull-back-isolation": {
+   "auto": "side",
+   "box": [
+    246,
+    158,
+    1458,
+    790
+   ],
+   "card": "tension-camera-moves",
+   "category": "camera",
+   "cover": 0.2558,
+   "error": null,
+   "file": "camera/tension-camera-moves/PullBackIsolation.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 8.4,
+     "text": "Render success"
+    },
+    {
+     "em": 4.2,
+     "text": "90 days"
+    },
+    {
+     "em": 6.6,
+     "text": "90 days ago"
+    },
+    {
+     "em": 3.0,
+     "text": "Today"
+    }
+   ],
+   "summary": "情绪运镜两式——bullet-time 冻结环绕、pull-back 拉远孤立，相机替观众\"感受\"而非\"看\"",
+   "verdict": null
+  },
+  "quad-split-parallel-scenes": {
+   "auto": "full",
+   "box": [
+    12,
+    10,
+    1896,
+    1060
+   ],
+   "card": "quad-split-parallel-scenes",
+   "category": "rhythm",
+   "cover": 0.965,
+   "error": null,
+   "file": "rhythm/quad-split-parallel-scenes/QuadSplitParallelScenes.tsx",
+   "form": "text",
+   "frames": 90,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.2,
+     "text": "Recipes"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 2.4,
+     "text": "Docs"
+    },
+    {
+     "em": 3.0,
+     "text": "Promo"
+    },
+    {
+     "em": 7.2,
+     "text": "Launch film."
+    },
+    {
+     "em": 1.8,
+     "text": "Web"
+    },
+    {
+     "em": 11.4,
+     "text": "npx remotion render"
+    },
+    {
+     "em": 3.6,
+     "text": "Render"
+    },
+    {
+     "em": 4.2,
+     "text": "Prompt."
+    },
+    {
+     "em": 4.2,
+     "text": "Render."
+    },
+    {
+     "em": 3.0,
+     "text": "Ship."
+    },
+    {
+     "em": 3.0,
+     "text": "Brand"
+    },
+    {
+     "em": 11.4,
+     "text": "Launch film · cut 3"
+    },
+    {
+     "em": 1.8,
+     "text": "MJR"
+    },
+    {
+     "em": 13.2,
+     "text": "12 shots · 2 reviewers"
+    },
+    {
+     "em": 6.4,
+     "text": "Approved ✓"
+    },
+    {
+     "em": 4.2,
+     "text": "Approve"
+    },
+    {
+     "em": 5.4,
+     "text": "Published"
+    },
+    {
+     "em": 4.2,
+     "text": "Publish"
+    },
+    {
+     "em": 3.6,
+     "text": "Live ·"
+    },
+    {
+     "em": 3.0,
+     "text": "en-US"
+    },
+    {
+     "em": 3.6,
+     "text": "Review"
+    }
+   ],
+   "summary": "画面硬切 2×2 四宫格，四个象限并行跑各自的微场景（打字、急推、逐词、交互链），关键节拍错开 3–6 帧制造信息轰炸",
+   "verdict": null
+  },
+  "radial-ripple-phone-chips": {
+   "auto": "full",
+   "box": [
+    138,
+    2,
+    1644,
+    1076
+   ],
+   "card": "radial-ripple-phone-chips",
+   "category": "effects",
+   "cover": 0.8122,
+   "error": null,
+   "file": "effects/radial-ripple-phone-chips/RadialRipplePhoneChips.tsx",
+   "form": "diagram",
+   "frames": 168,
+   "looks": true,
+   "slots": [
+    {
+     "em": 9.0,
+     "text": "Graze face tour"
+    },
+    {
+     "em": 3.6,
+     "text": "Camera"
+    },
+    {
+     "em": 8.4,
+     "text": "Riso print hit"
+    },
+    {
+     "em": 4.2,
+     "text": "Effects"
+    },
+    {
+     "em": 7.2,
+     "text": "Text as mask"
+    },
+    {
+     "em": 4.2,
+     "text": "Opening"
+    },
+    {
+     "em": 9.0,
+     "text": "Timeline travel"
+    },
+    {
+     "em": 2.4,
+     "text": "Data"
+    },
+    {
+     "em": 8.4,
+     "text": "Grain dissolve"
+    },
+    {
+     "em": 3.0,
+     "text": "Outro"
+    },
+    {
+     "em": 8.4,
+     "text": "Cursor flyover"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 7.8,
+     "text": "Exploded view"
+    },
+    {
+     "em": 11.4,
+     "text": "Today · 3 new shots"
+    },
+    {
+     "em": 7.2,
+     "text": "Shot library"
+    },
+    {
+     "em": 6.0,
+     "text": "NEW RECIPE"
+    },
+    {
+     "em": 9.6,
+     "text": "Crash zoom punch"
+    },
+    {
+     "em": 18.0,
+     "text": "Camera move · 2 styles · 1.2 s"
+    },
+    {
+     "em": 4.2,
+     "text": "Recipes"
+    },
+    {
+     "em": 7.2,
+     "text": "right center"
+    },
+    {
+     "em": 6.6,
+     "text": "left center"
+    },
+    {
+     "em": 12.6,
+     "text": "Launch film · preview"
+    },
+    {
+     "em": 10.2,
+     "text": "Shot recipe cards"
+    },
+    {
+     "em": 9.0,
+     "text": "Remotion render"
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    }
+   ],
+   "summary": "暖沙底四层同心圆错相呼吸如水波，中央手机 mockup 屏内 feed 自动缓滚，两侧白色 chip 先后 spring pop 入场并悬浮",
+   "verdict": null
+  },
+  "radial-wave": {
+   "auto": "full",
+   "box": [
+    2,
+    2,
+    1916,
+    1076
+   ],
+   "card": "radial-wave",
+   "category": "ui-entrance",
+   "cover": 0.365,
+   "error": null,
+   "file": "ui-entrance/radial-wave/RadialWave.tsx",
+   "form": "diagram",
+   "frames": 114,
+   "looks": false,
+   "slots": [],
+   "summary": "17×9 圆点阵列按到波源的欧氏距离错峰点亮，每点 scale 过冲到 1.5 再落回常亮，第一道波扫完后第二道亮蓝脉冲从外圈反向收拢回中心",
+   "verdict": null
+  },
+  "research-card-stack-scroll": {
+   "auto": "side",
+   "box": [
+    270,
+    280,
+    1522,
+    798
+   ],
+   "card": "research-card-stack-scroll",
+   "category": "ui-entrance",
+   "cover": 0.5592,
+   "error": null,
+   "file": "ui-entrance/research-card-stack-scroll/ResearchCardStackScroll.tsx",
+   "form": "diagram",
+   "frames": 144,
+   "looks": false,
+   "slots": [
+    {
+     "em": 32.4,
+     "text": "Sparse Attention Mechanisms for Long-Context Reasoning"
+    },
+    {
+     "em": 26.4,
+     "text": "Retrieval Drift in Multi-Hop Agent Pipelines"
+    },
+    {
+     "em": 27.6,
+     "text": "On the Calibration of Preference Reward Models"
+    },
+    {
+     "em": 25.8,
+     "text": "Grid-Aligned Motion Priors for UI Animation"
+    },
+    {
+     "em": 23.4,
+     "text": "Cheap Verifiers Beat Expensive Samplers"
+    },
+    {
+     "em": 24.0,
+     "text": "Structured Decoding Without Grammar Loss"
+    },
+    {
+     "em": 27.0,
+     "text": "Depth-Ordered Compositing for Live Interfaces"
+    },
+    {
+     "em": 21.6,
+     "text": "Token-Budget Routing in Agent Fleets"
+    },
+    {
+     "em": 27.6,
+     "text": "Contrastive Layouts for Document Understanding"
+    },
+    {
+     "em": 24.6,
+     "text": "Fast Approximate Re-Ranking at Query Time"
+    },
+    {
+     "em": 25.2,
+     "text": "Signal Propagation in Deep Residual Agents"
+    },
+    {
+     "em": 24.0,
+     "text": "A Note on Deterministic Replay of Motion"
+    }
+   ],
+   "summary": "深色论文卡每 12 帧一张沿右下轴线飞入中心叠压，落位带 1 帧压缩，只有最上一张全清晰渲染标题+作者+摘要，下方卡按堆积深度递增模糊变暗只露标题条，背景横向 grid 同步下移做速度参照",
+   "verdict": null
+  },
+  "reticle-lock-on": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "fui-hud-moves",
+   "category": "effects",
+   "cover": 1.0,
+   "error": null,
+   "file": "effects/fui-hud-moves/ReticleLockOn.tsx",
+   "form": "diagram",
+   "frames": 90,
+   "looks": false,
+   "slots": [
+    {
+     "em": 5.4,
+     "text": "Top pages"
+    },
+    {
+     "em": 4.2,
+     "text": "LOCK 02"
+    }
+   ],
+   "summary": "FUI/HUD 准星咬合——reticle-lock-on 四个 L 形角标组成的取景框从画外飞入、超调回弹后咬合锁定目标",
+   "verdict": null
+  },
+  "riso-misregistration-hit": {
+   "auto": "full",
+   "box": [
+    124,
+    106,
+    1714,
+    888
+   ],
+   "card": "riso-print-hits",
+   "category": "effects",
+   "cover": 0.3285,
+   "error": null,
+   "file": "effects/riso-print-hits/RisoMisregistrationHit.tsx",
+   "form": "diagram",
+   "frames": 120,
+   "looks": false,
+   "slots": [
+    {
+     "em": 1.8,
+     "text": "CRA"
+    },
+    {
+     "em": 2.4,
+     "text": "T IT"
+    },
+    {
+     "em": 3.0,
+     "text": "LOUD."
+    },
+    {
+     "em": 15.8,
+     "text": "ON REGISTER ✶ SHOTCRAFT ✶"
+    },
+    {
+     "em": 14.2,
+     "text": "VIDEO-SHOTCRAFT — Nº 07"
+    },
+    {
+     "em": 15.6,
+     "text": "TWO-COLOUR RISO · 1 OF 300"
+    },
+    {
+     "em": 8.4,
+     "text": "1.25fr 1fr 1fr"
+    },
+    {
+     "em": 10.2,
+     "text": "SHOT RECIPE CARDS"
+    },
+    {
+     "em": 13.8,
+     "text": "Cinematic product films"
+    },
+    {
+     "em": 6.0,
+     "text": "ONE PROMPT"
+    },
+    {
+     "em": 11.4,
+     "text": "To a finished promo"
+    },
+    {
+     "em": 10.2,
+     "text": "BUILT ON REMOTION"
+    },
+    {
+     "em": 13.8,
+     "text": "For Claude Code & Codex"
+    }
+   ],
+   "summary": "套印错位冲击帧——riso-misregistration-hit 单发：标题撞停瞬间裂成双色 riso 印版，抖两下\"啪\"地套准",
+   "verdict": null
+  },
+  "sakuga-timing-shift": {
+   "auto": "full",
+   "box": [
+    92,
+    34,
+    1736,
+    948
+   ],
+   "card": "sakuga-timing-shift",
+   "category": "rhythm",
+   "cover": 0.243,
+   "error": null,
+   "file": "rhythm/sakuga-timing-shift/SakugaTimingShift.tsx",
+   "form": "text",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 6.6,
+     "text": "render 2048"
+    },
+    {
+     "em": 12.0,
+     "text": "every frame, crafted"
+    },
+    {
+     "em": 3.6,
+     "text": "12 FLD"
+    },
+    {
+     "em": 1.2,
+     "text": "ON"
+    },
+    {
+     "em": 4.6,
+     "text": "3コマ打ち"
+    },
+    {
+     "em": 4.6,
+     "text": "1コマ打ち"
+    },
+    {
+     "em": 13.2,
+     "text": "10 drawings per second"
+    },
+    {
+     "em": 13.2,
+     "text": "30 drawings per second"
+    },
+    {
+     "em": 9.0,
+     "text": "SC 012 · CUT 04"
+    },
+    {
+     "em": 8.4,
+     "text": "Exposure sheet"
+    },
+    {
+     "em": 10.2,
+     "text": "1 sec · 30 frames"
+    }
+   ],
+   "summary": "一拍三转一拍一——元素先以每 3 帧一步的手翻书顿挫移动，高潮瞬间切成逐帧丝滑冲刺，帧率量化的突变本身就是看点",
+   "verdict": null
+  },
+  "scan-bracket-sweep": {
+   "auto": "side",
+   "box": [
+    356,
+    180,
+    1208,
+    722
+   ],
+   "card": "scan-bracket-sweep",
+   "category": "effects",
+   "cover": 0.4204,
+   "error": null,
+   "file": "effects/scan-bracket-sweep/ScanBracketSweep.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "Shot"
+    },
+    {
+     "em": 3.6,
+     "text": "Recipe"
+    },
+    {
+     "em": 1.8,
+     "text": "Cue"
+    },
+    {
+     "em": 3.6,
+     "text": "Frames"
+    },
+    {
+     "em": 5.4,
+     "text": "Cold open"
+    },
+    {
+     "em": 5.4,
+     "text": "Text mask"
+    },
+    {
+     "em": 6.6,
+     "text": "Hero reveal"
+    },
+    {
+     "em": 5.4,
+     "text": "Spotlight"
+    },
+    {
+     "em": 7.2,
+     "text": "Feature tour"
+    },
+    {
+     "em": 6.0,
+     "text": "Graze tour"
+    },
+    {
+     "em": 5.4,
+     "text": "Data beat"
+    },
+    {
+     "em": 4.8,
+     "text": "Riso hit"
+    },
+    {
+     "em": 5.4,
+     "text": "Workbench"
+    },
+    {
+     "em": 6.0,
+     "text": "Crash zoom"
+    },
+    {
+     "em": 7.2,
+     "text": "Gallery pass"
+    },
+    {
+     "em": 4.2,
+     "text": "Flyover"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 6.0,
+     "text": "Brand snap"
+    },
+    {
+     "em": 14.2,
+     "text": "Launch Film — Shot List"
+    },
+    {
+     "em": 19.2,
+     "text": "· Storyboard v3 · 1080p · 30 fps"
+    },
+    {
+     "em": 4.2,
+     "text": "Runtime"
+    },
+    {
+     "em": 3.6,
+     "text": "30 fps"
+    }
+   ],
+   "summary": "文档弹到中央，四角落下 L 形取景括号，一条扫描光带拖着渐变尾迹在文档上往复扫 5 趟——文档全程静止，只有光在读它",
+   "verdict": null
+  },
+  "scanline-annotate-focus": {
+   "auto": "full",
+   "box": [
+    150,
+    90,
+    1620,
+    956
+   ],
+   "card": "scanline-annotate-focus",
+   "category": "effects",
+   "cover": 0.7098,
+   "error": null,
+   "file": "effects/scanline-annotate-focus/ScanlineAnnotateFocus.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "LOGO"
+    },
+    {
+     "em": 7.2,
+     "text": "Frame Chisel"
+    },
+    {
+     "em": 1.8,
+     "text": "NAV"
+    },
+    {
+     "em": 4.2,
+     "text": "4 items"
+    },
+    {
+     "em": 1.8,
+     "text": "CTA"
+    },
+    {
+     "em": 2.4,
+     "text": "HERO"
+    },
+    {
+     "em": 6.6,
+     "text": "Sample film"
+    },
+    {
+     "em": 4.2,
+     "text": "PALETTE"
+    },
+    {
+     "em": 6.0,
+     "text": "4 swatches"
+    },
+    {
+     "em": 4.2,
+     "text": "Recipes"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 2.4,
+     "text": "Docs"
+    },
+    {
+     "em": 7.8,
+     "text": "Your product,"
+    },
+    {
+     "em": 4.2,
+     "text": "motion."
+    },
+    {
+     "em": 46.2,
+     "text": "Cinematic product videos, crafted by your agent. From screenshot to showreel."
+    },
+    {
+     "em": 12.0,
+     "text": "Render a launch film"
+    },
+    {
+     "em": 14.2,
+     "text": "▶ Tide Vase launch film"
+    },
+    {
+     "em": 6.0,
+     "text": "BRAND READ"
+    },
+    {
+     "em": 4.2,
+     "text": "READING"
+    },
+    {
+     "em": 4.2,
+     "text": "SIGNALS"
+    }
+   ],
+   "summary": "一条扫描线自上而下匀速掠过已存在的页面，越过哪块区块的下缘，哪块就被四角取景框从外扩处弹簧收拢对准（一次过冲），随后贴出一枚逐字打出的机器标签，顶部状态行同步计数 00/06→06/06",
+   "verdict": null
+  },
+  "scanline-assemble-flyin": {
+   "auto": "full",
+   "box": [
+    106,
+    74,
+    1698,
+    948
+   ],
+   "card": "scanline-assemble-flyin",
+   "category": "effects",
+   "cover": 0.736,
+   "error": null,
+   "file": "effects/scanline-assemble-flyin/ScanlineAssembleFlyin.tsx",
+   "form": "diagram",
+   "frames": 156,
+   "looks": true,
+   "slots": [
+    {
+     "em": 1.8,
+     "text": "NAV"
+    },
+    {
+     "em": 3.0,
+     "text": "BADGE"
+    },
+    {
+     "em": 2.4,
+     "text": "BODY"
+    },
+    {
+     "em": 3.0,
+     "text": "MEDIA"
+    },
+    {
+     "em": 1.8,
+     "text": "CTA"
+    },
+    {
+     "em": 3.0,
+     "text": "STATS"
+    },
+    {
+     "em": 4.2,
+     "text": "Recipes"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 2.4,
+     "text": "Docs"
+    },
+    {
+     "em": 7.8,
+     "text": "Get the skill"
+    },
+    {
+     "em": 1.8,
+     "text": "NEW"
+    },
+    {
+     "em": 9.6,
+     "text": "Motion workbench"
+    },
+    {
+     "em": 5.4,
+     "text": "Shoot the"
+    },
+    {
+     "em": 7.2,
+     "text": "launch film."
+    },
+    {
+     "em": 42.0,
+     "text": "One prompt to a finished promo. Your agent lines up every cut for you."
+    },
+    {
+     "em": 8.4,
+     "text": "Start shooting"
+    },
+    {
+     "em": 8.4,
+     "text": "Watch the film"
+    },
+    {
+     "em": 17.4,
+     "text": "SHOT 04 · 2.5D push-in · 120f"
+    },
+    {
+     "em": 10.2,
+     "text": "prompt to a promo"
+    },
+    {
+     "em": 3.6,
+     "text": "30 fps"
+    },
+    {
+     "em": 9.0,
+     "text": "Remotion render"
+    },
+    {
+     "em": 10.2,
+     "text": "keyframes by hand"
+    },
+    {
+     "em": 4.6,
+     "text": "✓ BUILT"
+    },
+    {
+     "em": 6.4,
+     "text": "▸ BUILDING"
+    },
+    {
+     "em": 3.6,
+     "text": "BLOCKS"
+    }
+   ],
+   "summary": "页面开场是一张只有网格与虚线槽位的蓝图画板，一条亮扫描线自上而下掠过；扫到每个槽位，该处组件就从画外飞入过冲贴合，带方向性残影模糊与落位咬合角标——扫完整页恰好装配完成",
+   "verdict": null
+  },
+  "score-slam": {
+   "auto": "full",
+   "box": [
+    144,
+    2,
+    1632,
+    872
+   ],
+   "card": "slam-entrance-moves",
+   "category": "effects",
+   "cover": 0.5007,
+   "error": null,
+   "file": "effects/slam-entrance-moves/ScoreSlam.tsx",
+   "form": "diagram",
+   "frames": 135,
+   "looks": true,
+   "slots": [
+    {
+     "em": 10.6,
+     "text": "FULL TIME · 90+4′"
+    },
+    {
+     "em": 1.8,
+     "text": "KEY"
+    },
+    {
+     "em": 5.4,
+     "text": "Keyframes"
+    },
+    {
+     "em": 21.6,
+     "text": "MOTION CUP FINAL · BUILT ON REMOTION"
+    },
+    {
+     "em": 11.4,
+     "text": "Shotcraft lifts the"
+    },
+    {
+     "em": 2.4,
+     "text": "Cup."
+    },
+    {
+     "em": 28.2,
+     "text": "Camera moves I would have keyframed for a week."
+    }
+   ],
+   "summary": "高能砸入三式——kanada-perspective-snap 金田透视急停、score-slam 比分砸落、impact-burst-kit 落点冲击套件（波及邻卡）",
+   "verdict": null
+  },
+  "segmented-thumb-hero": {
+   "auto": "side",
+   "box": [
+    432,
+    430,
+    1056,
+    362
+   ],
+   "card": "segmented-thumb-hero",
+   "category": "interaction",
+   "cover": 0.1655,
+   "error": null,
+   "file": "interaction/segmented-thumb-hero/SegmentedThumbHero.tsx",
+   "form": "diagram",
+   "frames": 110,
+   "looks": false,
+   "slots": [
+    {
+     "em": 3.6,
+     "text": "Prompt"
+    },
+    {
+     "em": 2.4,
+     "text": "Film"
+    }
+   ],
+   "summary": "分段控件 thumb 位移当主角特写——超大胶囊 segmented control 弹簧浮入，描边箭头光标画外滑入按下，白 thumb 8f ease-out 滑到另一段，到位瞬间新图标 spring 弹出、旧图标收起",
+   "verdict": null
+  },
+  "sheen-sweep-retry": {
+   "auto": "full",
+   "box": [
+    28,
+    228,
+    1864,
+    852
+   ],
+   "card": "light-play-moves",
+   "category": "effects",
+   "cover": 0.4542,
+   "error": null,
+   "file": "effects/light-play-moves/SheenSweepRetry.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 4.8,
+     "text": "Director"
+    },
+    {
+     "em": 5.4,
+     "text": "A. MORENO"
+    },
+    {
+     "em": 3.6,
+     "text": "Studio"
+    },
+    {
+     "em": 13.2,
+     "text": "Cinematic,\nby default."
+    },
+    {
+     "em": 19.8,
+     "text": "Shot recipe cards for your agent."
+    },
+    {
+     "em": 16.8,
+     "text": "From screenshot to showreel."
+    },
+    {
+     "em": 12.0,
+     "text": "Make your first film"
+    }
+   ],
+   "summary": "光效两式——spotlight-sweep 聚光扫字、sheen 单点扫光",
+   "verdict": null
+  },
+  "slide-spotlight-pan": {
+   "auto": "full",
+   "box": [
+    4,
+    0,
+    1910,
+    626
+   ],
+   "card": "spotlight-sweep-moves",
+   "category": "effects",
+   "cover": 0.3034,
+   "error": null,
+   "file": "effects/spotlight-sweep-moves/SlideSpotlightPan.tsx",
+   "form": "diagram",
+   "frames": 132,
+   "looks": false,
+   "slots": [],
+   "summary": "暗场聚光显影三式——A 醒睡扫过（光到即亮光走即暗）、B 贴边泛光横摇（紫光贴 UI 边缘渗入+聚光匀速右移）、C 角落匀速显影（径向聚光从角落匀速扩张点亮全屏）；黑场里\"光即叙事\"的 UI 展示",
+   "verdict": null
+  },
+  "split-text-stagger": {
+   "auto": "side",
+   "box": [
+    458,
+    494,
+    1004,
+    146
+   ],
+   "card": "type-assembly-moves",
+   "category": "typography",
+   "cover": 0.0286,
+   "error": null,
+   "file": "typography/type-assembly-moves/SplitTextStagger.tsx",
+   "form": "text",
+   "frames": 130,
+   "looks": false,
+   "slots": [
+    {
+     "em": 7.8,
+     "text": "FRAME MOTION."
+    }
+   ],
+   "summary": "文字集结三式——split-text-stagger 逐字裂升、letterform-drift-assembly 漂移合拢、text-on-path 沿线流入",
+   "verdict": null
+  },
+  "spotlight-sweep-reveal": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1912,
+    1076
+   ],
+   "card": "light-play-moves",
+   "category": "effects",
+   "cover": 1.0,
+   "error": null,
+   "file": "effects/light-play-moves/SpotlightSweepReveal.tsx",
+   "form": "diagram",
+   "frames": 170,
+   "looks": true,
+   "slots": [
+    {
+     "em": 5.4,
+     "text": "Craft the"
+    },
+    {
+     "em": 3.0,
+     "text": "shot."
+    },
+    {
+     "em": 14.4,
+     "text": "Tonight · World premiere"
+    },
+    {
+     "em": 28.8,
+     "text": "Cinematic product videos, crafted by your agent."
+    }
+   ],
+   "summary": "光效两式——spotlight-sweep 聚光扫字、sheen 单点扫光",
+   "verdict": null
+  },
+  "steep-tilt-glide": {
+   "auto": "full",
+   "box": [
+    288,
+    4,
+    1628,
+    1074
+   ],
+   "card": "steep-tilt-glide",
+   "category": "camera",
+   "cover": 0.7892,
+   "error": null,
+   "file": "camera/steep-tilt-glide/SteepTiltGlide.tsx",
+   "form": "diagram",
+   "frames": 120,
+   "looks": false,
+   "slots": [
+    {
+     "em": 7.2,
+     "text": "Render queue"
+    },
+    {
+     "em": 5.4,
+     "text": "Shot list"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 1.8,
+     "text": "Mon"
+    },
+    {
+     "em": 7.2,
+     "text": "Sound design"
+    },
+    {
+     "em": 1.8,
+     "text": "Wed"
+    },
+    {
+     "em": 7.2,
+     "text": "Final render"
+    },
+    {
+     "em": 1.8,
+     "text": "Fri"
+    },
+    {
+     "em": 7.2,
+     "text": "Shot recipes"
+    },
+    {
+     "em": 10.2,
+     "text": "Launch storyboard"
+    },
+    {
+     "em": 7.2,
+     "text": "Camera moves"
+    },
+    {
+     "em": 2.4,
+     "text": "Home"
+    },
+    {
+     "em": 3.0,
+     "text": "Inbox"
+    },
+    {
+     "em": 2.4,
+     "text": "Docs"
+    },
+    {
+     "em": 6.0,
+     "text": "Dashboards"
+    },
+    {
+     "em": 10.2,
+     "text": "Launch film shots"
+    },
+    {
+     "em": 2.4,
+     "text": "List"
+    },
+    {
+     "em": 3.0,
+     "text": "Board"
+    },
+    {
+     "em": 6.6,
+     "text": "IN PROGRESS"
+    },
+    {
+     "em": 5.4,
+     "text": "SHOT NAME"
+    },
+    {
+     "em": 10.2,
+     "text": "Crash zoom opener"
+    },
+    {
+     "em": 9.6,
+     "text": "Steep tilt glide"
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 4.8,
+     "text": "left top"
+    }
+   ],
+   "summary": "固定镜头下直立页面以 60° 强透视侧立（右近左远），页面自身沿其 3D 横面方向滑移掠过镜头（物动镜不动），滑移带速度重影、文字组件悬空贴落、由暗揭亮",
+   "verdict": null
+  },
+  "stroke-segment-build": {
+   "auto": "full",
+   "box": [
+    12,
+    136,
+    1896,
+    944
+   ],
+   "card": "stroke-segment-build",
+   "category": "opening",
+   "cover": 0.5764,
+   "error": null,
+   "file": "opening/stroke-segment-build/StrokeSegmentBuild.tsx",
+   "form": "text",
+   "frames": 165,
+   "looks": true,
+   "slots": [
+    {
+     "em": 12.0,
+     "text": "ONE PROMPT, ONE FILM"
+    }
+   ],
+   "summary": "断笔成字——标题拆成十几段互不相连的笔画乱序逐段点亮，前 70% 不可读，末段落位瞬间语义\"啪\"地成立",
+   "verdict": null
+  },
+  "tape-scroll-fixed-pointer": {
+   "auto": "side",
+   "box": [
+    168,
+    8,
+    1502,
+    1066
+   ],
+   "card": "gauge-readout-moves",
+   "category": "data",
+   "cover": 0.3127,
+   "error": null,
+   "file": "data/gauge-readout-moves/TapeScrollFixedPointer.tsx",
+   "form": "chart",
+   "frames": 150,
+   "looks": true,
+   "slots": [
+    {
+     "em": 5.4,
+     "text": "Old limit"
+    },
+    {
+     "em": 5.4,
+     "text": "New limit"
+    },
+    {
+     "em": 6.0,
+     "text": "Throughput"
+    },
+    {
+     "em": 4.8,
+     "text": "tripled."
+    }
+   ],
+   "summary": "仪表读数两式——needle-sweep-selftest 满弧扫针（点火自检指针甩满全弧再回落真值）与 tape-scroll-fixed-pointer 滚带定针（针不动刻度带滚过+冲刺刹车）",
+   "verdict": null
+  },
+  "terminal-3d": {
+   "auto": "full",
+   "box": [
+    6,
+    174,
+    1906,
+    902
+   ],
+   "card": "terminal-3d",
+   "category": "camera",
+   "cover": 0.6937,
+   "error": null,
+   "file": "camera/terminal-3d/Terminal3D.tsx",
+   "form": "diagram",
+   "frames": 246,
+   "looks": true,
+   "slots": [
+    {
+     "em": 8.4,
+     "text": "shotcraft init"
+    },
+    {
+     "em": 9.0,
+     "text": "12 recipe cards"
+    },
+    {
+     "em": 7.2,
+     "text": "beat grid at"
+    },
+    {
+     "em": 4.2,
+     "text": "120 bpm"
+    },
+    {
+     "em": 9.6,
+     "text": "shotcraft render"
+    },
+    {
+     "em": 2.4,
+     "text": "DONE"
+    },
+    {
+     "em": 4.8,
+     "text": "24 shots"
+    },
+    {
+     "em": 7.8,
+     "text": "1080p · 30fps"
+    },
+    {
+     "em": 9.6,
+     "text": "shotcraft export"
+    },
+    {
+     "em": 6.6,
+     "text": "voice + sfx"
+    },
+    {
+     "em": 6.0,
+     "text": "· -14 LUFS"
+    },
+    {
+     "em": 8.4,
+     "text": "draft exported"
+    },
+    {
+     "em": 3.4,
+     "text": "— zsh"
+    },
+    {
+     "em": 6.6,
+     "text": "left center"
+    },
+    {
+     "em": 3.0,
+     "text": "READY"
+    }
+   ],
+   "summary": "三个终端窗散布 3D 空间，相机窗间飞行、途中正弦拉远，每到一窗打字机敲命令、结果逐行滑出——命令执行的空间叙事流",
+   "verdict": null
+  },
+  "text-as-mask": {
+   "auto": "full",
+   "box": [
+    54,
+    68,
+    1812,
+    972
+   ],
+   "card": "text-as-mask",
+   "category": "opening",
+   "cover": 0.6671,
+   "error": null,
+   "file": "opening/text-as-mask/TextAsMask.tsx",
+   "form": "text",
+   "frames": 165,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "SCALE"
+    },
+    {
+     "em": 35.4,
+     "text": "system-ui, -apple-system, Helvetica Neue, Arial, sans-serif"
+    },
+    {
+     "em": 4.8,
+     "text": "Overview"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 4.8,
+     "text": "Timeline"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 10.2,
+     "text": "Render throughput"
+    },
+    {
+     "em": 2.4,
+     "text": "Live"
+    },
+    {
+     "em": 7.8,
+     "text": "Last 24 hours"
+    },
+    {
+     "em": 9.0,
+     "text": "Frames rendered"
+    },
+    {
+     "em": 9.0,
+     "text": "Avg shot render"
+    },
+    {
+     "em": 7.2,
+     "text": "Render queue"
+    },
+    {
+     "em": 10.8,
+     "text": "From one prompt to"
+    },
+    {
+     "em": 13.2,
+     "text": "a finished launch film"
+    }
+   ],
+   "summary": "文字视频遮罩——瓷白舞台上切出超粗大标题字，字内部透出缓慢平移的暗色实时产品面板，结尾吸一口气后字形指数冲入放大 46 倍溢出、内部画面接管全屏",
+   "verdict": null
+  },
+  "text-column-converge": {
+   "auto": "side",
+   "box": [
+    620,
+    486,
+    678,
+    124
+   ],
+   "card": "text-column-converge",
+   "category": "typography",
+   "cover": 0.019,
+   "error": null,
+   "file": "typography/text-column-converge/TextColumnConverge.tsx",
+   "form": "text",
+   "frames": 180,
+   "looks": false,
+   "slots": [
+    {
+     "em": 10.2,
+     "text": "SHOT RECIPE CARDS"
+    },
+    {
+     "em": 7.8,
+     "text": "PAGE CAPTURES"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D CAMERA MOVES"
+    },
+    {
+     "em": 9.6,
+     "text": "BEAT-SYNCED CUTS"
+    },
+    {
+     "em": 8.4,
+     "text": "FILM-GRADE SFX"
+    },
+    {
+     "em": 9.6,
+     "text": "MOTION WORKBENCH"
+    },
+    {
+     "em": 9.0,
+     "text": "REMOTION RENDER"
+    },
+    {
+     "em": 9.0,
+     "text": "JIANYING EXPORT"
+    },
+    {
+     "em": 1.8,
+     "text": "NEW"
+    },
+    {
+     "em": 9.0,
+     "text": "CRAFT THE SHOT."
+    }
+   ],
+   "summary": "双词对峙合拢——左\"NEW\"右特性词钉死在等屏边距两侧硬切轮换、全程零收缩，换到最后一词才唯一一次 ease-in-out 滑到居中咬合成短语，下方小字近乎硬切浮现；收尾揭晓型文字卡",
+   "verdict": null
+  },
+  "text-on-path": {
+   "auto": "full",
+   "box": [
+    136,
+    144,
+    1644,
+    838
+   ],
+   "card": "type-assembly-moves",
+   "category": "typography",
+   "cover": 0.1676,
+   "error": null,
+   "file": "typography/type-assembly-moves/TextOnPath.tsx",
+   "form": "text",
+   "frames": 160,
+   "looks": true,
+   "slots": [
+    {
+     "em": 11.4,
+     "text": "UP AND TO THE RIGHT"
+    },
+    {
+     "em": 1.8,
+     "text": "JAN"
+    },
+    {
+     "em": 1.8,
+     "text": "MAR"
+    },
+    {
+     "em": 1.8,
+     "text": "MAY"
+    },
+    {
+     "em": 1.8,
+     "text": "JUL"
+    },
+    {
+     "em": 1.8,
+     "text": "SEP"
+    },
+    {
+     "em": 1.8,
+     "text": "NOV"
+    },
+    {
+     "em": 1.8,
+     "text": "ARR"
+    },
+    {
+     "em": 13.2,
+     "text": "FY2026 · Annual report"
+    },
+    {
+     "em": 19.2,
+     "text": "Every quarter beat the last one."
+    }
+   ],
+   "summary": "文字集结三式——split-text-stagger 逐字裂升、letterform-drift-assembly 漂移合拢、text-on-path 沿线流入",
+   "verdict": null
+  },
+  "theme-sweep-toggle": {
+   "auto": "full",
+   "box": [
+    30,
+    10,
+    1834,
+    1068
+   ],
+   "card": "theme-switch-moves",
+   "category": "interaction",
+   "cover": 0.9195,
+   "error": null,
+   "file": "interaction/theme-switch-moves/ThemeSweepToggle.tsx",
+   "form": "diagram",
+   "frames": 140,
+   "looks": true,
+   "slots": [
+    {
+     "em": 1.8,
+     "text": "MON"
+    },
+    {
+     "em": 1.8,
+     "text": "TUE"
+    },
+    {
+     "em": 1.8,
+     "text": "WED"
+    },
+    {
+     "em": 1.8,
+     "text": "THU"
+    },
+    {
+     "em": 1.8,
+     "text": "FRI"
+    },
+    {
+     "em": 9.0,
+     "text": "Storyboard crit"
+    },
+    {
+     "em": 9.6,
+     "text": "Shot list review"
+    },
+    {
+     "em": 4.2,
+     "text": "Standup"
+    },
+    {
+     "em": 7.8,
+     "text": "Page captures"
+    },
+    {
+     "em": 9.6,
+     "text": "Voiceover · Theo"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch sync"
+    },
+    {
+     "em": 7.2,
+     "text": "Camera moves"
+    },
+    {
+     "em": 8.4,
+     "text": "Beat-sync pass"
+    },
+    {
+     "em": 6.0,
+     "text": "SFX design"
+    },
+    {
+     "em": 7.8,
+     "text": "Lunch & learn"
+    },
+    {
+     "em": 7.8,
+     "text": "Render review"
+    },
+    {
+     "em": 7.2,
+     "text": "Final render"
+    },
+    {
+     "em": 7.8,
+     "text": "Ship the film"
+    },
+    {
+     "em": 1.8,
+     "text": "Day"
+    },
+    {
+     "em": 2.4,
+     "text": "Week"
+    },
+    {
+     "em": 3.0,
+     "text": "Month"
+    },
+    {
+     "em": 3.0,
+     "text": "Today"
+    },
+    {
+     "em": 10.6,
+     "text": "September 14 – 18"
+    },
+    {
+     "em": 4.2,
+     "text": "WEEK 38"
+    },
+    {
+     "em": 15.6,
+     "text": "Launch film · ships Friday"
+    },
+    {
+     "em": 1.2,
+     "text": "PM"
+    },
+    {
+     "em": 1.2,
+     "text": "AM"
+    }
+   ],
+   "summary": "主题切换两式——theme-sweep 斜向扫场（边界扫过处就地换肤）与 palette-ripple 组合款（⌘K 面板收缩成点、涟漪从点荡开换肤）",
+   "verdict": null
+  },
+  "tilt-reveal": {
+   "auto": "full",
+   "box": [
+    68,
+    6,
+    1786,
+    1072
+   ],
+   "card": "overhead-camera-moves",
+   "category": "camera",
+   "cover": 0.9192,
+   "error": null,
+   "file": "camera/overhead-camera-moves/TiltReveal.tsx",
+   "form": "diagram",
+   "frames": 120,
+   "looks": true,
+   "slots": [
+    {
+     "em": 9.0,
+     "text": "Frames rendered"
+    },
+    {
+     "em": 8.4,
+     "text": "Shots rendered"
+    },
+    {
+     "em": 9.6,
+     "text": "Cuts on the beat"
+    },
+    {
+     "em": 4.8,
+     "text": "+1.4 pts"
+    },
+    {
+     "em": 4.8,
+     "text": "Overview"
+    },
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 4.2,
+     "text": "Renders"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 8.4,
+     "text": "Last 12 months"
+    },
+    {
+     "em": 16.2,
+     "text": "Render studio · Q3 Overview"
+    },
+    {
+     "em": 8.4,
+     "text": "Renders are up"
+    },
+    {
+     "em": 1.8,
+     "text": "Oct"
+    },
+    {
+     "em": 1.8,
+     "text": "Dec"
+    },
+    {
+     "em": 1.8,
+     "text": "Feb"
+    },
+    {
+     "em": 1.8,
+     "text": "Apr"
+    },
+    {
+     "em": 1.8,
+     "text": "Jun"
+    },
+    {
+     "em": 1.8,
+     "text": "Sep"
+    }
+   ],
+   "summary": "俯拍揭示两式——tilt-reveal 俯仰抬正揭示、overhead-tabletop-drop 桌面卡阵横滑骤降扎入",
+   "verdict": null
+  },
+  "timeline-travel": {
+   "auto": "side",
+   "box": [
+    126,
+    108,
+    1578,
+    734
+   ],
+   "card": "timeline-travel",
+   "category": "data",
+   "cover": 0.1233,
+   "error": null,
+   "file": "data/timeline-travel/TimelineTravel.tsx",
+   "form": "chart",
+   "frames": 160,
+   "looks": false,
+   "slots": [
+    {
+     "em": 4.8,
+     "text": "Jul 2026"
+    },
+    {
+     "em": 1.8,
+     "text": "Jul"
+    },
+    {
+     "em": 7.8,
+     "text": "Public launch"
+    },
+    {
+     "em": 26.4,
+     "text": "Shot recipe cards, a template and a gallery."
+    },
+    {
+     "em": 9.0,
+     "text": "Remotion render"
+    },
+    {
+     "em": 4.8,
+     "text": "Aug 2026"
+    },
+    {
+     "em": 1.8,
+     "text": "Aug"
+    },
+    {
+     "em": 8.4,
+     "text": "Camera & sound"
+    },
+    {
+     "em": 23.4,
+     "text": "2.5D camera moves with beat-synced SFX."
+    },
+    {
+     "em": 9.6,
+     "text": "Beat-synced cuts"
+    },
+    {
+     "em": 4.8,
+     "text": "Sep 2026"
+    },
+    {
+     "em": 1.8,
+     "text": "Sep"
+    },
+    {
+     "em": 9.6,
+     "text": "Motion workbench"
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    },
+    {
+     "em": 7.2,
+     "text": "Live preview"
+    },
+    {
+     "em": 3.0,
+     "text": "Today"
+    },
+    {
+     "em": 4.8,
+     "text": "Oct 2026"
+    },
+    {
+     "em": 1.8,
+     "text": "Oct"
+    },
+    {
+     "em": 10.2,
+     "text": "One-prompt promos"
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 11.4,
+     "text": "Claude Code & Codex"
+    },
+    {
+     "em": 9.0,
+     "text": "Release history"
+    },
+    {
+     "em": 12.0,
+     "text": "Shipping every month"
+    }
+   ],
+   "summary": "时间轴横移——镜头沿水平刻度轴加速掠过版本刻度，每过一格卡片弹立短停，末刻度急停推近",
+   "verdict": null
+  },
+  "title-demote-to-label": {
+   "auto": "full",
+   "box": [
+    124,
+    154,
+    1672,
+    796
+   ],
+   "card": "title-demote-to-label",
+   "category": "typography",
+   "cover": 0.4013,
+   "error": null,
+   "file": "typography/title-demote-to-label/TitleDemoteToLabel.tsx",
+   "form": "text",
+   "frames": 246,
+   "looks": true,
+   "slots": [
+    {
+     "em": 7.2,
+     "text": "Pick a shot."
+    },
+    {
+     "em": 17.4,
+     "text": "Each one comes with a recipe."
+    },
+    {
+     "em": 6.6,
+     "text": "Recipe card"
+    },
+    {
+     "em": 9.6,
+     "text": "Crash zoom punch"
+    },
+    {
+     "em": 22.8,
+     "text": "Slam into the one number that matters."
+    },
+    {
+     "em": 3.6,
+     "text": "Review"
+    },
+    {
+     "em": 23.6,
+     "text": "“Camera moves I’d have keyframed for a"
+    },
+    {
+     "em": 5.4,
+     "text": "Beat grid"
+    },
+    {
+     "em": 11.4,
+     "text": "Launch BGM, 128 BPM"
+    },
+    {
+     "em": 9.6,
+     "text": "Cuts on the beat"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 7.8,
+     "text": "Storyboard v4"
+    },
+    {
+     "em": 23.4,
+     "text": "The launch film opens on the dashboard,"
+    },
+    {
+     "em": 23.4,
+     "text": "glides past the chart and, best of all,"
+    },
+    {
+     "em": 20.4,
+     "text": "every cut lands right on the beat."
+    },
+    {
+     "em": 25.2,
+     "text": "Sound design and the logo sting come last."
+    },
+    {
+     "em": 12.0,
+     "text": "Shot match · 2 cards"
+    },
+    {
+     "em": 27.6,
+     "text": "Every line of the script becomes a tuned shot."
+    },
+    {
+     "em": 3.6,
+     "text": "4 cuts"
+    },
+    {
+     "em": 12.0,
+     "text": "Autosaved · just now"
+    },
+    {
+     "em": 6.6,
+     "text": "left center"
+    },
+    {
+     "em": 4.2,
+     "text": "Chapter"
+    },
+    {
+     "em": 3.0,
+     "text": "Frame"
+    },
+    {
+     "em": 3.0,
+     "text": "Craft"
+    }
+   ],
+   "summary": "大标题降格为节标签两式——A 大标题居中显影站稳一拍后连续缩小 0.3x 平移到左上角落成小节标签、内容区在其下生长；B 同套路但登场时带文本选中态高亮块扫入再撤掉",
+   "verdict": null
+  },
+  "trailer-bumper": {
+   "auto": "skip",
+   "box": [
+    812,
+    494,
+    290,
+    26
+   ],
+   "card": "trailer-grammar-moves",
+   "category": "rhythm",
+   "cover": 0.0016,
+   "error": null,
+   "file": "rhythm/trailer-grammar-moves/TrailerBumper.tsx",
+   "form": "text",
+   "frames": 140,
+   "looks": false,
+   "slots": [
+    {
+     "em": 6.6,
+     "text": "INTRODUCING"
+    }
+   ],
+   "summary": "预告片语法一式——trailer-bumper 前置速剪钩子：三镜 9f 速剪 + 黑场静默一拍，再开场标题",
+   "verdict": null
+  },
+  "typewriter-error-retype": {
+   "auto": "side",
+   "box": [
+    252,
+    432,
+    1434,
+    160
+   ],
+   "card": "typewriter-moves",
+   "category": "typography",
+   "cover": 0.0313,
+   "error": null,
+   "file": "typography/typewriter-moves/TypewriterErrorRetype.tsx",
+   "form": "text",
+   "frames": 160,
+   "looks": false,
+   "slots": [
+    {
+     "em": 9.6,
+     "text": "just a slideshow"
+    },
+    {
+     "em": 11.4,
+     "text": "your cinematic crew"
+    },
+    {
+     "em": 6.6,
+     "text": "Introducing"
+    }
+   ],
+   "summary": "打字机 error-retype——误删重打的\"改口\"三幕剧：打出平庸词 → 犹豫 → 退格删掉 → 更快打出卖点词",
+   "verdict": null
+  },
+  "ui-strip-away-outro": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1888,
+    1068
+   ],
+   "card": "ui-strip-away-outro",
+   "category": "outro",
+   "cover": 0.7703,
+   "error": null,
+   "file": "outro/ui-strip-away-outro/UiStripAwayOutro.tsx",
+   "form": "text",
+   "frames": 144,
+   "looks": false,
+   "slots": [
+    {
+     "em": 19.2,
+     "text": "M12 19l7-7-3-3-7 7-1 4zM14 7l3 3"
+    },
+    {
+     "em": 20.4,
+     "text": "M4 5h16v14H4zM4 16l5-5 4 4 3-3 4 4"
+    },
+    {
+     "em": 22.2,
+     "text": "M12 3l4 4-4 4-4-4zM12 13l4 4-4 4-4-4z"
+    },
+    {
+     "em": 22.2,
+     "text": "M4 6h7v5H4zM13 6h7v5h-7zM4 13h16v5H4z"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 5.4,
+     "text": "Cold open"
+    },
+    {
+     "em": 5.4,
+     "text": "Hero shot"
+    },
+    {
+     "em": 6.0,
+     "text": "Title card"
+    },
+    {
+     "em": 4.8,
+     "text": "Subtitle"
+    },
+    {
+     "em": 7.8,
+     "text": "Feature shots"
+    },
+    {
+     "em": 10.6,
+     "text": "Shot — Crash zoom"
+    },
+    {
+     "em": 10.6,
+     "text": "Shot — Dolly push"
+    },
+    {
+     "em": 9.4,
+     "text": "Shot — Whip pan"
+    },
+    {
+     "em": 9.4,
+     "text": "Shot — Beat cut"
+    },
+    {
+     "em": 6.0,
+     "text": "Logo sting"
+    },
+    {
+     "em": 3.6,
+     "text": "LAYERS"
+    },
+    {
+     "em": 3.0,
+     "text": "Frame"
+    },
+    {
+     "em": 3.6,
+     "text": "Layout"
+    },
+    {
+     "em": 1.8,
+     "text": "Gap"
+    },
+    {
+     "em": 1.8,
+     "text": "Pad"
+    },
+    {
+     "em": 2.4,
+     "text": "Fill"
+    },
+    {
+     "em": 1.8,
+     "text": "Hex"
+    },
+    {
+     "em": 3.6,
+     "text": "FFFFFF"
+    },
+    {
+     "em": 4.2,
+     "text": "Effects"
+    },
+    {
+     "em": 3.6,
+     "text": "Shadow"
+    },
+    {
+     "em": 5.4,
+     "text": "Soft · 16"
+    },
+    {
+     "em": 3.0,
+     "text": "Draft"
+    },
+    {
+     "em": 1.2,
+     "text": "JL"
+    },
+    {
+     "em": 1.2,
+     "text": "MR"
+    },
+    {
+     "em": 3.6,
+     "text": "Invite"
+    },
+    {
+     "em": 4.2,
+     "text": "Publish"
+    }
+   ],
+   "summary": "减法式收尾——点击 Publish 后整个编辑器 UI 从外围到中心层层错峰蒸发，黑场上只剩那颗按钮滑到屏心放大，按钮再淡出交棒字标定版",
+   "verdict": null
+  },
+  "unit-dot-swarm-regroup-v2": {
+   "auto": "side",
+   "box": [
+    102,
+    96,
+    1492,
+    810
+   ],
+   "card": "chart-live-moves",
+   "category": "data",
+   "cover": 0.144,
+   "error": null,
+   "file": "data/chart-live-moves/UnitDotSwarmRegroupV2.tsx",
+   "form": "chart",
+   "frames": 192,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "Promo"
+    },
+    {
+     "em": 6.6,
+     "text": "Launch film"
+    },
+    {
+     "em": 5.4,
+     "text": "Explainer"
+    },
+    {
+     "em": 11.4,
+     "text": "· Renders · Q3 2026"
+    },
+    {
+     "em": 13.8,
+     "text": "Every dot is 40 renders"
+    },
+    {
+     "em": 9.0,
+     "text": "Split by format"
+    },
+    {
+     "em": 10.2,
+     "text": "Stacked by format"
+    },
+    {
+     "em": 7.8,
+     "text": "Total renders"
+    },
+    {
+     "em": 13.0,
+     "text": "Each dot ≈ 40 renders"
+    }
+   ],
+   "summary": "活体图表三式——oscilloscope-stream 示波流线（曲线右端实时写入+突发尖峰）、unit-dot-swarm-regroup 点阵重组（点群三幕迁徙聚成数字）、axis-rescale-shock 轴爆表重标（新值冲出画框逼 y 轴重标）",
+   "verdict": null
+  },
+  "value-stagger-gradient": {
+   "auto": "full",
+   "box": [
+    144,
+    160,
+    1630,
+    760
+   ],
+   "card": "value-stagger-gradient",
+   "category": "ui-entrance",
+   "cover": 0.3124,
+   "error": null,
+   "file": "ui-entrance/value-stagger-gradient/ValueStaggerGradient.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 4.8,
+     "text": "'center'"
+    }
+   ],
+   "summary": "16 根柱入场时 delay 是时间错峰，同时高度/色相/位移/模糊四个属性各自铺成从首到末的数值梯度；第二拍把错峰原点换成中心，脉冲幅度以中心为最大重新铺开",
+   "verdict": null
+  },
+  "versus-slam": {
+   "auto": "full",
+   "box": [
+    118,
+    22,
+    1602,
+    1036
+   ],
+   "card": "transition-hidden-cut",
+   "category": "transition",
+   "cover": 0.1449,
+   "error": null,
+   "file": "transition/transition-hidden-cut/VersusSlam.tsx",
+   "form": "diagram",
+   "frames": 105,
+   "looks": true,
+   "slots": [
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 4.8,
+     "text": "Keyframe"
+    },
+    {
+     "em": 3.6,
+     "text": "Render"
+    },
+    {
+     "em": 3.6,
+     "text": "Repeat"
+    },
+    {
+     "em": 7.2,
+     "text": "Shots picked"
+    },
+    {
+     "em": 7.2,
+     "text": "Beats synced"
+    },
+    {
+     "em": 6.6,
+     "text": "The old way"
+    },
+    {
+     "em": 6.6,
+     "text": "left bottom"
+    },
+    {
+     "em": 33.6,
+     "text": "Storyboards, keyframes and three rounds of render notes."
+    },
+    {
+     "em": 30.0,
+     "text": "Your agent shoots, cuts and scores it to the beat."
+    },
+    {
+     "em": 11.4,
+     "text": "Product launch film"
+    },
+    {
+     "em": 13.8,
+     "text": "What does a promo take?"
+    },
+    {
+     "em": 1.2,
+     "text": "VS"
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    }
+   ],
+   "summary": "藏切点转场三式——前景遮挡隐形切、对撞开屏、暖色漏光，硬切藏进遮挡/撞击/光峰的 1-3 帧里，观众看不见剪刀",
+   "verdict": null
+  },
+  "vertical-word-roll-blur-cycle": {
+   "auto": "side",
+   "box": [
+    262,
+    332,
+    1236,
+    428
+   ],
+   "card": "vertical-word-roll-blur-cycle",
+   "category": "typography",
+   "cover": 0.0592,
+   "error": null,
+   "file": "typography/vertical-word-roll-blur-cycle/VerticalWordRollBlurCycle.tsx",
+   "form": "text",
+   "frames": 150,
+   "looks": false,
+   "slots": [
+    {
+     "em": 4.8,
+     "text": "Launches"
+    },
+    {
+     "em": 3.0,
+     "text": "Demos"
+    },
+    {
+     "em": 3.6,
+     "text": "Promos"
+    },
+    {
+     "em": 6.0,
+     "text": "Every Shot"
+    },
+    {
+     "em": 6.6,
+     "text": "Crafted for"
+    }
+   ],
+   "summary": "句尾词换成竖向滚轮，3 次换词各 0.55s（outQuint 七成 + outBack 三成，前快后极慢带微过冲），相邻行按距离上垂直 blur 与灰度，中心词落定瞬间从灰染成强调色",
+   "verdict": null
+  },
+  "voice-waveform-live": {
+   "auto": "side",
+   "box": [
+    348,
+    228,
+    1224,
+    730
+   ],
+   "card": "voice-waveform-live",
+   "category": "interaction",
+   "cover": 0.285,
+   "error": null,
+   "file": "interaction/voice-waveform-live/VoiceWaveformLive.tsx",
+   "form": "diagram",
+   "frames": 172,
+   "looks": true,
+   "slots": [
+    {
+     "em": 2.4,
+     "text": "Make"
+    },
+    {
+     "em": 4.2,
+     "text": "Friday,"
+    },
+    {
+     "em": 3.0,
+     "text": "zoom."
+    },
+    {
+     "em": 14.8,
+     "text": "Describe your next shot…"
+    },
+    {
+     "em": 7.2,
+     "text": "is listening"
+    }
+   ],
+   "summary": "录音胶囊实时声纹——64 根细竖条随\"说话\"起伏，说话时中部高耸、停顿缩成点线，波形从右往左滚动；说→停→说→提交塌缩的完整表演",
+   "verdict": null
+  },
+  "white-flash-logo-simplify-cut": {
+   "auto": "side",
+   "box": [
+    636,
+    354,
+    652,
+    312
+   ],
+   "card": "white-flash-logo-simplify-cut",
+   "category": "transition",
+   "cover": 0.0731,
+   "error": null,
+   "file": "transition/white-flash-logo-simplify-cut/WhiteFlashLogoSimplifyCut.tsx",
+   "form": "diagram",
+   "frames": 120,
+   "looks": true,
+   "slots": [],
+   "summary": "液态金属质感的彩色词标静置流光，蓄力后从字心炸出一记白闪过曝，曝光回落时同一位置已是扁平版字标——一次闪白完成质感降维",
+   "verdict": null
+  },
+  "wireframe-draw-on": {
+   "auto": "full",
+   "box": [
+    4,
+    2,
+    1880,
+    1066
+   ],
+   "card": "wall-reveal-moves",
+   "category": "ui-entrance",
+   "cover": 0.8844,
+   "error": null,
+   "file": "ui-entrance/wall-reveal-moves/WireframeDrawOn.tsx",
+   "form": "diagram",
+   "frames": 150,
+   "looks": false,
+   "slots": [],
+   "summary": "整墙批量入场两式——bento 逐格点亮、蓝图描线成形，全部原位显形不位移，与 deck-deal-flyin 的飞入位移型互补成品类矩阵",
+   "verdict": null
+  },
+  "word-relay-filmstrip": {
+   "auto": "side",
+   "box": [
+    44,
+    2,
+    1488,
+    1076
+   ],
+   "card": "word-relay-filmstrip",
+   "category": "typography",
+   "cover": 0.5392,
+   "error": null,
+   "file": "typography/word-relay-filmstrip/WordRelayFilmstrip.tsx",
+   "form": "text",
+   "frames": 180,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.0,
+     "text": "Shots"
+    },
+    {
+     "em": 5.4,
+     "text": "Templates"
+    },
+    {
+     "em": 4.2,
+     "text": "Gallery"
+    },
+    {
+     "em": 2.4,
+     "text": "Docs"
+    },
+    {
+     "em": 18.6,
+     "text": "STORYBOARD · LAUNCH FILM · 42 S"
+    },
+    {
+     "em": 14.4,
+     "text": "Twelve shots, one story,"
+    },
+    {
+     "em": 12.6,
+     "text": "every cut on the beat"
+    },
+    {
+     "em": 173.4,
+     "text": "The film opens on the real dashboard, pushes into the empty state, then crash-zooms onto the first result. Every cut lands on a downbeat of the 112 BPM track, every camera move comes from a tuned shot recipe card, and the brand lockup holds for the last two bars before the call to action."
+    },
+    {
+     "em": 5.4,
+     "text": "SHOT LIST"
+    },
+    {
+     "em": 10.2,
+     "text": "Dashboard push-in"
+    },
+    {
+     "em": 9.6,
+     "text": "Crash zoom punch"
+    },
+    {
+     "em": 6.0,
+     "text": "Word relay"
+    },
+    {
+     "em": 7.2,
+     "text": "Brand lockup"
+    },
+    {
+     "em": 3.6,
+     "text": "Fig. 1"
+    },
+    {
+     "em": 30.4,
+     "text": "— Shot lengths in frames, snapped to the beat grid"
+    },
+    {
+     "em": 13.2,
+     "text": "Storyboard v3 · 30 fps"
+    },
+    {
+     "em": 6.6,
+     "text": "Scan Viewer"
+    },
+    {
+     "em": 19.8,
+     "text": "Study 0042 · Brain MRI · T2 FLAIR"
+    },
+    {
+     "em": 9.4,
+     "text": "● 3 annotations"
+    },
+    {
+     "em": 3.6,
+     "text": "SERIES"
+    },
+    {
+     "em": 4.8,
+     "text": "Axial T1"
+    },
+    {
+     "em": 4.8,
+     "text": "Axial T2"
+    },
+    {
+     "em": 3.0,
+     "text": "FLAIR"
+    },
+    {
+     "em": 5.4,
+     "text": "DWI b1000"
+    },
+    {
+     "em": 4.2,
+     "text": "ADC map"
+    },
+    {
+     "em": 4.8,
+     "text": "FINDINGS"
+    },
+    {
+     "em": 15.6,
+     "text": "Focal hyperintensity, 4 mm"
+    },
+    {
+     "em": 8.4,
+     "text": "No mass effect"
+    },
+    {
+     "em": 10.2,
+     "text": "Ventricles normal"
+    },
+    {
+     "em": 13.2,
+     "text": "Q3 shipments by region"
+    },
+    {
+     "em": 6.0,
+     "text": "Export CSV"
+    },
+    {
+     "em": 3.6,
+     "text": "REGION"
+    },
+    {
+     "em": 3.0,
+     "text": "UNITS"
+    },
+    {
+     "em": 4.2,
+     "text": "REVENUE"
+    },
+    {
+     "em": 1.8,
+     "text": "YOY"
+    },
+    {
+     "em": 9.0,
+     "text": "Northern Europe"
+    },
+    {
+     "em": 5.4,
+     "text": "East Asia"
+    },
+    {
+     "em": 7.8,
+     "text": "North America"
+    },
+    {
+     "em": 7.8,
+     "text": "Latin America"
+    },
+    {
+     "em": 6.6,
+     "text": "Middle East"
+    },
+    {
+     "em": 4.2,
+     "text": "Oceania"
+    },
+    {
+     "em": 9.0,
+     "text": "Southern Africa"
+    },
+    {
+     "em": 16.2,
+     "text": "PACING REPORT · LAUNCH FILM"
+    },
+    {
+     "em": 16.2,
+     "text": "Motion energy, shot by shot"
+    },
+    {
+     "em": 10.2,
+     "text": "shots on the beat"
+    },
+    {
+     "em": 8.4,
+     "text": "BPM soundtrack"
+    },
+    {
+     "em": 8.4,
+     "text": "dropped frames"
+    },
+    {
+     "em": 6.0,
+     "text": "Storyboard"
+    },
+    {
+     "em": 3.0,
+     "text": "Sound"
+    },
+    {
+     "em": 3.6,
+     "text": "Render"
+    },
+    {
+     "em": 4.2,
+     "text": "Deliver"
+    },
+    {
+     "em": 19.8,
+     "text": "1,260 frames rendered · 0 dropped"
+    },
+    {
+     "em": 18.0,
+     "text": "18 SFX cues locked to the beat"
+    },
+    {
+     "em": 17.4,
+     "text": "Encoded h264 · 1080p · 30 fps"
+    },
+    {
+     "em": 15.4,
+     "text": "Exporting JianYing draft…"
+    },
+    {
+     "em": 4.8,
+     "text": "Duration"
+    },
+    {
+     "em": 3.6,
+     "text": "Frames"
+    },
+    {
+     "em": 6.6,
+     "text": "Render time"
+    },
+    {
+     "em": 9.0,
+     "text": "export function"
+    },
+    {
+     "em": 2.4,
+     "text": "Hero"
+    },
+    {
+     "em": 8.4,
+     "text": "export default"
+    },
+    {
+     "em": 18.6,
+     "text": "Add the launch film to the hero"
+    },
+    {
+     "em": 9.4,
+     "text": "✓ Checks passed"
+    },
+    {
+     "em": 4.8,
+     "text": "Hero.tsx"
+    },
+    {
+     "em": 6.6,
+     "text": "Pricing.tsx"
+    },
+    {
+     "em": 1.2,
+     "text": "MR"
+    },
+    {
+     "em": 4.2,
+     "text": "Mira R."
+    },
+    {
+     "em": 6.0,
+     "text": "· approved"
+    },
+    {
+     "em": 31.8,
+     "text": "Feels like a launch film from a real studio. Ship it."
+    },
+    {
+     "em": 19.8,
+     "text": "Storyboard · 12 shots on the beat"
+    }
+   ],
+   "summary": "左列黑白相间等高页面卡步进滚动（焦点卡全亮、邻卡离焦压暗）、右侧衬线大词原位接力（名词恒定+动词轮换）——切词瞬间才滚动一格，词块垂直中心与当前页面卡中点精确对齐",
+   "verdict": null
+  },
+  "word-relay-geometry": {
+   "auto": "side",
+   "box": [
+    142,
+    104,
+    1568,
+    876
+   ],
+   "card": "word-relay-geometry",
+   "category": "typography",
+   "cover": 0.0603,
+   "error": null,
+   "file": "typography/word-relay-geometry/WordRelayGeometry.tsx",
+   "form": "text",
+   "frames": 180,
+   "looks": true,
+   "slots": [
+    {
+     "em": 3.6,
+     "text": "Faster"
+    },
+    {
+     "em": 18.6,
+     "text": "One prompt to a finished promo."
+    },
+    {
+     "em": 4.2,
+     "text": "Tighter"
+    },
+    {
+     "em": 17.4,
+     "text": "Every cut locked to the beat."
+    },
+    {
+     "em": 4.8,
+     "text": "Stronger"
+    },
+    {
+     "em": 21.0,
+     "text": "Launch films that feel studio-made."
+    }
+   ],
+   "summary": "三个利益词各带一套专属几何接力——虚线大圆减速自转 + 彗星弧飞跑 → 三实线圆 trim 依次生长后收拢咬紧 → 镀铬金属 sheen 扫过后一拍收成纯白；旧词缩到 0.86 淡出，新词描边→填充揭示",
+   "verdict": null
+  }
+ }
+}

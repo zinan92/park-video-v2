@@ -23,6 +23,7 @@ from typing import Any
 import bench as bench_mod
 import brief as brief_mod
 import proof as proof_mod
+import shotcraft as shotcraft_mod
 
 FRAME = 1 / 30
 SEARCH = 5.0  # 在镜头前后多少秒内找原话
@@ -116,7 +117,8 @@ def _texts(props: Any) -> list[str]:
     if isinstance(props, str):
         return [props]
     if isinstance(props, dict):
-        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon", "symbol", "arc", "pick", "hours", "days", "sheets", "count", "src") for t in _texts(v)]
+        return [t for k, v in props.items() if k not in ("at", "ats", "lockAt", "symbolAt", "accent", "icon", "symbol", "arc", "pick", "hours", "days", "sheets", "count", "src",
+                                                       "card", "look") for t in _texts(v)]
     if isinstance(props, list):
         return [t for v in props for t in _texts(v)]
     return []
@@ -152,8 +154,14 @@ def _at_path(props: Any, path: str) -> list[str]:
     return [x for x in vals if isinstance(x, str)]
 
 
+PASS = "ShotCraft"  # ShotCraft 直通：原卡不改源码叠在人脸旁边（scripts/shotcraft.py），props {card, at, texts}
+FULL_SHARE = 0.10  # 全屏镜头（盖住人脸）最多占可加动效时长的 10%：人脸要大部分时间在画面上
+
+
 def _catalog() -> dict[str, dict[str, str]]:
-    return {k: v for k, v in json.loads(CATALOG_FILE.read_text(encoding="utf-8")).items() if not k.startswith("_")}
+    cat = {k: v for k, v in json.loads(CATALOG_FILE.read_text(encoding="utf-8")).items() if not k.startswith("_")}
+    # 直通卡是现成的 ShotCraft 镜头，不另花功夫：努力程度算 b；形式按原卡分类（见 _form）
+    return {**cat, PASS: {"effort": "b", "form": "text", "name": "ShotCraft 直通"}}
 
 
 def _icons(props: Any) -> list[str]:
@@ -165,6 +173,9 @@ def _icons(props: Any) -> list[str]:
 
 
 def _form(shot: dict[str, Any]) -> str | None:
+    if shot.get("component") == PASS:
+        st = (shotcraft_mod.manifest().get("styles") or {}).get((shot.get("props") or {}).get("card", "")) or {}
+        return st.get("form", "text")
     return _catalog().get(shot.get("component", ""), {}).get("form")
 
 
@@ -285,6 +296,8 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
                 add("text-before-speech", s, f"「{r['text']}」{r['at']}s 出现，{span[0]}s 才说")
             last_end = span[1] if last_end is None else max(last_end, span[1])
         style_rules(s, b, ws, add, last_end)
+        if s.get("component") == PASS:
+            pass_rules(s, add)
         proof_mod.rules(s, b, evidence or [], add)
 
     for i, a in enumerate(shots):
@@ -340,6 +353,11 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
         if not lo - 1e-9 <= got <= hi + 1e-9:
             out.append({"rule": "density", "shot": "plan",
                         "detail": f"动效占 {got:.0%}，这条视频要 {lo:.0%}–{hi:.0%}（密度 {b.get('density')}）"})
+    usable = plan["duration"] - sum(z - a for a, z in b.get("no_motion") or [])
+    full = sum(x["end"] - x["start"] for x in shots if x.get("zone") == "full")
+    if usable > 0 and full > FULL_SHARE * usable + 1e-9:
+        out.append({"rule": "too-much-fullscreen", "shot": "plan",
+                    "detail": f"全屏镜头一共 {round(full, 1)}s，盖住人脸的时间最多占 {FULL_SHARE:.0%}（{round(FULL_SHARE * usable, 1)}s）：多的换到侧边或删掉"})
     gap = b.get("min_gap") or 0
     ordered = sorted(shots, key=lambda x: x["start"])
     for a, c in zip(ordered, ordered[1:]):
@@ -371,6 +389,32 @@ def camera_rules(cams: list[dict[str, Any]], shots: list[dict[str, Any]], plan: 
                 add("camera-with-card", c, f"推镜头的时候 {s['id']} 还在画面上：画面一推，人脸会顶到卡片，错开")
     for c in sorted(cams, key=lambda x: x["start"])[1:]:
         add("camera-repeat", c, "运镜整条只用一次（ShotCraft：每式全片 ≤1 次），多了就不压迫了")
+
+
+def pass_rules(s: dict[str, Any], add: Any) -> None:
+    """ShotCraft 直通卡：卡在不在、量过没有、能不能放侧边、卡上每段字有没有换成他的话、换上去的字会不会太长。"""
+    props = s.get("props") or {}
+    card = props.get("card", "")
+    st = (shotcraft_mod.manifest().get("styles") or {}).get(card)
+    if st is None:
+        add("shotcraft-unknown", s, f"ShotCraft 清单里没有「{card}」：先 python3 scripts/shotcraft.py sync，再 measure {card}")
+        return
+    use = st.get("verdict") or st.get("auto")
+    if use == "skip":
+        add("shotcraft-skip", s, f"「{card}」去掉背景以后什么都不剩（效果就是背景本身），口播里用不了，换一张")
+    elif use == "full" and s.get("zone") != "full":
+        add("shotcraft-full-only", s, f"「{card}」内容太宽，缩进人脸旁边字就看不清：只能全屏用（zone: full），或换一张")
+    texts = props.get("texts") or {}
+    slots = {x["text"]: x["em"] for x in st.get("slots") or []}
+    brand = set(shotcraft_mod.brand_text_cached())
+    for k, v in texts.items():
+        if k not in slots and k not in brand:
+            add("shotcraft-slot", s, f"「{card}」上没有「{k}」这段字（可换的：{'、'.join(slots) or '无'}）")
+        elif k in slots and shotcraft_mod.em(v) > slots[k] * 1.2 + 1:
+            add("shotcraft-text-long", s, f"「{v}」比原来的「{k}」长，原卡版式是定死的会被裁掉：删短一点")
+    left = [k for k in slots if k not in texts]
+    if left:
+        add("shotcraft-text-left", s, f"「{card}」上还有原卡的字没换：{'、'.join(left)}（换成他的原话，不要就写空字符串）")
 
 
 def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], add: Any, last_end: float | None) -> None:

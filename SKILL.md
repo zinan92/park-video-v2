@@ -21,7 +21,7 @@ description: Park 的口播视频全流程：标 Hook、切 Hook、给口播加�
 | 4 | brief：建 v2/，问清这条的版式、哪些时间段不加、字幕是否烧录、不能出现的词；有工作台的渲染包就一起放进来 | `pv2.py init <项目> --video 粗剪 [--pack 渲染包]`（SRT 自己找，找不到问用户，确实没有 `pv2.py transcribe`） | `v2/brief.yaml`、`v2/pack-beats.json` |
 | 5 | 对齐：SRT 对齐音频，拿到每个字的时间 | `pv2.py prep <项目>` | `v2/words.json` |
 | 6 | 写方案：逐个时刻判断这句要观众明白什么、用什么画面；**不需要画面就不放**（保留真人也是决定） | AI | `v2/plan.json` |
-| 7 | **ShotCraft 接入**：方案要的画面，组件库（`pv2.py catalog`）里没有的，去 Video-ShotCraft 挑卡（`pv2.py shotcraft`），照它的 demo 源码改编成组件、注册进库 | AI | `motion/src/library/` 新组件 |
+| 7 | **ShotCraft 直通**：方案要的画面，直接用 ShotCraft 原卡（`"component": "ShotCraft"`，见「ShotCraft 直通」）；原仓库更新了先 `pv2.py shotcraft-sync` + `shotcraft-measure` | AI | `motion/src/shotcraft/manifest.json` |
 | 8 | 检查：程序查方案（时机、遮挡、密度、禁用词、字号…）；精品档每个重点镜头和标杆左右对比 | `pv2.py check` / `pv2.py compare` | `check` 输出 `[]`、`v2/compare/` |
 | 8½ | 有渲染包 / motion-picks 时：没照方案做的每一镜 + 原因列给 Park → **他看过才出样片** | `pv2.py deviations <项目>`，认可后 `approve <项目> deviations -m "原话"` | `v2/deviations.json` |
 | 9 | 样片 → **等 Park ②** | `pv2.py sample <项目> --detach`，认可后 `approve <项目> sample -m "原话"` | `v2/sample.mp4` |
@@ -109,7 +109,15 @@ Park 的判断：组件做得再细，表达错了就是 10–20 分；16 张卡
 
   窄的一侧（440px 这种）只放一个短词的 TextLines、数字卡或截图，内容多的卡放宽的一侧；长句拆成两三行。kicker、注释、来源这些小字是固定小号，不查。
 - **两把主旋钮**：
-  - `density` 管**多少**：动效时长占可加动效时长（去掉 no_motion）的比例，low 10–20% / medium 30–40% / high 50% 以上；brief 里写 `coverage: [下限, 上限]` 可以直接指定。check 不在区间就拦。按内容挑够卡、每张停够时间来凑比例，不要塞空卡。
+  - `density` 管**多少**：动效时长占可加动效时长（去掉 no_motion）的比例，这是唯一的标准（10/29 定）。张数从它换算，一张卡平均停 5 秒（`brief.cards_for`）：
+
+    | 密度 | 动效占比 | 每分钟 | 3 分半的视频 |
+    |---|---|---|---|
+    | low 低 | 10–20% | 1–2 张 | 5–8 张 |
+    | medium 中 | 30–40% | 4–5 张 | 13–16 张 |
+    | high 高 | 50–60% | 6–7 张 | 21–25 张 |
+
+    brief 里写 `coverage: [下限, 上限]` 可以直接指定。check 不在区间就拦。按内容挑够卡、每张停够时间来凑比例，不要塞空卡。
   - `effort` 管**多精**：a 文字卡 / b 图表、示意图、图标 / c 层次丰富、像专业 AE / d 先用 Codex 画图再做动画。组件的努力程度见 `motion/src/library/catalog.json`，不能超过 brief 的档；低于这一档的卡最多占 40%（精品档例外：只要求重点时刻是 c 档以上）。
 - 相邻两张卡不能同一种形式（text / number / chart / diagram / icon）。
 - 每张卡至少停 2.5 秒。`exit: until-next` 时停到下一张出来前（中间留 `min_gap` 秒），但最后一句说完后最多再停 10 秒。
@@ -147,6 +155,34 @@ ShotCraft 的 tension-camera-moves（情绪运镜）里，口播能用的是 C �
 - check 会拦：不认识的运镜（camera-unknown）、时长不对（camera-length）、推太多（camera-amount）、整条用了第二次（camera-repeat）、推的时候画面上还有卡片（camera-with-card：人脸一放大就顶到卡片）。
 - 运镜也算动效时长（密度）；渲染包里写 tension-camera-moves / slow-push-in 的那一镜标 `beat`，就算照做了。
 - 其余三式（冻结环绕、斜角滚正、拉远孤立）是给图表、整页界面用的，口播画面上不做；渲染包推荐了就写进偏离清单。
+
+## ShotCraft 直通：不改源码，把原卡叠在人脸两侧（SOP）
+
+ShotCraft（github.com/Vincentwei1021/video-shotcraft）是调校过很多轮的镜头库。**不再一张张重做**：原卡原样渲染，pv2 统一做三件事——去底、换字、裁出内容放进人脸旁边。
+
+**ShotCraft 更新时（谁都能跑，不用 Park）：**
+1. `python3 scripts/pv2.py shotcraft-sync`：拉原仓库最新到本机缓存（`~/.cache/park-video-v2/video-shotcraft`），生成注册表，报告新增和下架的卡。
+2. `python3 scripts/pv2.py shotcraft-measure [卡 ...]`：每张卡在透明画布上渲几帧，自动量出：内容占画面哪一块、去底以后还剩不剩东西、能不能缩进侧边（`auto`：side 侧边 / full 只能全屏 / skip 用不了）、卡上有哪几段字可以换（`slots`）。写进 `motion/src/shotcraft/manifest.json`（进库）。
+3. Park 看图鉴片段，在 manifest 的 `verdict` 里改成 side / full / skip（不改就按 `auto`）。
+
+**原卡是怎么变成侧边动效的（`motion/src/shotcraft/`，原卡源码一行不改）：**
+- 去底：原卡共用的舞台件（Look 的 Stage、Polish 的 Backdrop / Grain / Vignette、Motion 的 DesignStage）换成透明版；渲染时再把铺满整个画面的元素的底色去掉。
+- 去品牌：video-shotcraft 的标志、字标不画；宣传语默认换成空。
+- 换字：原卡里每段字都过一遍对照表（`slot-loader.cjs`），方案给了就换成他的原话。
+- 放置：原卡在 1920×1080 上渲，渲完按实际内容裁出那一块，等比放进左 / 右区域；字是浅的垫深色卡片底，字是深的垫浅色卡片底（brief 的 `card: none` 不垫）。
+- 时间：从他说出这句话（`at`）开始播，播完停在最后一帧。
+
+**方案里这样写：**
+```json
+{"id": "V03", "start": 21.0, "end": 27.0, "zone": "left", "component": "ShotCraft", "hold": 24.0,
+ "props": {"card": "marker-underline-title", "at": 21.4, "texts": {"Meet the": "先说", "new": "结论", "video-shotcraft": "再讲原因"}},
+ "reveals": [{"at": 21.4, "text": "先说结论"}]}
+```
+- `card` 是 manifest 里的样式名（`pv2.py shotcraft` 里每张卡的 `pass` 列出它的样式和能怎么用）。
+- `texts`：卡上**每一段**原文（manifest 的 `slots`）都要换成他的原话，不要的写空字符串；video-shotcraft 这类品牌字（字标往往就是标题）也可以拿来当标题槽。换上去的字不能比原文长太多（原卡版式是定死的）。
+- check 会拦：清单里没有（shotcraft-unknown）、用不了（shotcraft-skip）、只能全屏却放侧边（shotcraft-full-only）、字没换完（shotcraft-text-left）、换的字太长（shotcraft-text-long）、卡上没有这段字（shotcraft-slot）。
+- **全屏镜头（`zone: full`，盖住人脸）一共不超过可加动效时长的 10%**（too-much-fullscreen），人脸要大部分时间在画面上。
+- 直通卡算 b 档、形式按原卡分类；字号、原话删减、禁用词这些规矩照样查。
 
 ## 组件（`motion/src/library/`）
 
@@ -218,4 +254,4 @@ Park 说的样式名对不上组件时，查 `pv2.py catalog`：每个组件有�
 
 卡片外观（毛玻璃 / 纸卡 / 深色 / 无卡片、强调色、能不能冲过头）由 brief 决定，组件里用 `useLook()` 取颜色和弹出曲线，不要写死颜色。毛玻璃的模糊在合成时由 `render.py` 用原画面做。
 
-需要新样式：从 Video-ShotCraft（主库，Park 的私有快照 `~/work/video-shotcraft-snapshot`，`pv2.py shotcraft` 列全部卡）挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记努力程度、形式和 `shotcraft`（从哪张卡改编的）。努力程度按改编后的实际做工定，不照搬 ShotCraft 原档：文字类、单层动作的是 `b`，多层质感、像专业 AE 的是 `c`，先用 Codex 画图再做动画的是 `d`（`d` 的组件还没有）。新的 c 组件：所有光晕、阴影收在卡片里，动作在 settle 内做完后一帧不动（`tests/test_layers.py` 的 still_after 测试会实测）。
+手工改编（只用在最常用、要精修的卡上，平时走上面的直通）：从 Video-ShotCraft 挑卡，照它的 demo 源码改编成区域原生组件（用 `Card` / `useU` / `useSec` / `useLook`，停住后不再动），注册进 `motion/src/library/index.ts`，并在 `catalog.json` 登记努力程度、形式和 `shotcraft`（从哪张卡改编的）。努力程度按改编后的实际做工定，不照搬 ShotCraft 原档：文字类、单层动作的是 `b`，多层质感、像专业 AE 的是 `c`，先用 Codex 画图再做动画的是 `d`（`d` 的组件还没有）。新的 c 组件：所有光晕、阴影收在卡片里，动作在 settle 内做完后一帧不动（`tests/test_layers.py` 的 still_after 测试会实测）。
