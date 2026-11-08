@@ -128,7 +128,10 @@ def split_sentences(text):
 def cmd_map(args):
     cues = parse_srt(args.srt)
     a_chars = timed_chars(cues)
-    srt_text = "".join(c["text"] for c in cues)
+    # 有句末标点就按标点断句；剪映导出的 SRT 没有标点，首尾直接拼起来整条就成了一句，
+    # 所以没有句末标点时一条字幕一行（split_sentences 把换行当断句）。
+    has_ends = any(ch in SENT_END for c in cues for ch in c["text"])
+    srt_text = ("" if has_ends else "\n").join(c["text"] for c in cues)
 
     if args.text:
         b_text = Path(args.text).read_text(encoding="utf-8-sig")

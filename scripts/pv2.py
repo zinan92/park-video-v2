@@ -815,7 +815,7 @@ def _main_cut(argv: list[str]) -> int:
     ap.add_argument("project")
     if cmd == "worktable":
         ap.add_argument("--srt", help="默认 subtitles/source.srt 或项目里的 .srt")
-        ap.add_argument("--text", help="校对过、带标点的全文（可选；没有就照 SRT 原样断句）")
+        ap.add_argument("--text", help="校对过、带标点的全文（可选；没有就照 SRT 的标点断句，SRT 没有标点就一条字幕一行）")
     else:
         ap.add_argument("--check", action="store_true", help="只看表里有没有标好的 Hook，不切")
         ap.add_argument("--no-burned-captions", action="store_true", help="粗剪里没有烧录字幕：不查开头带上一句字幕")
