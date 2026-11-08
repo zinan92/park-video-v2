@@ -815,7 +815,7 @@ def _main_cut(argv: list[str]) -> int:
     ap.add_argument("project")
     if cmd == "worktable":
         ap.add_argument("--srt", help="默认 subtitles/source.srt 或项目里的 .srt")
-        ap.add_argument("--text", help="校对过、带标点的全文（可选；没有就照 SRT 的标点断句，SRT 没有标点就一条字幕一行）")
+        ap.add_argument("--text", help="校对稿：只加了标点的全文（默认 subtitles/transcript.corrected.txt；SRT 没有标点时必须有）")
     else:
         ap.add_argument("--check", action="store_true", help="只看表里有没有标好的 Hook，不切")
         ap.add_argument("--no-burned-captions", action="store_true", help="粗剪里没有烧录字幕：不查开头带上一句字幕")
@@ -827,12 +827,23 @@ def _main_cut(argv: list[str]) -> int:
         if srt is None:
             print("项目里没有 SRT：先放一份剪映导出的字幕进来", file=sys.stderr)
             return 1
+        # 表按句末标点断句。剪映 SRT 没有标点，要先有 AI 写的校对稿（只加标点），不然整条不成句（11/8）
+        text = Path(a.text).expanduser() if a.text else project / "subtitles" / "transcript.corrected.txt"
+        if not text.is_file():
+            if a.text:
+                print(f"没有这份校对稿：{text}", file=sys.stderr)
+                return 1
+            if not any(ch in "。！？!?；;…" for ch in srt.read_text(encoding="utf-8-sig")):
+                print(f"SRT 没有标点，断不了句。先写校对稿 {text}：照 SRT 原文只加标点，"
+                      "一个字不增、不删、不改顺序，再跑一次 worktable。", file=sys.stderr)
+                return 1
+            text = None
         script = Path(__file__).resolve().parent / "build_worktable.py"
         sentences = project / "subtitles" / "transcript.sentences.json"
         out = project / "analysis" / "worktable.html"
         sentences.parent.mkdir(parents=True, exist_ok=True)
         out.parent.mkdir(parents=True, exist_ok=True)
-        mapped = [sys.executable, str(script), "map", "--srt", str(srt), "-o", str(sentences)] + (["--text", str(Path(a.text).expanduser())] if a.text else [])
+        mapped = [sys.executable, str(script), "map", "--srt", str(srt), "-o", str(sentences)] + (["--text", str(text)] if text else [])
         for args in (mapped, [sys.executable, str(script), "html", str(sentences), "-o", str(out)]):
             done = subprocess.run(args, capture_output=True, text=True)
             if done.returncode != 0:

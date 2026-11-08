@@ -15,7 +15,7 @@ description: Park 的口播视频全流程：标 Hook、切 Hook、给口播加�
 |---|---|---|---|
 | **剪 Hook** ||||
 | 1 | 放进来：粗剪视频 + 剪映 SRT | Park | 项目根目录的视频、`subtitles/source.srt`（或根目录的 .srt） |
-| 2 | 标 Hook：出表，Park 在表里标开头用哪几句（顺手写视觉想法）→ **等 Park ①** | `pv2.py worktable <项目>` | `analysis/worktable.html` → Park 存回 `analysis/worktable.json` |
+| 2 | 标 Hook：先写校对稿（剪映 SRT 没有标点，只加标点，见下），再出表，Park 在表里标开头用哪几句（顺手写视觉想法）→ **等 Park ①** | AI 写 `subtitles/transcript.corrected.txt`，再 `pv2.py worktable <项目>` | `analysis/worktable.html` → Park 存回 `analysis/worktable.json` |
 | 3 | 切 Hook：原话对到词级时间，切点挪到停顿，切出的声音再听首尾字 | `pv2.py hook <项目>` | `part-a-hook/individual/h1.mp4…hN.mp4`、`edit.json`、`qa.json`（Park 拖进剪映拼到开头） |
 | **加动效** ||||
 | 4 | brief：建 v2/，问清这条的版式、哪些时间段不加、字幕是否烧录、不能出现的词；有工作台的渲染包就一起放进来 | `pv2.py init <项目> --video 粗剪 [--pack 渲染包]`（SRT 自己找，找不到问用户，确实没有 `pv2.py transcribe`） | `v2/brief.yaml`、`v2/pack-beats.json` |
@@ -36,6 +36,11 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 
 ## 剪 Hook（环节 2–3）
 
+- **先写校对稿，表才断得对句。** 表按句末标点断句，剪映导出的 SRT 没有标点，直接出表要么整条一句、要么一条字幕一行（一两秒一行，没法标）。所以出表前，你把 SRT 的字从头读一遍，写成 `subtitles/transcript.corrected.txt`：
+  - **只加标点**：一句一个完整的意思，句末用 。？！，句中用 ，、：。一句一行更好读。
+  - **一个字不增、不删、不改顺序**：口头禅、重复、说一半的、识别错的字都原样留着（错字到加动效的时候再对稿子改）。`worktable` 的守卫会对字数和相似度，偏了就拒绝出表；`--force` 不是你能决定的。
+  - 写完自己核一遍：去掉标点以后要和 SRT 的字一模一样。
+  - `worktable` 会自动读这份校对稿；SRT 没有标点又没有校对稿时，它会拒绝出表，提醒你先写。
 - 表里的时间是字幕插值出来的**近似值**，只用来定位；切片一律用 `pv2.py hook` 重新对到词级时间，不要拿近似时间直接切。
 - 同一句话前面可能说过：`hook` 只在 Park 标的大概位置前后 6 秒里找。
 - 剪映烧录的字幕切不掉：开头落在一条字幕中间、带着上一句的字，`qa.json` 会记一条，告诉 Park 听一下。
