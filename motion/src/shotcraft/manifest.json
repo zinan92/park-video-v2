@@ -10,14 +10,46 @@
     1076
    ],
    "card": "impact-feedback",
+   "carries": false,
    "category": "effects",
    "cover": 1.0,
    "error": null,
    "file": "effects/impact-feedback/AnimeImpact.tsx",
    "form": "diagram",
    "frames": 120,
+   "leftover": [
+    "Overview",
+    "30d",
+    "7d",
+    "left",
+    "Active",
+    "users",
+    "Sprint",
+    "24",
+    "Revenue",
+    "Monthly",
+    "Analytics",
+    "Projects"
+   ],
    "looks": false,
-   "slots": [],
+   "slots": [
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 26.4,
+     "text": "Feels like a launch film from a real studio."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    }
+   ],
    "summary": "命中反馈两式——hit-counter 连招计数（顿帧+伤害数字+combo 跳字）、anime-impact 动漫打击帧（负片+集中线+色散）",
    "verdict": null
   },
@@ -30,12 +62,14 @@
     980
    ],
    "card": "assemble-then-type-flyin",
+   "carries": true,
    "category": "effects",
    "cover": 0.5353,
    "error": null,
    "file": "effects/assemble-then-type-flyin/AssembleThenTypeFlyin.tsx",
    "form": "diagram",
    "frames": 168,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -143,12 +177,18 @@
     942
    ],
    "card": "icon-performance-moves",
+   "carries": false,
    "category": "effects",
    "cover": 0.7084,
    "error": null,
    "file": "effects/icon-performance-moves/AttentionBounce.tsx",
    "form": "diagram",
    "frames": 156,
+   "leftover": [
+    "00:00",
+    "00:04",
+    "00:09"
+   ],
    "looks": true,
    "slots": [
     {
@@ -178,6 +218,10 @@
     {
      "em": 10.8,
      "text": "Every shot, tuned."
+    },
+    {
+     "em": 2.4,
+     "text": "2.5D"
     }
    ],
    "summary": "图标表演——attention-bounce 求关注弹跳（图标连跳递增+落地压扁+镜头被吸引）",
@@ -192,12 +236,14 @@
     556
    ],
    "card": "aurora-bloom-bg-flip",
+   "carries": true,
    "category": "effects",
    "cover": 0.3915,
    "error": null,
    "file": "effects/aurora-bloom-bg-flip/AuroraBloomBgFlip.tsx",
    "form": "diagram",
    "frames": 156,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -221,12 +267,26 @@
     744
    ],
    "card": "autolayout-gap-dial",
+   "carries": false,
    "category": "interaction",
    "cover": 0.1742,
    "error": null,
    "file": "interaction/autolayout-gap-dial/AutolayoutGapDial.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "30",
+    "120",
+    "130",
+    "102",
+    "60",
+    "70",
+    "80",
+    "90",
+    "110",
+    "1542",
+    "12"
+   ],
    "looks": true,
    "slots": [
     {
@@ -256,6 +316,18 @@
     {
      "em": 5.4,
      "text": "Nav links"
+    },
+    {
+     "em": 1.2,
+     "text": "px"
+    },
+    {
+     "em": 42.6,
+     "text": "radial-gradient(ellipse 52% 40% at 50% 62%, #000 20%, transparent 100%)"
+    },
+    {
+     "em": 9.6,
+     "text": "translateX(-50%)"
     }
    ],
    "summary": "间距拨盘驱动布局——一排链接块带框选描边+缝隙间距标注，徽章数字逐格跳动、块被参数实时推开再弹簧回弹归位；\"参数驱动布局\"的可视化",
@@ -270,12 +342,14 @@
     758
    ],
    "card": "avatar-bracket-carousel",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.1171,
    "error": null,
    "file": "ui-entrance/avatar-bracket-carousel/AvatarBracketCarousel.tsx",
    "form": "diagram",
    "frames": 156,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -297,6 +371,14 @@
     {
      "em": 2.4,
      "text": "Your"
+    },
+    {
+     "em": 3.0,
+     "text": "agent"
+    },
+    {
+     "em": 41.4,
+     "text": "M4.3 10 3.8 7.3c-.1-.6.3-1.2.9-1.3l12.6-2.3c.6-.1 1.2.3 1.3.9l.4 2.2Z"
     }
    ],
    "summary": "\"Your ___ agent\" 填空排版，四角对焦框钉在句中不动，头像队列在框内垂直 spring 轮换三次，入框放大清晰、出框按距离缩小淡化模糊，角色标签同步更换，切换瞬间对焦框呼吸 7%",
@@ -311,12 +393,17 @@
     868
    ],
    "card": "chart-live-moves",
+   "carries": false,
    "category": "data",
    "cover": 0.1462,
    "error": null,
    "file": "data/chart-live-moves/AxisRescaleShockV2.tsx",
    "form": "chart",
    "frames": 168,
+   "leftover": [
+    "493k",
+    "833k"
+   ],
    "looks": true,
    "slots": [
     {
@@ -382,6 +469,38 @@
     {
      "em": 4.8,
      "text": "FY total"
+    },
+    {
+     "em": 2.4,
+     "text": "100k"
+    },
+    {
+     "em": 1.8,
+     "text": "75k"
+    },
+    {
+     "em": 1.8,
+     "text": "50k"
+    },
+    {
+     "em": 1.8,
+     "text": "25k"
+    },
+    {
+     "em": 2.4,
+     "text": "400k"
+    },
+    {
+     "em": 2.4,
+     "text": "300k"
+    },
+    {
+     "em": 2.4,
+     "text": "200k"
+    },
+    {
+     "em": 2.4,
+     "text": "340k"
     }
    ],
    "summary": "活体图表三式——oscilloscope-stream 示波流线（曲线右端实时写入+突发尖峰）、unit-dot-swarm-regroup 点阵重组（点群三幕迁徙聚成数字）、axis-rescale-shock 轴爆表重标（新值冲出画框逼 y 轴重标）",
@@ -396,12 +515,22 @@
     1076
    ],
    "card": "page-turn-transitions",
+   "carries": false,
    "category": "transition",
    "cover": 0.4659,
    "error": null,
    "file": "transition/page-turn-transitions/BarnDoorSplit.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "64.0s",
+    "12",
+    "6",
+    "12.2s",
+    "24",
+    "11.8s",
+    "30"
+   ],
    "looks": true,
    "slots": [
     {
@@ -447,6 +576,14 @@
     {
      "em": 4.8,
      "text": "to right"
+    },
+    {
+     "em": 0.6,
+     "text": "4"
+    },
+    {
+     "em": 13.2,
+     "text": "rgba(255,255,255,0.07)"
     }
    ],
    "summary": "整页体块转场——barn-door-split 对开门裂幕（旧页裂两半滑出、新页迎上）",
@@ -461,12 +598,14 @@
     928
    ],
    "card": "basic-3d-scene",
+   "carries": true,
    "category": "camera",
    "cover": 0.5665,
    "error": null,
    "file": "camera/basic-3d-scene/Basic3DScene.tsx",
    "form": "diagram",
    "frames": 225,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -534,12 +673,16 @@
     1076
    ],
    "card": "beat-step-list-theme-cycle",
+   "carries": false,
    "category": "rhythm",
    "cover": 0.6829,
    "error": null,
    "file": "rhythm/beat-step-list-theme-cycle/BeatStepListThemeCycle.tsx",
    "form": "text",
    "frames": 140,
+   "leftover": [
+    "04"
+   ],
    "looks": true,
    "slots": [
     {
@@ -573,6 +716,34 @@
     {
      "em": 3.0,
      "text": "THEME"
+    },
+    {
+     "em": 2.4,
+     "text": "/ 05"
+    },
+    {
+     "em": 3.0,
+     "text": "clean"
+    },
+    {
+     "em": 4.2,
+     "text": "playful"
+    },
+    {
+     "em": 3.6,
+     "text": "modern"
+    },
+    {
+     "em": 2.4,
+     "text": "bold"
+    },
+    {
+     "em": 6.0,
+     "text": "expressive"
+    },
+    {
+     "em": 4.8,
+     "text": "timeless"
     }
    ],
    "summary": "三通道节拍器——深色场形容词列表逐拍上移一行，视口中央固定胶囊\"接住\"下一个词并换色，整场底色同拍跟换；行、色、场三通道锁死同一拍点",
@@ -587,12 +758,27 @@
     1056
    ],
    "card": "before-after-slider-scrub",
+   "carries": false,
    "category": "data",
    "cover": 0.8899,
    "error": null,
    "file": "data/before-after-slider-scrub/BeforeAfterSliderScrub.tsx",
    "form": "chart",
    "frames": 150,
+   "leftover": [
+    "Overview",
+    "30d",
+    "Active",
+    "users",
+    "7d",
+    "Analytics",
+    "Projects",
+    "/changelog",
+    "24,812",
+    "$48.2k",
+    "Members",
+    "Reports"
+   ],
    "looks": false,
    "slots": [
     {
@@ -602,6 +788,18 @@
     {
      "em": 3.0,
      "text": "After"
+    },
+    {
+     "em": 26.4,
+     "text": "Feels like a launch film from a real studio."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
     }
    ],
    "summary": "前后对比拉杆——\"处理前/后\"两版叠放，分割杆先猛甩后慢扫，杆过处新版\"显影\"揭出",
@@ -616,14 +814,50 @@
     746
    ],
    "card": "wall-reveal-moves",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.542,
    "error": null,
    "file": "ui-entrance/wall-reveal-moves/BentoLightUp.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "Revenue",
+    "$48.2k",
+    "6317",
+    "volume",
+    "this",
+    "16m",
+    "ago",
+    "View",
+    "Quarterty",
+    "goals",
+    "Sessions",
+    "30d"
+   ],
    "looks": false,
-   "slots": [],
+   "slots": [
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 54.0,
+     "text": "radial-gradient(ellipse 50% 40% at 50% 62%, rgba(232,180,94,0.10), rgba(232,180,94,0) 70%)"
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
+    }
+   ],
    "summary": "整墙批量入场两式——bento 逐格点亮、蓝图描线成形，全部原位显形不位移，与 deck-deal-flyin 的飞入位移型互补成品类矩阵",
    "verdict": null
   },
@@ -636,12 +870,14 @@
     836
    ],
    "card": "bezier-source-converge-merge",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.0944,
    "error": null,
    "file": "ui-entrance/bezier-source-converge-merge/BezierSourceConvergeMerge.tsx",
    "form": "diagram",
    "frames": 168,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -661,12 +897,14 @@
     1072
    ],
    "card": "wipe-transitions",
+   "carries": true,
    "category": "transition",
    "cover": 0.3155,
    "error": null,
    "file": "transition/wipe-transitions/BlindsSlice.tsx",
    "form": "diagram",
    "frames": 132,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -696,6 +934,10 @@
     {
      "em": 24.0,
      "text": "Direct the film.\nLet the agent shoot it."
+    },
+    {
+     "em": 7.6,
+     "text": "Nº 07 — 2026"
     }
    ],
    "summary": "几何擦除转场——blinds-slice 百叶窗切条（12 根 3D 叶片错峰翻面成波，波扫过后整页由 A 换成 B）",
@@ -710,12 +952,14 @@
     910
    ],
    "card": "blur-slide",
+   "carries": true,
    "category": "typography",
    "cover": 0.0828,
    "error": null,
    "file": "typography/blur-slide/BlurSlide.tsx",
    "form": "text",
    "frames": 120,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -741,6 +985,18 @@
     {
      "em": 7.8,
      "text": "RELEASE NOTES"
+    },
+    {
+     "em": 3.0,
+     "text": "every"
+    },
+    {
+     "em": 3.6,
+     "text": "launch"
+    },
+    {
+     "em": 2.4,
+     "text": "feel"
     }
    ],
    "summary": "标题逐词入场，y 0.38em→0 + blur 18→0 + opacity 0→1 三通道走同一条 ease-out 同步收敛，词间隔约 4f；副标题在标题收完前就错峰跟进",
@@ -755,12 +1011,19 @@
     910
    ],
    "card": "bottom-push-stack-wipe",
+   "carries": false,
    "category": "transition",
    "cover": 0.3808,
    "error": null,
    "file": "transition/bottom-push-stack-wipe/BottomPushStackWipe.tsx",
    "form": "diagram",
    "frames": 170,
+   "leftover": [
+    "00:13",
+    "02",
+    "03",
+    "04"
+   ],
    "looks": true,
    "slots": [
     {
@@ -878,6 +1141,22 @@
     {
      "em": 10.8,
      "text": "When the cut locks"
+    },
+    {
+     "em": 20.4,
+     "text": "Cut a 30s launch film for our app."
+    },
+    {
+     "em": 21.6,
+     "text": "Storyboard ready: 12 shots, on beat."
+    },
+    {
+     "em": 1.8,
+     "text": "38s"
+    },
+    {
+     "em": 2.4,
+     "text": "2.4s"
     }
    ],
    "summary": "底边上推换章——新场景连底色整屏从底边向上推入，把旧场景物理顶出画外，连推数章各配一种饱和底色，内容钉死在各自色底坐标系里随底色走",
@@ -892,14 +1171,21 @@
     460
    ],
    "card": "brace-expand",
+   "carries": true,
    "category": "typography",
    "cover": 0.0377,
    "error": null,
    "file": "typography/brace-expand/BraceExpand.tsx",
    "form": "text",
    "frames": 120,
+   "leftover": [],
    "looks": true,
-   "slots": [],
+   "slots": [
+    {
+     "em": 18.0,
+     "text": "// shot recipes for your agent"
+    }
+   ],
    "summary": "一对紧贴的小花括号先在正中出现，随即带一次过冲向左右弹开并放大到标题级，文字 clip 宽度严格绑括号内缘、像被拉开幕布般从中间揭示，落定后字距再细微松弛",
    "verdict": null
   },
@@ -912,12 +1198,17 @@
     1076
    ],
    "card": "brand-frame-snap",
+   "carries": false,
    "category": "effects",
    "cover": 0.884,
    "error": null,
    "file": "effects/brand-frame-snap/BrandFrameSnap.tsx",
    "form": "diagram",
    "frames": 140,
+   "leftover": [
+    "Ontap",
+    "650;"
+   ],
    "looks": true,
    "slots": [
     {
@@ -1047,6 +1338,98 @@
     {
      "em": 3.6,
      "text": "DESIGN"
+    },
+    {
+     "em": 4.8,
+     "text": "404 × 76"
+    },
+    {
+     "em": 25.2,
+     "text": "drop-shadow(0 4px 8px rgba(12,20,40,0.28))"
+    },
+    {
+     "em": 16.2,
+     "text": "M8 1.6 12.8 7 8 14.4 3.2 7z"
+    },
+    {
+     "em": 28.2,
+     "text": "linear-gradient(180deg,#fbfcfe 0%,#f3f5f9 100%)"
+    },
+    {
+     "em": 10.8,
+     "text": "M5.2 4 1.6 8l3.6 4"
+    },
+    {
+     "em": 7.8,
+     "text": "color/ink-900"
+    },
+    {
+     "em": 6.6,
+     "text": "color/paper"
+    },
+    {
+     "em": 5.4,
+     "text": "radius/lg"
+    },
+    {
+     "em": 4.2,
+     "text": "space/8"
+    },
+    {
+     "em": 3.6,
+     "text": "height"
+    },
+    {
+     "em": 2.4,
+     "text": "76px"
+    },
+    {
+     "em": 4.2,
+     "text": "padding"
+    },
+    {
+     "em": 3.6,
+     "text": "0 32px"
+    },
+    {
+     "em": 7.8,
+     "text": "border-radius"
+    },
+    {
+     "em": 2.4,
+     "text": "20px"
+    },
+    {
+     "em": 7.8,
+     "text": "cta-arrow.svg"
+    },
+    {
+     "em": 6.0,
+     "text": "background"
+    },
+    {
+     "em": 4.2,
+     "text": "#14161f"
+    },
+    {
+     "em": 6.6,
+     "text": "font-weight"
+    },
+    {
+     "em": 1.8,
+     "text": "gap"
+    },
+    {
+     "em": 3.6,
+     "text": "0 12px"
+    },
+    {
+     "em": 7.8,
+     "text": "type/label-lg"
+    },
+    {
+     "em": 5.4,
+     "text": "check.svg"
     }
    ],
    "summary": "品牌色画框语法——一圈粗纯色画框先于内容长出包住全屏，录屏窗口落进框内；模式切换时整圈画框同帧硬翻色+窗内布局同帧换，一个 borderColor 干完章节导航/状态提示/品牌露出三件事",
@@ -1061,12 +1444,27 @@
     854
    ],
    "card": "tension-camera-moves",
+   "carries": false,
    "category": "camera",
    "cover": 0.5087,
    "error": null,
    "file": "camera/tension-camera-moves/BulletTimeFreezeOrbit.tsx",
    "form": "diagram",
    "frames": 170,
+   "leftover": [
+    "172,312",
+    "181,556",
+    "181,558",
+    "16k",
+    "184,920",
+    "31k",
+    "26k",
+    "22k",
+    "18k",
+    "20k",
+    "14k",
+    "14K"
+   ],
    "looks": true,
    "slots": [
     {
@@ -1118,12 +1516,21 @@
     950
    ],
    "card": "card-flip-reveal",
+   "carries": false,
    "category": "transition",
    "cover": 0.5763,
    "error": null,
    "file": "transition/card-flip-reveal/CardFlipReveal.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "RESULTS",
+    "WITH",
+    "3.2X",
+    "—41%",
+    "-41%",
+    "3.2x"
+   ],
    "looks": true,
    "slots": [
     {
@@ -1241,6 +1648,22 @@
     {
      "em": 18.6,
      "text": "Three features. Three outcomes."
+    },
+    {
+     "em": 13.8,
+     "text": "Make a 30s launch film,"
+    },
+    {
+     "em": 1.8,
+     "text": "and"
+    },
+    {
+     "em": 2.4,
+     "text": "0.2s"
+    },
+    {
+     "em": 3.0,
+     "text": "3.4 s"
     }
    ],
    "summary": "功能卡 3D 翻面揭示——卡片沿 Y 轴翻 180°，正面 UI 翻到侧棱最薄处掠过一道随角度移动的受光，背面揭出大号结论数字，逐张错峰扫过整排",
@@ -1255,12 +1678,14 @@
     1008
    ],
    "card": "card-flock-tumble",
+   "carries": true,
    "category": "transition",
    "cover": 0.6431,
    "error": null,
    "file": "transition/card-flock-tumble/CardFlockTumble.tsx",
    "form": "diagram",
    "frames": 135,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -1414,6 +1839,10 @@
     {
      "em": 5.4,
      "text": "CINEMATIC"
+    },
+    {
+     "em": 1.2,
+     "text": "12"
     }
    ],
    "summary": "三张 UI 页卡从侧棱薄边 3D 翻飞成阶梯站定（全程清晰、样条连续丝滑），站定后保持慢转不停，快速收束吸入中心，炸出单个湍流烟雾环扩散，巨字横贯收场",
@@ -1428,12 +1857,17 @@
     886
    ],
    "card": "card-stack",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.5432,
    "error": null,
    "file": "ui-entrance/card-stack/CardStack.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "09",
+    "30"
+   ],
    "looks": true,
    "slots": [
     {
@@ -1519,6 +1953,22 @@
     {
      "em": 3.6,
      "text": "Launch"
+    },
+    {
+     "em": 3.0,
+     "text": "$2.4M"
+    },
+    {
+     "em": 3.6,
+     "text": "+12.4%"
+    },
+    {
+     "em": 2.4,
+     "text": "+38%"
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
     }
    ],
    "summary": "一组模板卡（demo 9 张）从屏幕下方逐张 spring 弹入、越落越快叠成一摞，全员落位后整摞一次性展成扇面——每张按序号偏转 6.5°、横移 138px，最后中心卡被抽出",
@@ -1533,12 +1983,25 @@
     734
    ],
    "card": "carousel-3d",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.3489,
    "error": null,
    "file": "ui-entrance/carousel-3d/Carousel3D.tsx",
    "form": "diagram",
    "frames": 168,
+   "leftover": [
+    "02",
+    "-14",
+    "08",
+    "96..",
+    "06",
+    "38°",
+    "96",
+    "0.8.",
+    "42",
+    "07"
+   ],
    "looks": true,
    "slots": [
     {
@@ -1616,6 +2079,18 @@
     {
      "em": 1.8,
      "text": "FPS"
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    },
+    {
+     "em": 24.6,
+     "text": "Shot recipes for cinematic product films."
+    },
+    {
+     "em": 30.0,
+     "text": "M 10 120 C 60 20, 120 140, 170 60 S 250 30, 270 40"
     }
    ],
    "summary": "8 张卡排成圆环整环自转一圈（匀速底 + 每 45° 一次停靠的分步），每卡只绕 Y 公转、自身 billboard 朝外，正反两层同向贴图配 backface-visibility:hidden 保证任何时刻都正立不倒置，正前方卡被点亮、环下字幕随之换字，相机全程钉在浅俯角",
@@ -1630,12 +2105,14 @@
     950
    ],
    "card": "scroll-brake-moves",
+   "carries": true,
    "category": "data",
    "cover": 0.433,
    "error": null,
    "file": "data/scroll-brake-moves/ChangelogScrollBrake.tsx",
    "form": "chart",
    "frames": 150,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -1835,12 +2312,16 @@
     594
    ],
    "card": "chip-grid-single-select-blackout",
+   "carries": false,
    "category": "interaction",
    "cover": 0.1445,
    "error": null,
    "file": "interaction/chip-grid-single-select-blackout/ChipGridSingleSelectBlackout.tsx",
    "form": "diagram",
    "frames": 165,
+   "leftover": [
+    "$34.44"
+   ],
    "looks": true,
    "slots": [
     {
@@ -1870,6 +2351,18 @@
     {
      "em": 15.6,
      "text": "How would you like to pay?"
+    },
+    {
+     "em": 1.8,
+     "text": "/mo"
+    },
+    {
+     "em": 19.2,
+     "text": "Save 18% · billed $413.28 yearly"
+    },
+    {
+     "em": 34.8,
+     "text": "M2 1 L2 17 L6.5 13.2 L9.4 20 L12.4 18.7 L9.5 12 L15 11.6 Z"
     }
    ],
    "summary": "五个选项 chip 以 3+2 居中排布逐个淡入；选中帧先插一帧灰色按压块，紧接数帧内底色变墨黑、文字变白并做 1→1.04→1 极轻回弹，其余 chip 淡到 18% 但位置锁死；随后余项归零，黑 chip 上移收窄，下方升起结算价格",
@@ -1884,12 +2377,22 @@
     828
    ],
    "card": "circle-match-iris",
+   "carries": false,
    "category": "transition",
    "cover": 0.2847,
    "error": null,
    "file": "transition/circle-match-iris/CircleMatchIris.tsx",
    "form": "diagram",
    "frames": 165,
+   "leftover": [
+    "61",
+    "53",
+    "47",
+    "39",
+    "4:52",
+    "87.",
+    "6shots"
+   ],
    "looks": true,
    "slots": [
     {
@@ -2009,12 +2512,14 @@
     724
    ],
    "card": "cloner-depth-echo",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.3329,
    "error": null,
    "file": "ui-entrance/cloner-depth-echo/ClonerDepthEcho.tsx",
    "form": "diagram",
    "frames": 138,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -2032,6 +2537,18 @@
     {
      "em": 16.2,
      "text": "shots rendered · one prompt"
+    },
+    {
+     "em": 6.6,
+     "text": "launch-film"
+    },
+    {
+     "em": 1.8,
+     "text": "S03"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
     }
    ],
    "summary": "克隆纵队——主卡瞬间\"复印\"出 7 个半透明分身沿斜向纵深排开成队，停一拍后全体加速吸回本体合一+弹跳",
@@ -2046,12 +2563,14 @@
     1074
    ],
    "card": "panel-grid-moves",
+   "carries": true,
    "category": "rhythm",
    "cover": 0.8139,
    "error": null,
    "file": "rhythm/panel-grid-moves/ComicPanelSplit.tsx",
    "form": "text",
    "frames": 156,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -2081,6 +2600,26 @@
     {
      "em": 9.0,
      "text": "Shot 03 · Macro"
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
+    },
+    {
+     "em": 31.8,
+     "text": "M -186,0 A 186,186 0 1 1 186,0 A 186,186 0 1 1 -186,0"
+    },
+    {
+     "em": 3.0,
+     "text": "f/1.2"
+    },
+    {
+     "em": 17.4,
+     "text": "M -9,-300 L 9,-300 L 0,-287 Z"
+    },
+    {
+     "em": 12.0,
+     "text": "rgba(90,255,190,0.4)"
     }
    ],
    "summary": "分格节奏——comic-panel-split 漫画斜格劈出同一主体的三个机位，咔咔咔三格定格后末格斜边吃屏成海报",
@@ -2095,12 +2634,14 @@
     960
    ],
    "card": "element-body-moves",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.5173,
    "error": null,
    "file": "ui-entrance/element-body-moves/ContactShadowLift.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -2134,6 +2675,14 @@
     {
      "em": 9.0,
      "text": "Pick your shot."
+    },
+    {
+     "em": 1.8,
+     "text": "12f"
+    },
+    {
+     "em": 1.8,
+     "text": "24f"
     }
    ],
    "summary": "元素身体感——contact-shadow-lift 接触阴影离面抬升：卡抬起时桌上的阴影同步放大变淡，纸片离桌被阴影证明",
@@ -2148,12 +2697,14 @@
     1076
    ],
    "card": "spotlight-sweep-moves",
+   "carries": true,
    "category": "effects",
    "cover": 0.2782,
    "error": null,
    "file": "effects/spotlight-sweep-moves/CornerSpotlightReveal.tsx",
    "form": "diagram",
    "frames": 130,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -2193,17 +2744,37 @@
     710
    ],
    "card": "countdown-arc-scatter",
+   "carries": false,
    "category": "typography",
    "cover": 0.0762,
    "error": null,
    "file": "typography/countdown-arc-scatter/CountdownArcScatter.tsx",
    "form": "text",
    "frames": 100,
+   "leftover": [
+    "5"
+   ],
    "looks": true,
    "slots": [
     {
      "em": 6.0,
      "text": "SETUP TIME"
+    },
+    {
+     "em": 1.8,
+     "text": "min"
+    },
+    {
+     "em": 1.2,
+     "text": "to"
+    },
+    {
+     "em": 4.2,
+     "text": "install"
+    },
+    {
+     "em": 27.0,
+     "text": "npx skills add Vincentwei1021/video-shotcraft"
     }
    ],
    "summary": "纸面表盘 9 个等大数字沿大弧切向排布，整盘扫过 96° 后减速急停，\"5\" 停在弧顶随即平移落位成标题首字符，其余数字带 blur 原地散去，标题逐词模糊淡入、末词转强调色",
@@ -2218,12 +2789,14 @@
     1026
    ],
    "card": "crane-rise-reveal",
+   "carries": true,
    "category": "opening",
    "cover": 0.864,
    "error": null,
    "file": "opening/crane-rise-reveal/CraneRiseReveal.tsx",
    "form": "text",
    "frames": 165,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -2423,12 +2996,19 @@
     1014
    ],
    "card": "collab-cursor-moves",
+   "carries": false,
    "category": "interaction",
    "cover": 0.558,
    "error": null,
    "file": "interaction/collab-cursor-moves/CursorCastEnsemble.tsx",
    "form": "diagram",
    "frames": 156,
+   "leftover": [
+    "38%",
+    "cco",
+    "(06",
+    "72%"
+   ],
    "looks": true,
    "slots": [
     {
@@ -2534,6 +3114,10 @@
     {
      "em": 36.6,
      "text": "M5 21l1.2-4.6L17 5.6a2 2 0 0 1 2.8 2.8L9 19.2zM15 7.6l3.4 3.4"
+    },
+    {
+     "em": 7.2,
+     "text": "Renders: 214"
     }
    ],
    "summary": "协作光标当演员——cast-ensemble 五光标群演氛围层（错峰飞入+正弦漂移+打字 cameo+聚拢围观）",
@@ -2548,12 +3132,22 @@
     1076
    ],
    "card": "cursor-flyover",
+   "carries": false,
    "category": "camera",
    "cover": 0.9826,
    "error": null,
    "file": "camera/cursor-flyover/CursorFlyover.tsx",
    "form": "diagram",
    "frames": 240,
+   "leftover": [
+    "280",
+    "125",
+    "890",
+    "941",
+    "4,280",
+    "3,125",
+    "1,890"
+   ],
    "looks": true,
    "slots": [
     {
@@ -2691,6 +3285,42 @@
     {
      "em": 9.4,
      "text": "Search shots ⌘K"
+    },
+    {
+     "em": 1.2,
+     "text": "7D"
+    },
+    {
+     "em": 1.8,
+     "text": "30D"
+    },
+    {
+     "em": 1.8,
+     "text": "90D"
+    },
+    {
+     "em": 3.0,
+     "text": "48.2k"
+    },
+    {
+     "em": 3.6,
+     "text": "51,204"
+    },
+    {
+     "em": 3.0,
+     "text": "7.31M"
+    },
+    {
+     "em": 17.4,
+     "text": "0 2px 6px rgba(12,26,58,0.25)"
+    },
+    {
+     "em": 15.6,
+     "text": "M10 18.5 L15.5 24 L26 12.5"
+    },
+    {
+     "em": 2.4,
+     "text": "+12%"
     }
    ],
    "summary": "整页俯瞰后，相机依次飞到四个功能区 zoom-in 特写，SVG 光标先一步到位指点、点击留下涟漪并触发界面响应，最后拉回俯瞰",
@@ -2705,12 +3335,14 @@
     882
    ],
    "card": "canvas-materialize-moves",
+   "carries": true,
    "category": "interaction",
    "cover": 0.5004,
    "error": null,
    "file": "interaction/canvas-materialize-moves/DiagramCascadeBuild.tsx",
    "form": "diagram",
    "frames": 180,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -2782,12 +3414,17 @@
     702
    ],
    "card": "doc-park-left-pill-deal",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.3369,
    "error": null,
    "file": "ui-entrance/doc-park-left-pill-deal/DocParkLeftPillDeal.tsx",
    "form": "diagram",
    "frames": 174,
+   "leftover": [
+    "88%",
+    "95%"
+   ],
    "looks": false,
    "slots": [
     {
@@ -2901,6 +3538,26 @@
     {
      "em": 16.8,
      "text": "Sting ends on the brand mark"
+    },
+    {
+     "em": 37.8,
+     "text": "Keep the 2.5D camera moving; no frame should sit dead for long."
+    },
+    {
+     "em": 37.2,
+     "text": "The wordmark stays lowercase; amber is the only accent colour."
+    },
+    {
+     "em": 36.6,
+     "text": "Track runs at 120 bpm; cuts snap to the downbeat of each bar."
+    },
+    {
+     "em": 37.8,
+     "text": "Voiceover optional; on-screen captions carry the story on mute."
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
     }
    ],
    "summary": "文档不淡出而是向左滑出只露约 35% 宽并微缩到 0.92，右侧按旁白节奏慢速发牌三张白底描边药丸（outBack 弹入），每张落定后其下方字幕逐词加深、下一张到来前整句淡出，左侧文档全程极缓慢自动滚动保持\"正在被读\"",
@@ -2915,12 +3572,14 @@
     686
    ],
    "card": "draw-svg-trace",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.3765,
    "error": null,
    "file": "ui-entrance/draw-svg-trace/DrawSvgTrace.tsx",
    "form": "diagram",
    "frames": 132,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -2942,6 +3601,14 @@
     {
      "em": 13.8,
      "text": "agent · rendered 2m ago"
+    },
+    {
+     "em": 42.6,
+     "text": "radial-gradient(ellipse 62% 66% at 50% 50%, #000 30%, transparent 100%)"
+    },
+    {
+     "em": 7.2,
+     "text": "v3 · 1080p30"
     }
    ],
    "summary": "描边生长圈注——一条带笔头的墨线沿元素轮廓跑一圈把它\"画\"出来，闭合瞬间闪黑交棒、内容淡入；同套路可给标题画下划线",
@@ -2956,14 +3623,42 @@
     988
    ],
    "card": "space-camera-moves",
+   "carries": false,
    "category": "camera",
    "cover": 0.7227,
    "error": null,
    "file": "camera/space-camera-moves/DroneDiveLanding.tsx",
    "form": "diagram",
    "frames": 105,
+   "leftover": [
+    "24,812",
+    "Overview",
+    "30d",
+    "Active",
+    "users",
+    "Top",
+    "pages",
+    "Analytics",
+    "Projects",
+    "/changelog",
+    "Members",
+    "/blog/release-notes"
+   ],
    "looks": false,
-   "slots": [],
+   "slots": [
+    {
+     "em": 51.0,
+     "text": "radial-gradient(circle at 3px 3px, rgba(40,44,60,0.34) 2.2px, rgba(40,44,60,0) 3.2px)"
+    },
+    {
+     "em": 26.4,
+     "text": "Feels like a launch film from a real studio."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    }
+   ],
    "summary": "3D 空间化运镜两式——exploded-view 爆炸分解（构件沿 Z 炸开再合体）、drone-dive-landing 无人机俯冲降落",
    "verdict": null
   },
@@ -2976,12 +3671,16 @@
     924
    ],
    "card": "space-camera-moves",
+   "carries": false,
    "category": "camera",
    "cover": 0.3635,
    "error": null,
    "file": "camera/space-camera-moves/ExplodedView.tsx",
    "form": "diagram",
    "frames": 170,
+   "leftover": [
+    "02"
+   ],
    "looks": true,
    "slots": [
     {
@@ -3109,12 +3808,14 @@
     1036
    ],
    "card": "flying-words",
+   "carries": true,
    "category": "typography",
    "cover": 0.3148,
    "error": null,
    "file": "typography/flying-words/FlyingWords.tsx",
    "form": "text",
    "frames": 180,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -3218,14 +3919,50 @@
     1058
    ],
    "card": "glow-flyline-moves",
+   "carries": false,
    "category": "effects",
    "cover": 0.9157,
    "error": null,
    "file": "effects/glow-flyline-moves/FlylineArc.tsx",
    "form": "diagram",
    "frames": 140,
+   "leftover": [
+    "Overview",
+    "30d",
+    "90d",
+    "Search",
+    "Active",
+    "users",
+    "Revenue",
+    "Monthly",
+    "Analytics",
+    "Projects",
+    "/changelog",
+    "7,634"
+   ],
    "looks": false,
-   "slots": [],
+   "slots": [
+    {
+     "em": 26.4,
+     "text": "Feels like a launch film from a real studio."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 18.0,
+     "text": "brightness(0.65) saturate(0.9)"
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    }
+   ],
    "summary": "暗场光斑与飞线三式——glow-orb-ambient 光斑底噪、flyline-arc 飞线连接、orb-flyline-relay 同帧共振组合",
    "verdict": null
   },
@@ -3238,12 +3975,17 @@
     886
    ],
    "card": "type-rhythm-sync",
+   "carries": false,
    "category": "typography",
    "cover": 0.23,
    "error": null,
    "file": "typography/type-rhythm-sync/FontWeightPump.tsx",
    "form": "text",
    "frames": 165,
+   "leftover": [
+    "BAR",
+    "Gees"
+   ],
    "looks": true,
    "slots": [
     {
@@ -3261,6 +4003,10 @@
     {
      "em": 2.4,
      "text": "Drop"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
     }
    ],
    "summary": "文字随声同步两式——font-weight-pump 字重脉冲（笔画随鼓点变粗弹回）与 karaoke-fill-sync 卡拉OK填色（词随旁白逐个点亮）",
@@ -3275,12 +4021,14 @@
     1020
    ],
    "card": "fracture",
+   "carries": true,
    "category": "opening",
    "cover": 0.7362,
    "error": null,
    "file": "opening/fracture/Fracture.tsx",
    "form": "text",
    "frames": 156,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -3300,12 +4048,14 @@
     774
    ],
    "card": "glass-pill-dictation-typing",
+   "carries": true,
    "category": "interaction",
    "cover": 0.2875,
    "error": null,
    "file": "interaction/glass-pill-dictation-typing/GlassPillDictationTyping.tsx",
    "form": "diagram",
    "frames": 100,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -3329,12 +4079,24 @@
     478
    ],
    "card": "glitch-cycle",
+   "carries": false,
    "category": "typography",
    "cover": 0.0816,
    "error": null,
    "file": "typography/glitch-cycle/GlitchCycle.tsx",
    "form": "text",
    "frames": 168,
+   "leftover": [
+    "1/4",
+    "24%",
+    "2/4",
+    "47%",
+    "3/4",
+    "71%",
+    "4/4",
+    "95%",
+    "100%"
+   ],
    "looks": true,
    "slots": [
     {
@@ -3368,6 +4130,14 @@
     {
      "em": 7.2,
      "text": "Crafted with"
+    },
+    {
+     "em": 12.6,
+     "text": "shotcraft/launch-film"
+    },
+    {
+     "em": 3.0,
+     "text": "#4127"
     }
    ],
    "summary": "同一行等宽槽位循环轮播 4 条状态短语，每条头尾按概率关键帧 [1,0,0,0.1,0,0,1] 全乱码、中段偶发单字抖动，切换瞬间叠 RGB 分离与整行位移；末条概率收 0 保证收尾干净",
@@ -3382,12 +4152,18 @@
     946
    ],
    "card": "tear-streak-transitions",
+   "carries": false,
    "category": "transition",
    "cover": 0.2606,
    "error": null,
    "file": "transition/tear-streak-transitions/GlitchDisplace.tsx",
    "form": "diagram",
    "frames": 135,
+   "leftover": [
+    "99",
+    ".99%",
+    "99.99%"
+   ],
    "looks": true,
    "slots": [
     {
@@ -3465,6 +4241,34 @@
     {
      "em": 9.4,
      "text": "CANARY → GLOBAL"
+    },
+    {
+     "em": 5.4,
+     "text": "eu-west-2"
+    },
+    {
+     "em": 4.2,
+     "text": "healthy"
+    },
+    {
+     "em": 6.0,
+     "text": "ap-south-1"
+    },
+    {
+     "em": 5.4,
+     "text": "us-east-1"
+    },
+    {
+     "em": 1.2,
+     "text": "is"
+    },
+    {
+     "em": 3.6,
+     "text": "0.03em"
+    },
+    {
+     "em": 3.6,
+     "text": "2m 14s"
     }
    ],
    "summary": "撕裂转场——glitch-displace 噪声撕裂（16 横条错位抖动中硬切），数字故障语义的条带级撕裂",
@@ -3479,12 +4283,18 @@
     1062
    ],
    "card": "glow-flyline-moves",
+   "carries": false,
    "category": "effects",
    "cover": 0.8222,
    "error": null,
    "file": "effects/glow-flyline-moves/GlowOrbAmbient.tsx",
    "form": "diagram",
    "frames": 170,
+   "leftover": [
+    "00:40",
+    "00:39",
+    "00:"
+   ],
    "looks": true,
    "slots": [
     {
@@ -3516,12 +4326,14 @@
     1072
    ],
    "card": "spotlight-sweep-moves",
+   "carries": true,
    "category": "effects",
    "cover": 0.7868,
    "error": null,
    "file": "effects/spotlight-sweep-moves/GlowWakeSleepPanel.tsx",
    "form": "diagram",
    "frames": 140,
+   "leftover": [],
    "looks": false,
    "slots": [],
    "summary": "暗场聚光显影三式——A 醒睡扫过（光到即亮光走即暗）、B 贴边泛光横摇（紫光贴 UI 边缘渗入+聚光匀速右移）、C 角落匀速显影（径向聚光从角落匀速扩张点亮全屏）；黑场里\"光即叙事\"的 UI 展示",
@@ -3536,12 +4348,27 @@
     670
    ],
    "card": "gradient-transition",
+   "carries": false,
    "category": "transition",
    "cover": 0.0366,
    "error": null,
    "file": "transition/gradient-transition/GradientTransition.tsx",
    "form": "diagram",
    "frames": 200,
+   "leftover": [
+    "01",
+    "radial-gradient(circle",
+    "60%",
+    "40%",
+    "59%)",
+    "02",
+    "79%",
+    "67%",
+    "39%)",
+    "conic-gradient(from",
+    "191deg",
+    "conic-gradient(fron"
+   ],
    "looks": true,
    "slots": [
     {
@@ -3555,6 +4382,18 @@
     {
      "em": 6.6,
      "text": "Introducing"
+    },
+    {
+     "em": 38.4,
+     "text": "linear-gradient(90deg, rgba(8,5,18,0.55) 0%, rgba(8,5,18,0) 46%)"
+    },
+    {
+     "em": 2.4,
+     "text": "/ 03"
+    },
+    {
+     "em": 66.0,
+     "text": "radial-gradient(ellipse 62% 78% at 64% 54%, rgba(8,5,18,0) 18%, rgba(8,5,18,0.55) 64%, rgba(8,5,18,0.92) 100%)"
     }
    ],
    "summary": "背景在 linear、radial、conic 三类 CSS 渐变间平滑过渡——角度、色标、中心、半径逐参数插值，段间交叉淡化换类型",
@@ -3569,12 +4408,14 @@
     262
    ],
    "card": "gradient-word-sweep",
+   "carries": true,
    "category": "typography",
    "cover": 0.0965,
    "error": null,
    "file": "typography/gradient-word-sweep/GradientWordSweep.tsx",
    "form": "text",
    "frames": 105,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -3602,12 +4443,14 @@
     504
    ],
    "card": "grain-dissolve",
+   "carries": true,
    "category": "outro",
    "cover": 0.0469,
    "error": null,
    "file": "outro/grain-dissolve/GrainDissolve.tsx",
    "form": "text",
    "frames": 60,
+   "leftover": [],
    "looks": false,
    "slots": [],
    "summary": "整行字爆裂成沸腾颗粒噪点并浮现斜纹选区框，噪点云急速凝聚成更大号发光短字标，位移衰减归零定格",
@@ -3622,12 +4465,14 @@
     1076
    ],
    "card": "graze-face-tour",
+   "carries": true,
    "category": "camera",
    "cover": 0.7131,
    "error": null,
    "file": "camera/graze-face-tour/GrazeFaceTour.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -3867,12 +4712,14 @@
     786
    ],
    "card": "hashtag-to-pill-materialize",
+   "carries": true,
    "category": "interaction",
    "cover": 0.0955,
    "error": null,
    "file": "interaction/hashtag-to-pill-materialize/HashtagToPillMaterialize.tsx",
    "form": "diagram",
    "frames": 120,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -3902,6 +4749,14 @@
     {
      "em": 22.2,
      "text": "the whip pan. Welcome. Bring popcorn."
+    },
+    {
+     "em": 3.6,
+     "text": "#shots"
+    },
+    {
+     "em": 25.8,
+     "text": "video-shotcraft: the crash zoom, the orbit,"
     }
    ],
    "summary": "话题词打字实体化——居中打出 \"#word\"（红实心光标恒亮），1 帧硬切变成宽大胶囊标签，hold 后缩小左移落到页面标签位，再 1 帧硬切揭示成品页；\"两次硬切一次滑动\"的节奏骨架",
@@ -3916,12 +4771,21 @@
     850
    ],
    "card": "impact-feedback",
+   "carries": false,
    "category": "effects",
    "cover": 0.3105,
    "error": null,
    "file": "effects/impact-feedback/HitCounter.tsx",
    "form": "diagram",
    "frames": 176,
+   "leftover": [
+    "x7",
+    "x2",
+    "x3",
+    "02",
+    "03",
+    "-2h"
+   ],
    "looks": true,
    "slots": [
     {
@@ -4001,12 +4865,14 @@
     1076
    ],
    "card": "icon-field-colorize",
+   "carries": true,
    "category": "opening",
    "cover": 1.0,
    "error": null,
    "file": "opening/icon-field-colorize/IconFieldColorize.tsx",
    "form": "text",
    "frames": 170,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -4024,6 +4890,14 @@
     {
      "em": 6.0,
      "text": "one place."
+    },
+    {
+     "em": 73.2,
+     "text": "M12 21s-7.5-4.7-9.6-9C.9 8.7 2.7 5 6.2 5c2 0 3.3 1 4 2.1h3.6C14.5 6 15.8 5 17.8 5c3.5 0 5.3 3.7 3.8 7-2.1 4.3-9.6 9-9.6 9z"
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
     }
    ],
    "summary": "灰阶小图标点阵错峰浮现铺满全屏，停一拍后多道品牌色横带波纹极快向下扫翻全场——\"功能全景先摆满，品牌一瞬间点亮\"的开场/收束卡",
@@ -4038,12 +4912,14 @@
     312
    ],
    "card": "ui-to-brand-morph",
+   "carries": true,
    "category": "outro",
    "cover": 0.0155,
    "error": null,
    "file": "outro/ui-to-brand-morph/IconFlipBloomLogo.tsx",
    "form": "text",
    "frames": 130,
+   "leftover": [],
    "looks": false,
    "slots": [],
    "summary": "UI 变品牌两式——icon-flip-bloom 图标 Y 轴翻扁成竖线、从竖线撑开成品牌标志（琥珀斜切随后划入）+ wordmark 逐字落定，与 input-morph-assemble 输入框收缩成取景框竖笔、三块图元落进构造槽位拼成完整标志",
@@ -4058,12 +4934,14 @@
     662
    ],
    "card": "slam-entrance-moves",
+   "carries": true,
    "category": "effects",
    "cover": 0.4468,
    "error": null,
    "file": "effects/slam-entrance-moves/ImpactBurstKit.tsx",
    "form": "diagram",
    "frames": 140,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -4153,6 +5031,26 @@
     {
      "em": 8.4,
      "text": "DIRECTOR'S CUT"
+    },
+    {
+     "em": 1.8,
+     "text": "15s"
+    },
+    {
+     "em": 1.8,
+     "text": "60s"
+    },
+    {
+     "em": 6.6,
+     "text": "9:16 social"
+    },
+    {
+     "em": 1.8,
+     "text": "90s"
+    },
+    {
+     "em": 7.2,
+     "text": "16:9 · 1080p"
     }
    ],
    "summary": "高能砸入三式——kanada-perspective-snap 金田透视急停、score-slam 比分砸落、impact-burst-kit 落点冲击套件（波及邻卡）",
@@ -4167,12 +5065,27 @@
     1076
    ],
    "card": "print-texture-transitions",
+   "carries": false,
    "category": "transition",
    "cover": 1.0,
    "error": null,
    "file": "transition/print-texture-transitions/InkBleedReveal.tsx",
    "form": "diagram",
    "frames": 130,
+   "leftover": [
+    "/careers",
+    "/pricing",
+    "30d",
+    "Overview",
+    "88",
+    "Active",
+    "users",
+    "74",
+    "Revenue",
+    "Analytics",
+    "Projects",
+    "/changelog"
+   ],
    "looks": false,
    "slots": [
     {
@@ -4190,6 +5103,22 @@
     {
      "em": 18.6,
      "text": "Every shot, tuned in one place."
+    },
+    {
+     "em": 26.4,
+     "text": "Feels like a launch film from a real studio."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
     }
    ],
    "summary": "印刷质感转场——ink-bleed-reveal 墨渗揭示（须状渗边洇开吃掉旧景）",
@@ -4204,12 +5133,14 @@
     834
    ],
    "card": "ui-to-brand-morph",
+   "carries": true,
    "category": "outro",
    "cover": 0.0569,
    "error": null,
    "file": "outro/ui-to-brand-morph/InputMorphsIntoLogo.tsx",
    "form": "text",
    "frames": 168,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -4245,12 +5176,14 @@
     916
    ],
    "card": "integration-hub-map",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.4827,
    "error": null,
    "file": "ui-entrance/integration-hub-map/IntegrationHubMap.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -4432,6 +5365,10 @@
     {
      "em": 17.4,
      "text": "Render the final cut at 1080p"
+    },
+    {
+     "em": 16.8,
+     "text": "Storyboard · 12 shots · 0:45"
     }
    ],
    "summary": "旧页面一次性快翻 180°（侧棱瞬间亮闪）落成新中枢页，五个集成 app 图标同帧弹现、随即五条彩虹光管同帧齐连，光管内输送脉冲持续流动——\"翻开新一页，生态一齐接入\"",
@@ -4446,12 +5383,16 @@
     1040
    ],
    "card": "transition-hidden-cut",
+   "carries": false,
    "category": "transition",
    "cover": 0.7201,
    "error": null,
    "file": "transition/transition-hidden-cut/InvisibleCut.tsx",
    "form": "diagram",
    "frames": 110,
+   "leftover": [
+    "AAA"
+   ],
    "looks": true,
    "slots": [
     {
@@ -4533,6 +5474,14 @@
     {
      "em": 4.2,
      "text": "SC-4821"
+    },
+    {
+     "em": 7.2,
+     "text": "0:45 · 30fps"
+    },
+    {
+     "em": 3.0,
+     "text": "1080p"
     }
    ],
    "summary": "藏切点转场三式——前景遮挡隐形切、对撞开屏、暖色漏光，硬切藏进遮挡/撞击/光峰的 1-3 帧里，观众看不见剪刀",
@@ -4547,14 +5496,50 @@
     1076
    ],
    "card": "rhythm-interrupt-moves",
+   "carries": false,
    "category": "rhythm",
    "cover": 0.9956,
    "error": null,
    "file": "rhythm/rhythm-interrupt-moves/JumpCutPunchIn.tsx",
    "form": "text",
    "frames": 135,
+   "leftover": [
+    "Overview",
+    "30d",
+    "Active",
+    "users",
+    "Revenue",
+    "Monthly",
+    "Analytics",
+    "Top",
+    "pages",
+    "Proj",
+    "24,812",
+    "$48.2k"
+   ],
    "looks": false,
-   "slots": [],
+   "slots": [
+    {
+     "em": 26.4,
+     "text": "Feels like a launch film from a real studio."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    }
+   ],
    "summary": "打断节奏——jump-cut-punch-in 三级跳切推近：同构图三次无补间硬跳放大，逐级逼近目标",
    "verdict": null
   },
@@ -4567,12 +5552,14 @@
     880
    ],
    "card": "slam-entrance-moves",
+   "carries": true,
    "category": "effects",
    "cover": 0.4617,
    "error": null,
    "file": "effects/slam-entrance-moves/KanadaPerspectiveSnap.tsx",
    "form": "diagram",
    "frames": 120,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -4610,6 +5597,10 @@
     {
      "em": 7.2,
      "text": "·  shot with"
+    },
+    {
+     "em": 12.6,
+     "text": "60 SEC · 16:9 · 1080P"
     }
    ],
    "summary": "高能砸入三式——kanada-perspective-snap 金田透视急停、score-slam 比分砸落、impact-burst-kit 落点冲击套件（波及邻卡）",
@@ -4624,12 +5615,14 @@
     538
    ],
    "card": "type-rhythm-sync",
+   "carries": true,
    "category": "typography",
    "cover": 0.0676,
    "error": null,
    "file": "typography/type-rhythm-sync/KaraokeFillSync.tsx",
    "form": "text",
    "frames": 150,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -4661,12 +5654,14 @@
     232
    ],
    "card": "lead-word-zoom-assemble",
+   "carries": true,
    "category": "typography",
    "cover": 0.0844,
    "error": null,
    "file": "typography/lead-word-zoom-assemble/LeadWordZoomAssemble.tsx",
    "form": "text",
    "frames": 84,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -4690,17 +5685,23 @@
     110
    ],
    "card": "type-entrance-moves",
+   "carries": true,
    "category": "typography",
    "cover": 0.004,
    "error": null,
    "file": "typography/type-entrance-moves/LetterDropPhysics.tsx",
    "form": "text",
    "frames": 150,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
      "em": 17.4,
      "text": "Every shot lands on the beat."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
     }
    ],
    "summary": "标题文字入场一式——letter-drop-physics 字符坠落（重力砸落、弹跳、歪斜站定，最后一拍集体立正归位）",
@@ -4715,12 +5716,14 @@
     30
    ],
    "card": "type-assembly-moves",
+   "carries": true,
    "category": "typography",
    "cover": 0.0052,
    "error": null,
    "file": "typography/type-assembly-moves/LetterformDriftAssembly.tsx",
    "form": "text",
    "frames": 150,
+   "leftover": [],
    "looks": false,
    "slots": [],
    "summary": "文字集结三式——split-text-stagger 逐字裂升、letterform-drift-assembly 漂移合拢、text-on-path 沿线流入",
@@ -4735,12 +5738,20 @@
     1076
    ],
    "card": "transition-travel",
+   "carries": false,
    "category": "transition",
    "cover": 0.8273,
    "error": null,
    "file": "transition/transition-travel/LetterformZoom.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "110f",
+    "150f",
+    "130f",
+    "105f",
+    "10st"
+   ],
    "looks": true,
    "slots": [
     {
@@ -4826,6 +5837,14 @@
     {
      "em": 14.4,
      "text": "Your product, in motion."
+    },
+    {
+     "em": 9.0,
+     "text": "launch-film.mp4"
+    },
+    {
+     "em": 1.8,
+     "text": "/12"
     }
    ],
    "summary": "穿越式转场——字腔穿越：巨型章节标题的字形就是一扇窗，镜头钻进字形笔画完成换景",
@@ -4840,12 +5859,14 @@
     612
    ],
    "card": "letterspace-materialize",
+   "carries": true,
    "category": "opening",
    "cover": 0.5411,
    "error": null,
    "file": "opening/letterspace-materialize/LetterspaceMaterialize.tsx",
    "form": "text",
    "frames": 105,
+   "leftover": [],
    "looks": false,
    "slots": [],
    "summary": "大字距字标全字符并行连续描画结晶——所有字母同帧起笔、笔画像手写一样连续生长、同帧齐收成词；氛围底景上的品牌字标显影",
@@ -4860,12 +5881,14 @@
     1076
    ],
    "card": "transition-hidden-cut",
+   "carries": true,
    "category": "transition",
    "cover": 1.0,
    "error": null,
    "file": "transition/transition-hidden-cut/LightLeakBurn.tsx",
    "form": "diagram",
    "frames": 130,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -4899,6 +5922,18 @@
     {
      "em": 6.4,
      "text": "01 — Night"
+    },
+    {
+     "em": 13.6,
+     "text": "ISO 100 · 1/500 · ƒ2.8"
+    },
+    {
+     "em": 13.0,
+     "text": "ISO 3200 · 1/8 · ƒ1.6"
+    },
+    {
+     "em": 4.2,
+     "text": "4K · 24"
     }
    ],
    "summary": "藏切点转场三式——前景遮挡隐形切、对撞开屏、暖色漏光，硬切藏进遮挡/撞击/光峰的 1-3 帧里，观众看不见剪刀",
@@ -4913,12 +5948,16 @@
     578
    ],
    "card": "line-carry-transition",
+   "carries": false,
    "category": "transition",
    "cover": 0.366,
    "error": null,
    "file": "transition/line-carry-transition/LineCarryTransition.tsx",
    "form": "diagram",
    "frames": 190,
+   "leftover": [
+    "100"
+   ],
    "looks": true,
    "slots": [
     {
@@ -4968,6 +6007,22 @@
     {
      "em": 4.8,
      "text": "· 30 fps"
+    },
+    {
+     "em": 1.2,
+     "text": "01"
+    },
+    {
+     "em": 9.0,
+     "text": "launch-film.mp4"
+    },
+    {
+     "em": 1.2,
+     "text": "02"
+    },
+    {
+     "em": 4.2,
+     "text": "/ 48 MB"
     }
    ],
    "summary": "线条接力横移转场——场景 A 的进度条延伸出画，镜头跟线横移，线在移动中拐角围出场景 B 的卡框，全程无剪切",
@@ -4982,12 +6037,14 @@
     700
    ],
    "card": "list-reveal",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.2749,
    "error": null,
    "file": "ui-entrance/list-reveal/ListReveal.tsx",
    "form": "diagram",
    "frames": 120,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -5039,12 +6096,14 @@
     464
    ],
    "card": "logo-shrink-wordmark-lockup",
+   "carries": true,
    "category": "outro",
    "cover": 0.0091,
    "error": null,
    "file": "outro/logo-shrink-wordmark-lockup/LogoShrinkWordmarkLockup.tsx",
    "form": "text",
    "frames": 132,
+   "leftover": [],
    "looks": false,
    "slots": [],
    "summary": "霓虹切口大环快速收束成中央实心小白 O、过冲刹车时换成 video-shotcraft 标志，图标左移让位，字标字母逐个滑入完成 lockup，强调色标语收尾",
@@ -5059,12 +6118,14 @@
     1046
    ],
    "card": "magician-card-flourish",
+   "carries": true,
    "category": "opening",
    "cover": 0.4086,
    "error": null,
    "file": "opening/magician-card-flourish/MagicianCardFlourish.tsx",
    "form": "text",
    "frames": 156,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -5116,17 +6177,23 @@
     112
    ],
    "card": "marker-underline-title",
+   "carries": true,
    "category": "typography",
    "cover": 0.0176,
    "error": null,
    "file": "typography/marker-underline-title/MarkerUnderlineTitle.tsx",
    "form": "text",
    "frames": 75,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
      "em": 4.8,
      "text": "Meet the"
+    },
+    {
+     "em": 1.8,
+     "text": "new"
     }
    ],
    "summary": "大标题落定后，关键词下方马克笔下划线从左到右快速描画——变宽笔形、毛糙边缘、微上斜跟随斜体字势，贴着字底",
@@ -5141,12 +6208,14 @@
     1038
    ],
    "card": "mosaic-reframe",
+   "carries": true,
    "category": "transition",
    "cover": 0.7452,
    "error": null,
    "file": "transition/mosaic-reframe/MosaicReframe.tsx",
    "form": "diagram",
    "frames": 214,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -5202,12 +6271,25 @@
     684
    ],
    "card": "gauge-readout-moves",
+   "carries": false,
    "category": "data",
    "cover": 0.5114,
    "error": null,
    "file": "data/gauge-readout-moves/NeedleSweepSelftest.tsx",
    "form": "chart",
    "frames": 140,
+   "leftover": [
+    "50",
+    "40",
+    "60",
+    "30",
+    "70",
+    "80",
+    "90",
+    "20",
+    "70».",
+    "44."
+   ],
    "looks": false,
    "slots": [
     {
@@ -5237,6 +6319,18 @@
     {
      "em": 11.2,
      "text": "Running self-test…"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    },
+    {
+     "em": 12.6,
+     "text": "rgba(52,211,153,0.10)"
+    },
+    {
+     "em": 29.4,
+     "text": "linear-gradient(180deg, #1a1c22 0%, #141519 100%)"
     }
    ],
    "summary": "仪表读数两式——needle-sweep-selftest 满弧扫针（点火自检指针甩满全弧再回落真值）与 tape-scroll-fixed-pointer 滚带定针（针不动刻度带滚过+冲刺刹车）",
@@ -5251,12 +6345,17 @@
     1068
    ],
    "card": "neon-frame-forerun",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.7316,
    "error": null,
    "file": "ui-entrance/neon-frame-forerun/NeonFrameForerun.tsx",
    "form": "diagram",
    "frames": 140,
+   "leftover": [
+    "24",
+    "6"
+   ],
    "looks": true,
    "slots": [
     {
@@ -5350,6 +6449,14 @@
     {
      "em": 3.0,
      "text": "TODAY"
+    },
+    {
+     "em": 12.0,
+     "text": "Add shot: crash zoom"
+    },
+    {
+     "em": 34.2,
+     "text": "M3.5 9 L10 3.5 L16.5 9 V16.5 H3.5 Z M8 16.5 V12 H12 V16.5"
     }
    ],
    "summary": "强透视直角霓虹框自左缘两头奔画先行成型，页面在框内由暗转亮，同时框内组件/文字从 3D 上空带同形软影错峰贴落、随页面点亮同步完成贴合，背景霓虹群（demo 为同形框纵深回声隧道）终段熄灭让位",
@@ -5364,12 +6471,14 @@
     1032
    ],
    "card": "neon-frame-orbit-drop",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.6921,
    "error": null,
    "file": "ui-entrance/neon-frame-orbit-drop/NeonFrameForerunOrbit.tsx",
    "form": "diagram",
    "frames": 140,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -5575,6 +6684,14 @@
     {
      "em": 1.2,
      "text": "AL"
+    },
+    {
+     "em": 18.6,
+     "text": "Add shot: crash zoom on pricing"
+    },
+    {
+     "em": 46.2,
+     "text": "M4.5 2.5 H10.5 L14 6 V15.5 H4.5 Z M10.5 2.5 V6 H14 M7 9.5 H11.5 M7 12.5 H11.5"
     }
    ],
    "summary": "霓虹框先行描框后，镜头绕页面左→右弧线旋转，页面全部组件/文字**同帧**从空中往下贴合（同形软影同步收敛）——整体登场式的框内安放",
@@ -5589,12 +6706,14 @@
     1076
    ],
    "card": "neon-triple-marquee",
+   "carries": true,
    "category": "outro",
    "cover": 0.9311,
    "error": null,
    "file": "outro/neon-triple-marquee/NeonTripleMarquee.tsx",
    "form": "text",
    "frames": 150,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -5622,12 +6741,19 @@
     898
    ],
    "card": "glow-flyline-moves",
+   "carries": false,
    "category": "effects",
    "cover": 0.5279,
    "error": null,
    "file": "effects/glow-flyline-moves/OrbFlylineRelay.tsx",
    "form": "diagram",
    "frames": 165,
+   "leftover": [
+    "Say",
+    "once.",
+    "does",
+    "rest."
+   ],
    "looks": true,
    "slots": [
     {
@@ -5649,6 +6775,14 @@
     {
      "em": 2.4,
      "text": "Ship"
+    },
+    {
+     "em": 9.0,
+     "text": "launch-film.mp4"
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
     }
    ],
    "summary": "暗场光斑与飞线三式——glow-orb-ambient 光斑底噪、flyline-arc 飞线连接、orb-flyline-relay 同帧共振组合",
@@ -5663,12 +6797,17 @@
     1014
    ],
    "card": "orbit-ring-title-open",
+   "carries": false,
    "category": "opening",
    "cover": 0.7577,
    "error": null,
    "file": "opening/orbit-ring-title-open/OrbitRingTitleOpen.tsx",
    "form": "text",
    "frames": 150,
+   "leftover": [
+    "212",
+    "22"
+   ],
    "looks": true,
    "slots": [
     {
@@ -5770,6 +6909,18 @@
     {
      "em": 4.8,
      "text": "top left"
+    },
+    {
+     "em": 6.6,
+     "text": "~/shotcraft"
+    },
+    {
+     "em": 7.8,
+     "text": "RENDERS / DAY"
+    },
+    {
+     "em": 34.2,
+     "text": "M40 380 C 200 380 190 210 340 200 C 500 190 500 90 700 70"
     }
    ],
    "summary": "石墨暗场上八张 16:9 暗色内容卡按 45° 均布在 720×380 椭圆上匀速公转（卡身永不倾斜，纵深只由 sin θ 给出 ±12% 缩放、z 序与远处压暗失焦），环撑开期间卡内容冻结首帧、f24 之后八张一起开播；居中两级标题逐字解糊下沉落定，关键词到位那一刻荧光马克块自左横扫铺满、扫过处字反白为墨，mono 副行随后浮出；可选末段整行失焦淡出、环继续转着交棒下一镜",
@@ -5784,12 +6935,24 @@
     890
    ],
    "card": "chart-live-moves",
+   "carries": false,
    "category": "data",
    "cover": 0.2576,
    "error": null,
    "file": "data/chart-live-moves/OscilloscopeStreamV2.tsx",
    "form": "chart",
    "frames": 165,
+   "leftover": [
+    "42",
+    "0.02:",
+    "84",
+    "1,432..",
+    "1,321..",
+    "43",
+    "44",
+    "0.02.",
+    "1,329.."
+   ],
    "looks": true,
    "slots": [
     {
@@ -5819,6 +6982,46 @@
     {
      "em": 3.0,
      "text": "Burst"
+    },
+    {
+     "em": 1.2,
+     "text": "ms"
+    },
+    {
+     "em": 1.2,
+     "text": "3k"
+    },
+    {
+     "em": 1.2,
+     "text": "2k"
+    },
+    {
+     "em": 2.8,
+     "text": "−50s"
+    },
+    {
+     "em": 2.8,
+     "text": "−40s"
+    },
+    {
+     "em": 2.8,
+     "text": "−30s"
+    },
+    {
+     "em": 2.8,
+     "text": "−20s"
+    },
+    {
+     "em": 2.8,
+     "text": "−10s"
+    },
+    {
+     "em": 1.8,
+     "text": "now"
+    },
+    {
+     "em": 1.2,
+     "text": "1k"
     }
    ],
    "summary": "活体图表三式——oscilloscope-stream 示波流线（曲线右端实时写入+突发尖峰）、unit-dot-swarm-regroup 点阵重组（点群三幕迁徙聚成数字）、axis-rescale-shock 轴爆表重标（新值冲出画框逼 y 轴重标）",
@@ -5833,12 +7036,14 @@
     870
    ],
    "card": "outline-word-fill",
+   "carries": true,
    "category": "typography",
    "cover": 0.0529,
    "error": null,
    "file": "typography/outline-word-fill/OutlineWordFill.tsx",
    "form": "text",
    "frames": 90,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -5864,6 +7069,10 @@
     {
      "em": 18.6,
      "text": "One prompt to a finished promo."
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
     }
    ],
    "summary": "空心词（细暖灰描边、500 字重）从 3.2 倍急缓收缩落位，虚线大圆随后从 2.8 倍收到字周围并缓慢自转，左右水平虚线从画框边缘内伸；描边先微微增亮，实心白热字在一帧内硬切点亮，一闪辉光即定格",
@@ -5878,12 +7087,14 @@
     928
    ],
    "card": "overhead-camera-moves",
+   "carries": true,
    "category": "camera",
    "cover": 0.5796,
    "error": null,
    "file": "camera/overhead-camera-moves/OverheadTabletopDrop.tsx",
    "form": "diagram",
    "frames": 140,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -6061,6 +7272,10 @@
     {
      "em": 5.4,
      "text": "CHANGELOG"
+    },
+    {
+     "em": 16.2,
+     "text": "For Claude Code &amp; Codex"
     }
    ],
    "summary": "俯拍揭示两式——tilt-reveal 俯仰抬正揭示、overhead-tabletop-drop 桌面卡阵横滑骤降扎入",
@@ -6075,12 +7290,14 @@
     1066
    ],
    "card": "theme-switch-moves",
+   "carries": true,
    "category": "interaction",
    "cover": 0.7032,
    "error": null,
    "file": "interaction/theme-switch-moves/PaletteThemeRipple.tsx",
    "form": "diagram",
    "frames": 156,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -6202,6 +7419,18 @@
     {
      "em": 10.8,
      "text": "Shotcraft Commands"
+    },
+    {
+     "em": 2.4,
+     "text": "dark"
+    },
+    {
+     "em": 1.8,
+     "text": "esc"
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
     }
    ],
    "summary": "主题切换两式——theme-sweep 斜向扫场（边界扫过处就地换肤）与 palette-ripple 组合款（⌘K 面板收缩成点、涟漪从点荡开换肤）",
@@ -6216,12 +7445,14 @@
     928
    ],
    "card": "canvas-materialize-moves",
+   "carries": true,
    "category": "interaction",
    "cover": 0.5546,
    "error": null,
    "file": "interaction/canvas-materialize-moves/PanelToCanvasMaterialize.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -6347,6 +7578,14 @@
     {
      "em": 4.8,
      "text": "On board"
+    },
+    {
+     "em": 21.0,
+     "text": "inset 0 1px 0 rgba(255,255,255,0.3)"
+    },
+    {
+     "em": 3.6,
+     "text": "pinned"
     }
    ],
    "summary": "内容\"物化上画布\"两式——panel-to-canvas 行倒卡（面板表格行沿弧线飞出、跨容器变形成画布卡片）与 diagram-cascade 级联生成树（prompt 打字后节点逐层弹出、连线先于节点生长）",
@@ -6361,12 +7600,16 @@
     1042
    ],
    "card": "beat-cut-moves",
+   "carries": false,
    "category": "rhythm",
    "cover": 0.4053,
    "error": null,
    "file": "rhythm/beat-cut-moves/PaparazziFlash.tsx",
    "form": "text",
    "frames": 140,
+   "leftover": [
+    "026"
+   ],
    "looks": true,
    "slots": [
     {
@@ -6408,6 +7651,26 @@
     {
      "em": 4.6,
      "text": "✓ SAVED"
+    },
+    {
+     "em": 3.0,
+     "text": "first"
+    },
+    {
+     "em": 3.0,
+     "text": "1/250"
+    },
+    {
+     "em": 2.4,
+     "text": "F2.8"
+    },
+    {
+     "em": 49.2,
+     "text": "radial-gradient(ellipse 60% 70% at 50% 28%, #2a2b2f 0%, #18191c 55%, #0d0d0f 100%)"
+    },
+    {
+     "em": 16.8,
+     "text": "translate(112 0) scale(-1 1)"
     }
    ],
    "summary": "硬切当节拍乐器——连闪定格：三次白闪各硬切同一画面的一个裁切（全景→卡片→特写），快门余韵沉降后停在特写收束",
@@ -6422,12 +7685,14 @@
     208
    ],
    "card": "picker-carousel-feature-cycle",
+   "carries": true,
    "category": "interaction",
    "cover": 0.1085,
    "error": null,
    "file": "interaction/picker-carousel-feature-cycle/PickerCarouselFeatureCycle.tsx",
    "form": "diagram",
    "frames": 108,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -6471,12 +7736,14 @@
     440
    ],
    "card": "pill-chip-slot-cycle-handled",
+   "carries": true,
    "category": "typography",
    "cover": 0.1186,
    "error": null,
    "file": "typography/pill-chip-slot-cycle-handled/PillChipSlotCycleHandled.tsx",
    "form": "text",
    "frames": 150,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -6520,12 +7787,16 @@
     944
    ],
    "card": "product-card-progressive-assemble",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.7317,
    "error": null,
    "file": "ui-entrance/product-card-progressive-assemble/ProductCardProgressiveAssemble.tsx",
    "form": "diagram",
    "frames": 172,
+   "leftover": [
+    "2.80,"
+   ],
    "looks": true,
    "slots": [
     {
@@ -6611,6 +7882,14 @@
     {
      "em": 4.8,
      "text": "AUTOFILL"
+    },
+    {
+     "em": 4.2,
+     "text": "01 / 06"
+    },
+    {
+     "em": 2.4,
+     "text": "$449"
     }
    ],
    "summary": "详情卡像被逐字段抓取般自建——一枚\"填充光标\"领先跳格，图→标题→分类 pill 依次 pop→原价出现后被划线降级、强调色新价 spring 跳出→正文逐行揭示且高亮块由左向右刷过→色卡点亮→按钮填满，整卡全程极慢 scale 前推",
@@ -6625,12 +7904,27 @@
     790
    ],
    "card": "tension-camera-moves",
+   "carries": false,
    "category": "camera",
    "cover": 0.2558,
    "error": null,
    "file": "camera/tension-camera-moves/PullBackIsolation.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "Deploys",
+    "‘search",
+    "1,284",
+    "system",
+    "Mobile",
+    "Recent",
+    "activity",
+    "412",
+    "74%",
+    "48.2k",
+    "this",
+    "eee"
+   ],
    "looks": false,
    "slots": [
     {
@@ -6648,6 +7942,34 @@
     {
      "em": 3.0,
      "text": "Today"
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 2.4,
+     "text": "99.9"
+    },
+    {
+     "em": 18.6,
+     "text": "Every shot, tuned in one place."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    },
+    {
+     "em": 12.6,
+     "text": "rgba(47,163,107,0.78)"
     }
    ],
    "summary": "情绪运镜两式——bullet-time 冻结环绕、pull-back 拉远孤立，相机替观众\"感受\"而非\"看\"",
@@ -6662,12 +7984,17 @@
     1060
    ],
    "card": "quad-split-parallel-scenes",
+   "carries": false,
    "category": "rhythm",
    "cover": 0.965,
    "error": null,
    "file": "rhythm/quad-split-parallel-scenes/QuadSplitParallelScenes.tsx",
    "form": "text",
    "frames": 90,
+   "leftover": [
+    "03",
+    "1.85"
+   ],
    "looks": true,
    "slots": [
     {
@@ -6757,6 +8084,26 @@
     {
      "em": 3.6,
      "text": "Review"
+    },
+    {
+     "em": 6.6,
+     "text": "bundle 1.8s"
+    },
+    {
+     "em": 8.4,
+     "text": "frames 900/900"
+    },
+    {
+     "em": 12.0,
+     "text": "localhost:3000/promo"
+    },
+    {
+     "em": 5.4,
+     "text": "promo.mp4"
+    },
+    {
+     "em": 3.0,
+     "text": "ready"
     }
    ],
    "summary": "画面硬切 2×2 四宫格，四个象限并行跑各自的微场景（打字、急推、逐词、交互链），关键节拍错开 3–6 帧制造信息轰炸",
@@ -6771,12 +8118,19 @@
     1076
    ],
    "card": "radial-ripple-phone-chips",
+   "carries": false,
    "category": "effects",
    "cover": 0.8122,
    "error": null,
    "file": "effects/radial-ripple-phone-chips/RadialRipplePhoneChips.tsx",
    "form": "diagram",
    "frames": 168,
+   "leftover": [
+    "3.2s",
+    "5.0s",
+    "40s",
+    "48s"
+   ],
    "looks": true,
    "slots": [
     {
@@ -6878,6 +8232,14 @@
     {
      "em": 18.6,
      "text": "Every shot, tuned in one place."
+    },
+    {
+     "em": 2.4,
+     "text": "9:41"
+    },
+    {
+     "em": 3.0,
+     "text": "3.6 s"
     }
    ],
    "summary": "暖沙底四层同心圆错相呼吸如水波，中央手机 mockup 屏内 feed 自动缓滚，两侧白色 chip 先后 spring pop 入场并悬浮",
@@ -6892,12 +8254,14 @@
     1076
    ],
    "card": "radial-wave",
+   "carries": true,
    "category": "ui-entrance",
    "cover": 0.365,
    "error": null,
    "file": "ui-entrance/radial-wave/RadialWave.tsx",
    "form": "diagram",
    "frames": 114,
+   "leftover": [],
    "looks": false,
    "slots": [],
    "summary": "17×9 圆点阵列按到波源的欧氏距离错峰点亮，每点 scale 过冲到 1.5 再落回常亮，第一道波扫完后第二道亮蓝脉冲从外圈反向收拢回中心",
@@ -6912,12 +8276,19 @@
     798
    ],
    "card": "research-card-stack-scroll",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.5592,
    "error": null,
    "file": "ui-entrance/research-card-stack-scroll/ResearchCardStackScroll.tsx",
    "form": "diagram",
    "frames": 144,
+   "leftover": [
+    "Author,",
+    "Writer,",
+    "Reader",
+    "preprint:2412.022"
+   ],
    "looks": false,
    "slots": [
     {
@@ -6967,6 +8338,10 @@
     {
      "em": 24.0,
      "text": "A Note on Deterministic Replay of Motion"
+    },
+    {
+     "em": 28.2,
+     "text": "Latent Caching Reduces Tool-Call Latency by 41%"
     }
    ],
    "summary": "深色论文卡每 12 帧一张沿右下轴线飞入中心叠压，落位带 1 帧压缩，只有最上一张全清晰渲染标题+作者+摘要，下方卡按堆积深度递增模糊变暗只露标题条，背景横向 grid 同步下移做速度参照",
@@ -6981,12 +8356,27 @@
     1076
    ],
    "card": "fui-hud-moves",
+   "carries": false,
    "category": "effects",
    "cover": 1.0,
    "error": null,
    "file": "effects/fui-hud-moves/ReticleLockOn.tsx",
    "form": "diagram",
    "frames": 90,
+   "leftover": [
+    "Overview",
+    "30d",
+    "Active",
+    "users",
+    "74",
+    "Revenue",
+    "Monthly",
+    "Analytics",
+    "Projects",
+    "/changelog",
+    "24,812",
+    "$48.2k"
+   ],
    "looks": false,
    "slots": [
     {
@@ -6996,6 +8386,26 @@
     {
      "em": 4.2,
      "text": "LOCK 02"
+    },
+    {
+     "em": 26.4,
+     "text": "Feels like a launch film from a real studio."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 62.4,
+     "text": "linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.55) 60%, rgba(255,255,255,0.35) 100%)"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
     }
    ],
    "summary": "FUI/HUD 准星咬合——reticle-lock-on 四个 L 形角标组成的取景框从画外飞入、超调回弹后咬合锁定目标",
@@ -7010,12 +8420,18 @@
     888
    ],
    "card": "riso-print-hits",
+   "carries": false,
    "category": "effects",
    "cover": 0.3285,
    "error": null,
    "file": "effects/riso-print-hits/RisoMisregistrationHit.tsx",
    "form": "diagram",
    "frames": 120,
+   "leftover": [
+    "eee",
+    "20000800",
+    "jee"
+   ],
    "looks": false,
    "slots": [
     {
@@ -7069,6 +8485,10 @@
     {
      "em": 13.8,
      "text": "For Claude Code & Codex"
+    },
+    {
+     "em": 49.2,
+     "text": "radial-gradient(ellipse 72% 70% at 42% 44%, #f8f4ea 0%, #f3eee2 58%, #e8e1d1 100%)"
     }
    ],
    "summary": "套印错位冲击帧——riso-misregistration-hit 单发：标题撞停瞬间裂成双色 riso 印版，抖两下\"啪\"地套准",
@@ -7083,12 +8503,22 @@
     948
    ],
    "card": "sakuga-timing-shift",
+   "carries": false,
    "category": "rhythm",
    "cover": 0.243,
    "error": null,
    "file": "rhythm/sakuga-timing-shift/SakugaTimingShift.tsx",
    "form": "text",
    "frames": 150,
+   "leftover": [
+    "A10",
+    "16",
+    "dwg",
+    "B12",
+    "27",
+    "B27",
+    "827"
+   ],
    "looks": true,
    "slots": [
     {
@@ -7134,6 +8564,18 @@
     {
      "em": 10.2,
      "text": "1 sec · 30 frames"
+    },
+    {
+     "em": 1.2,
+     "text": "3s"
+    },
+    {
+     "em": 1.2,
+     "text": "1s"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
     }
    ],
    "summary": "一拍三转一拍一——元素先以每 3 帧一步的手翻书顿挫移动，高潮瞬间切成逐帧丝滑冲刺，帧率量化的突变本身就是看点",
@@ -7148,12 +8590,23 @@
     722
    ],
    "card": "scan-bracket-sweep",
+   "carries": false,
    "category": "effects",
    "cover": 0.4204,
    "error": null,
    "file": "effects/scan-bracket-sweep/ScanBracketSweep.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "0:03",
+    "0:07",
+    "0:12",
+    "0:16",
+    "0:19",
+    "0:24",
+    "828f-27.6s",
+    "0:00"
+   ],
    "looks": false,
    "slots": [
     {
@@ -7243,6 +8696,38 @@
     {
      "em": 3.6,
      "text": "30 fps"
+    },
+    {
+     "em": 8.4,
+     "text": "7 SHOTS · 0:28"
+    },
+    {
+     "em": 11.4,
+     "text": "rgba(20,22,28,0.09)"
+    },
+    {
+     "em": 2.4,
+     "text": "96 f"
+    },
+    {
+     "em": 3.0,
+     "text": "120 f"
+    },
+    {
+     "em": 3.0,
+     "text": "150 f"
+    },
+    {
+     "em": 2.4,
+     "text": "90 f"
+    },
+    {
+     "em": 3.0,
+     "text": "144 f"
+    },
+    {
+     "em": 3.0,
+     "text": "108 f"
     }
    ],
    "summary": "文档弹到中央，四角落下 L 形取景括号，一条扫描光带拖着渐变尾迹在文档上往复扫 5 趟——文档全程静止，只有光在读它",
@@ -7257,12 +8742,20 @@
     956
    ],
    "card": "scanline-annotate-focus",
+   "carries": false,
    "category": "effects",
    "cover": 0.7098,
    "error": null,
    "file": "effects/scanline-annotate-focus/ScanlineAnnotateFocus.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "06",
+    "@e0",
+    "0610",
+    "eee",
+    "com/Vincentwei1021/video-shotcraft"
+   ],
    "looks": true,
    "slots": [
     {
@@ -7344,6 +8837,22 @@
     {
      "em": 4.2,
      "text": "SIGNALS"
+    },
+    {
+     "em": 1.2,
+     "text": "in"
+    },
+    {
+     "em": 4.8,
+     "text": "haf-vase"
+    },
+    {
+     "em": 3.6,
+     "text": "GitHub"
+    },
+    {
+     "em": 10.6,
+     "text": "Grotesk 850 · −4%"
     }
    ],
    "summary": "一条扫描线自上而下匀速掠过已存在的页面，越过哪块区块的下缘，哪块就被四角取景框从外扩处弹簧收拢对准（一次过冲），随后贴出一枚逐字打出的机器标签，顶部状态行同步计数 00/06→06/06",
@@ -7358,12 +8867,14 @@
     948
    ],
    "card": "scanline-assemble-flyin",
+   "carries": true,
    "category": "effects",
    "cover": 0.736,
    "error": null,
    "file": "effects/scanline-assemble-flyin/ScanlineAssembleFlyin.tsx",
    "form": "diagram",
    "frames": 156,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -7465,6 +8976,18 @@
     {
      "em": 3.6,
      "text": "BLOCKS"
+    },
+    {
+     "em": 13.8,
+     "text": "video-shotcraft / index"
+    },
+    {
+     "em": 2.4,
+     "text": "1640"
+    },
+    {
+     "em": 1.2,
+     "text": "h1"
     }
    ],
    "summary": "页面开场是一张只有网格与虚线槽位的蓝图画板，一条亮扫描线自上而下掠过；扫到每个槽位，该处组件就从画外飞入过冲贴合，带方向性残影模糊与落位咬合角标——扫完整页恰好装配完成",
@@ -7479,12 +9002,14 @@
     872
    ],
    "card": "slam-entrance-moves",
+   "carries": true,
    "category": "effects",
    "cover": 0.5007,
    "error": null,
    "file": "effects/slam-entrance-moves/ScoreSlam.tsx",
    "form": "diagram",
    "frames": 135,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -7514,6 +9039,10 @@
     {
      "em": 28.2,
      "text": "Camera moves I would have keyframed for a week."
+    },
+    {
+     "em": 3.6,
+     "text": "0.02em"
     }
    ],
    "summary": "高能砸入三式——kanada-perspective-snap 金田透视急停、score-slam 比分砸落、impact-burst-kit 落点冲击套件（波及邻卡）",
@@ -7528,12 +9057,14 @@
     362
    ],
    "card": "segmented-thumb-hero",
+   "carries": true,
    "category": "interaction",
    "cover": 0.1655,
    "error": null,
    "file": "interaction/segmented-thumb-hero/SegmentedThumbHero.tsx",
    "form": "diagram",
    "frames": 110,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -7557,12 +9088,14 @@
     852
    ],
    "card": "light-play-moves",
+   "carries": true,
    "category": "effects",
    "cover": 0.4542,
    "error": null,
    "file": "effects/light-play-moves/SheenSweepRetry.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -7606,12 +9139,14 @@
     626
    ],
    "card": "spotlight-sweep-moves",
+   "carries": true,
    "category": "effects",
    "cover": 0.3034,
    "error": null,
    "file": "effects/spotlight-sweep-moves/SlideSpotlightPan.tsx",
    "form": "diagram",
    "frames": 132,
+   "leftover": [],
    "looks": false,
    "slots": [],
    "summary": "暗场聚光显影三式——A 醒睡扫过（光到即亮光走即暗）、B 贴边泛光横摇（紫光贴 UI 边缘渗入+聚光匀速右移）、C 角落匀速显影（径向聚光从角落匀速扩张点亮全屏）；黑场里\"光即叙事\"的 UI 展示",
@@ -7626,12 +9161,14 @@
     146
    ],
    "card": "type-assembly-moves",
+   "carries": true,
    "category": "typography",
    "cover": 0.0286,
    "error": null,
    "file": "typography/type-assembly-moves/SplitTextStagger.tsx",
    "form": "text",
    "frames": 130,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -7651,12 +9188,14 @@
     1076
    ],
    "card": "light-play-moves",
+   "carries": true,
    "category": "effects",
    "cover": 1.0,
    "error": null,
    "file": "effects/light-play-moves/SpotlightSweepReveal.tsx",
    "form": "diagram",
    "frames": 170,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -7688,12 +9227,16 @@
     1074
    ],
    "card": "steep-tilt-glide",
+   "carries": false,
    "category": "camera",
    "cover": 0.7892,
    "error": null,
    "file": "camera/steep-tilt-glide/SteepTiltGlide.tsx",
    "form": "diagram",
    "frames": 120,
+   "leftover": [
+    "00"
+   ],
    "looks": false,
    "slots": [
     {
@@ -7799,6 +9342,10 @@
     {
      "em": 4.8,
      "text": "left top"
+    },
+    {
+     "em": 1.8,
+     "text": "72%"
     }
    ],
    "summary": "固定镜头下直立页面以 60° 强透视侧立（右近左远），页面自身沿其 3D 横面方向滑移掠过镜头（物动镜不动），滑移带速度重影、文字组件悬空贴落、由暗揭亮",
@@ -7813,12 +9360,16 @@
     944
    ],
    "card": "stroke-segment-build",
+   "carries": false,
    "category": "opening",
    "cover": 0.5764,
    "error": null,
    "file": "opening/stroke-segment-build/StrokeSegmentBuild.tsx",
    "form": "text",
    "frames": 165,
+   "leftover": [
+    "SHIP"
+   ],
    "looks": true,
    "slots": [
     {
@@ -7838,12 +9389,21 @@
     1066
    ],
    "card": "gauge-readout-moves",
+   "carries": false,
    "category": "data",
    "cover": 0.3127,
    "error": null,
    "file": "data/gauge-readout-moves/TapeScrollFixedPointer.tsx",
    "form": "chart",
    "frames": 150,
+   "leftover": [
+    "150",
+    "450",
+    "35",
+    "500",
+    "350",
+    "420."
+   ],
    "looks": true,
    "slots": [
     {
@@ -7861,6 +9421,22 @@
     {
      "em": 4.8,
      "text": "tripled."
+    },
+    {
+     "em": 9.0,
+     "text": "· frames / hour"
+    },
+    {
+     "em": 13.8,
+     "text": "M 4 28 L 40 6 L 40 50 Z"
+    },
+    {
+     "em": 4.0,
+     "text": "▲ 200%"
+    },
+    {
+     "em": 7.0,
+     "text": "140k → 420k"
     }
    ],
    "summary": "仪表读数两式——needle-sweep-selftest 满弧扫针（点火自检指针甩满全弧再回落真值）与 tape-scroll-fixed-pointer 滚带定针（针不动刻度带滚过+冲刺刹车）",
@@ -7875,12 +9451,17 @@
     902
    ],
    "card": "terminal-3d",
+   "carries": false,
    "category": "camera",
    "cover": 0.6937,
    "error": null,
    "file": "camera/terminal-3d/Terminal3D.tsx",
    "form": "diagram",
    "frames": 246,
+   "leftover": [
+    "8",
+    "10"
+   ],
    "looks": true,
    "slots": [
     {
@@ -7942,6 +9523,74 @@
     {
      "em": 3.0,
      "text": "READY"
+    },
+    {
+     "em": 6.0,
+     "text": "storyboard"
+    },
+    {
+     "em": 4.2,
+     "text": "~/promo"
+    },
+    {
+     "em": 4.8,
+     "text": "template"
+    },
+    {
+     "em": 5.4,
+     "text": "ink-press"
+    },
+    {
+     "em": 3.0,
+     "text": "shots"
+    },
+    {
+     "em": 3.6,
+     "text": "· 2.5D"
+    },
+    {
+     "em": 3.0,
+     "text": "audio"
+    },
+    {
+     "em": 13.2,
+     "text": "next: shotcraft render"
+    },
+    {
+     "em": 3.0,
+     "text": "ready"
+    },
+    {
+     "em": 7.8,
+     "text": "act-1/opening"
+    },
+    {
+     "em": 8.4,
+     "text": "act-2/features"
+    },
+    {
+     "em": 6.6,
+     "text": "act-3/outro"
+    },
+    {
+     "em": 3.6,
+     "text": "export"
+    },
+    {
+     "em": 8.4,
+     "text": "h264 · 1080p30"
+    },
+    {
+     "em": 1.8,
+     "text": "mix"
+    },
+    {
+     "em": 3.6,
+     "text": "encode"
+    },
+    {
+     "em": 4.8,
+     "text": "jianying"
     }
    ],
    "summary": "三个终端窗散布 3D 空间，相机窗间飞行、途中正弦拉远，每到一窗打字机敲命令、结果逐行滑出——命令执行的空间叙事流",
@@ -7956,12 +9605,20 @@
     972
    ],
    "card": "text-as-mask",
+   "carries": false,
    "category": "opening",
    "cover": 0.6671,
    "error": null,
    "file": "opening/text-as-mask/TextAsMask.tsx",
    "form": "text",
    "frames": 165,
+   "leftover": [
+    "2.48M",
+    "92%",
+    "74%",
+    "58%",
+    "41%"
+   ],
    "looks": true,
    "slots": [
     {
@@ -8023,6 +9680,38 @@
     {
      "em": 13.2,
      "text": "a finished launch film"
+    },
+    {
+     "em": 1.2,
+     "text": "42"
+    },
+    {
+     "em": 2.8,
+     "text": "−18%"
+    },
+    {
+     "em": 7.2,
+     "text": "Frames / sec"
+    },
+    {
+     "em": 9.6,
+     "text": "fps · 1s buckets"
+    },
+    {
+     "em": 4.2,
+     "text": "opening"
+    },
+    {
+     "em": 3.6,
+     "text": "camera"
+    },
+    {
+     "em": 6.0,
+     "text": "transition"
+    },
+    {
+     "em": 3.0,
+     "text": "outro"
     }
    ],
    "summary": "文字视频遮罩——瓷白舞台上切出超粗大标题字，字内部透出缓慢平移的暗色实时产品面板，结尾吸一口气后字形指数冲入放大 46 倍溢出、内部画面接管全屏",
@@ -8037,12 +9726,14 @@
     124
    ],
    "card": "text-column-converge",
+   "carries": true,
    "category": "typography",
    "cover": 0.019,
    "error": null,
    "file": "typography/text-column-converge/TextColumnConverge.tsx",
    "form": "text",
    "frames": 180,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -8098,12 +9789,16 @@
     838
    ],
    "card": "type-assembly-moves",
+   "carries": false,
    "category": "typography",
    "cover": 0.1676,
    "error": null,
    "file": "typography/type-assembly-moves/TextOnPath.tsx",
    "form": "text",
    "frames": 160,
+   "leftover": [
+    "4312%"
+   ],
    "looks": true,
    "slots": [
     {
@@ -8145,6 +9840,34 @@
     {
      "em": 19.2,
      "text": "Every quarter beat the last one."
+    },
+    {
+     "em": 2.4,
+     "text": "$60M"
+    },
+    {
+     "em": 2.4,
+     "text": "$40M"
+    },
+    {
+     "em": 2.4,
+     "text": "$20M"
+    },
+    {
+     "em": 3.6,
+     "text": "$48.6M"
+    },
+    {
+     "em": 5.4,
+     "text": "Q4 · $37M"
+    },
+    {
+     "em": 5.4,
+     "text": "Q3 · $24M"
+    },
+    {
+     "em": 5.4,
+     "text": "Q2 · $11M"
     }
    ],
    "summary": "文字集结三式——split-text-stagger 逐字裂升、letterform-drift-assembly 漂移合拢、text-on-path 沿线流入",
@@ -8159,12 +9882,27 @@
     1068
    ],
    "card": "theme-switch-moves",
+   "carries": false,
    "category": "interaction",
    "cover": 0.9195,
    "error": null,
    "file": "interaction/theme-switch-moves/ThemeSweepToggle.tsx",
    "form": "diagram",
    "frames": 140,
+   "leftover": [
+    "9:30",
+    "11:15",
+    "10:00",
+    "12:30",
+    "10:45",
+    "11:00",
+    "12:45",
+    "1:30",
+    "9:00",
+    "9:15",
+    "10:30",
+    "2:00"
+   ],
    "looks": true,
    "slots": [
     {
@@ -8274,6 +10012,38 @@
     {
      "em": 1.2,
      "text": "AM"
+    },
+    {
+     "em": 53.4,
+     "text": "radial-gradient(ellipse 50% 50% at 50% 30%, rgba(74,47,18,0.16) 0%, rgba(74,47,18,0) 70%)"
+    },
+    {
+     "em": 51.0,
+     "text": "radial-gradient(ellipse 72% 72% at 50% 46%, rgba(0,2,8,0) 45%, rgba(0,2,8,0.55) 100%)"
+    },
+    {
+     "em": 12.6,
+     "text": "rgba(96,140,255,0.15)"
+    },
+    {
+     "em": 33.6,
+     "text": "M2 1 L2 23 L8 17.5 L11.5 25 L15.5 23.2 L12 15.8 L20 15 Z"
+    },
+    {
+     "em": 12.6,
+     "text": "rgba(255,172,72,0.14)"
+    },
+    {
+     "em": 11.4,
+     "text": "rgba(70,48,24,0.10)"
+    },
+    {
+     "em": 39.0,
+     "text": "0 1px 2px rgba(74,47,18,0.12), 0 2px 8px -2px rgba(74,47,18,0.12)"
+    },
+    {
+     "em": 55.8,
+     "text": "radial-gradient(ellipse 50% 50% at 50% 30%, rgba(90,120,220,0.20) 0%, rgba(90,120,220,0) 70%)"
     }
    ],
    "summary": "主题切换两式——theme-sweep 斜向扫场（边界扫过处就地换肤）与 palette-ripple 组合款（⌘K 面板收缩成点、涟漪从点荡开换肤）",
@@ -8288,12 +10058,17 @@
     1072
    ],
    "card": "overhead-camera-moves",
+   "carries": false,
    "category": "camera",
    "cover": 0.9192,
    "error": null,
    "file": "camera/overhead-camera-moves/TiltReveal.tsx",
    "form": "diagram",
    "frames": 120,
+   "leftover": [
+    "12,480",
+    "99.1%"
+   ],
    "looks": true,
    "slots": [
     {
@@ -8363,6 +10138,18 @@
     {
      "em": 1.8,
      "text": "Sep"
+    },
+    {
+     "em": 3.0,
+     "text": "4.82M"
+    },
+    {
+     "em": 1.8,
+     "text": "38%"
+    },
+    {
+     "em": 3.0,
+     "text": "+2.1k"
     }
    ],
    "summary": "俯拍揭示两式——tilt-reveal 俯仰抬正揭示、overhead-tabletop-drop 桌面卡阵横滑骤降扎入",
@@ -8377,12 +10164,14 @@
     734
    ],
    "card": "timeline-travel",
+   "carries": true,
    "category": "data",
    "cover": 0.1233,
    "error": null,
    "file": "data/timeline-travel/TimelineTravel.tsx",
    "form": "chart",
    "frames": 160,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -8490,12 +10279,18 @@
     796
    ],
    "card": "title-demote-to-label",
+   "carries": false,
    "category": "typography",
    "cover": 0.4013,
    "error": null,
    "file": "typography/title-demote-to-label/TitleDemoteToLabel.tsx",
    "form": "text",
    "frames": 246,
+   "leftover": [
+    "61",
+    "01",
+    "02"
+   ],
    "looks": true,
    "slots": [
     {
@@ -8593,6 +10388,30 @@
     {
      "em": 3.0,
      "text": "Craft"
+    },
+    {
+     "em": 2.4,
+     "text": "/ 04"
+    },
+    {
+     "em": 10.2,
+     "text": "camera / punch-in"
+    },
+    {
+     "em": 2.4,
+     "text": "week"
+    },
+    {
+     "em": 17.4,
+     "text": "Saved from launch day · 03:12"
+    },
+    {
+     "em": 1.8,
+     "text": "18f"
+    },
+    {
+     "em": 3.0,
+     "text": "00:32"
     }
    ],
    "summary": "大标题降格为节标签两式——A 大标题居中显影站稳一拍后连续缩小 0.3x 平移到左上角落成小节标签、内容区在其下生长；B 同套路但登场时带文本选中态高亮块扫入再撤掉",
@@ -8607,12 +10426,14 @@
     26
    ],
    "card": "trailer-grammar-moves",
+   "carries": true,
    "category": "rhythm",
    "cover": 0.0016,
    "error": null,
    "file": "rhythm/trailer-grammar-moves/TrailerBumper.tsx",
    "form": "text",
    "frames": 140,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -8632,12 +10453,14 @@
     160
    ],
    "card": "typewriter-moves",
+   "carries": true,
    "category": "typography",
    "cover": 0.0313,
    "error": null,
    "file": "typography/typewriter-moves/TypewriterErrorRetype.tsx",
    "form": "text",
    "frames": 160,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -8665,12 +10488,27 @@
     1068
    ],
    "card": "ui-strip-away-outro",
+   "carries": false,
    "category": "outro",
    "cover": 0.7703,
    "error": null,
    "file": "outro/ui-strip-away-outro/UiStripAwayOutro.tsx",
    "form": "text",
    "frames": 144,
+   "leftover": [
+    "320",
+    "130",
+    "1180",
+    "850",
+    "Revenue",
+    "$48.2k",
+    "goals",
+    "Deploys",
+    "68%",
+    "1,284",
+    "Mobile",
+    "v2"
+   ],
    "looks": false,
    "slots": [
     {
@@ -8796,6 +10634,26 @@
     {
      "em": 4.2,
      "text": "Publish"
+    },
+    {
+     "em": 64.8,
+     "text": "radial-gradient(ellipse at center, rgba(91,99,211,0.38) 0%, rgba(91,99,211,0.10) 40%, rgba(91,99,211,0) 70%)"
+    },
+    {
+     "em": 34.8,
+     "text": "An agent skill for Claude Code & Codex · Built on Remotion"
+    },
+    {
+     "em": 29.4,
+     "text": "linear-gradient(180deg, #1c1d22 0%, #16171b 100%)"
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 12.6,
+     "text": "M5 3l13 8-6 1.5L9 19z"
     }
    ],
    "summary": "减法式收尾——点击 Publish 后整个编辑器 UI 从外围到中心层层错峰蒸发，黑场上只剩那颗按钮滑到屏心放大，按钮再淡出交棒字标定版",
@@ -8810,12 +10668,19 @@
     810
    ],
    "card": "chart-live-moves",
+   "carries": false,
    "category": "data",
    "cover": 0.144,
    "error": null,
    "file": "data/chart-live-moves/UnitDotSwarmRegroupV2.tsx",
    "form": "chart",
    "frames": 192,
+   "leftover": [
+    "12.847",
+    "7,210",
+    "4102",
+    "1,535"
+   ],
    "looks": true,
    "slots": [
     {
@@ -8867,17 +10732,46 @@
     760
    ],
    "card": "value-stagger-gradient",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.3124,
    "error": null,
    "file": "ui-entrance/value-stagger-gradient/ValueStaggerGradient.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "([200,",
+    "320]",
+    "@.35])",
+    "320])",
+    "([.06,",
+    ".42],"
+   ],
    "looks": false,
    "slots": [
     {
      "em": 4.8,
      "text": "'center'"
+    },
+    {
+     "em": 1.8,
+     "text": "hue"
+    },
+    {
+     "em": 3.0,
+     "text": "scale"
+    },
+    {
+     "em": 4.2,
+     "text": "stagger"
+    },
+    {
+     "em": 3.0,
+     "text": "pulse"
+    },
+    {
+     "em": 2.4,
+     "text": "from"
     }
    ],
    "summary": "16 根柱入场时 delay 是时间错峰，同时高度/色相/位移/模糊四个属性各自铺成从首到末的数值梯度；第二拍把错峰原点换成中心，脉冲幅度以中心为最大重新铺开",
@@ -8892,12 +10786,18 @@
     1036
    ],
    "card": "transition-hidden-cut",
+   "carries": false,
    "category": "transition",
    "cover": 0.1449,
    "error": null,
    "file": "transition/transition-hidden-cut/VersusSlam.tsx",
    "form": "diagram",
    "frames": 105,
+   "leftover": [
+    "14...",
+    "1",
+    "WITH"
+   ],
    "looks": true,
    "slots": [
     {
@@ -8955,6 +10855,14 @@
     {
      "em": 24.0,
      "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 3.6,
+     "text": "prompt"
+    },
+    {
+     "em": 21.0,
+     "text": "0 20px 44px -14px rgba(10,6,4,0.55)"
     }
    ],
    "summary": "藏切点转场三式——前景遮挡隐形切、对撞开屏、暖色漏光，硬切藏进遮挡/撞击/光峰的 1-3 帧里，观众看不见剪刀",
@@ -8969,12 +10877,14 @@
     428
    ],
    "card": "vertical-word-roll-blur-cycle",
+   "carries": true,
    "category": "typography",
    "cover": 0.0592,
    "error": null,
    "file": "typography/vertical-word-roll-blur-cycle/VerticalWordRollBlurCycle.tsx",
    "form": "text",
    "frames": 150,
+   "leftover": [],
    "looks": false,
    "slots": [
     {
@@ -9010,12 +10920,16 @@
     730
    ],
    "card": "voice-waveform-live",
+   "carries": false,
    "category": "interaction",
    "cover": 0.285,
    "error": null,
    "file": "interaction/voice-waveform-live/VoiceWaveformLive.tsx",
    "form": "diagram",
    "frames": 172,
+   "leftover": [
+    "0:03"
+   ],
    "looks": true,
    "slots": [
     {
@@ -9037,6 +10951,34 @@
     {
      "em": 7.2,
      "text": "is listening"
+    },
+    {
+     "em": 2.4,
+     "text": "film"
+    },
+    {
+     "em": 3.6,
+     "text": "launch"
+    },
+    {
+     "em": 1.8,
+     "text": "for"
+    },
+    {
+     "em": 2.4,
+     "text": "open"
+    },
+    {
+     "em": 2.4,
+     "text": "with"
+    },
+    {
+     "em": 3.0,
+     "text": "crash"
+    },
+    {
+     "em": 8.4,
+     "text": "&nbsp; Sent to"
     }
    ],
    "summary": "录音胶囊实时声纹——64 根细竖条随\"说话\"起伏，说话时中部高耸、停顿缩成点线，波形从右往左滚动；说→停→说→提交塌缩的完整表演",
@@ -9051,12 +10993,14 @@
     312
    ],
    "card": "white-flash-logo-simplify-cut",
+   "carries": true,
    "category": "transition",
    "cover": 0.0731,
    "error": null,
    "file": "transition/white-flash-logo-simplify-cut/WhiteFlashLogoSimplifyCut.tsx",
    "form": "diagram",
    "frames": 120,
+   "leftover": [],
    "looks": true,
    "slots": [],
    "summary": "液态金属质感的彩色词标静置流光，蓄力后从字心炸出一记白闪过曝，曝光回落时同一位置已是扁平版字标——一次闪白完成质感降维",
@@ -9071,14 +11015,50 @@
     1066
    ],
    "card": "wall-reveal-moves",
+   "carries": false,
    "category": "ui-entrance",
    "cover": 0.8844,
    "error": null,
    "file": "ui-entrance/wall-reveal-moves/WireframeDrawOn.tsx",
    "form": "diagram",
    "frames": 150,
+   "leftover": [
+    "5",
+    "COO",
+    "COS",
+    "Overview",
+    "30d",
+    "Active",
+    "users",
+    "7d",
+    "Revenue",
+    "Monthly",
+    "Analytics",
+    "Projects"
+   ],
    "looks": false,
-   "slots": [],
+   "slots": [
+    {
+     "em": 26.4,
+     "text": "Feels like a launch film from a real studio."
+    },
+    {
+     "em": 24.0,
+     "text": "Direct the film. Let the agent shoot it."
+    },
+    {
+     "em": 28.2,
+     "text": "Motion design without the motion designer bill."
+    },
+    {
+     "em": 49.8,
+     "text": "radial-gradient(circle at 1px 1px, rgba(108,120,148,0.28) 1px, rgba(0,0,0,0) 1.4px)"
+    },
+    {
+     "em": 10.2,
+     "text": "2.5D camera moves"
+    }
+   ],
    "summary": "整墙批量入场两式——bento 逐格点亮、蓝图描线成形，全部原位显形不位移，与 deck-deal-flyin 的飞入位移型互补成品类矩阵",
    "verdict": null
   },
@@ -9091,12 +11071,16 @@
     1076
    ],
    "card": "word-relay-filmstrip",
+   "carries": false,
    "category": "typography",
    "cover": 0.5392,
    "error": null,
    "file": "typography/word-relay-filmstrip/WordRelayFilmstrip.tsx",
    "form": "text",
    "frames": 180,
+   "leftover": [
+    "poste"
+   ],
    "looks": true,
    "slots": [
     {
@@ -9378,6 +11362,94 @@
     {
      "em": 19.8,
      "text": "Storyboard · 12 shots on the beat"
+    },
+    {
+     "em": 2.4,
+     "text": "main"
+    },
+    {
+     "em": 13.6,
+     "text": "● Render #1284 running"
+    },
+    {
+     "em": 13.2,
+     "text": "rgba(255,255,255,0.03)"
+    },
+    {
+     "em": 21.0,
+     "text": "npx remotion render Main launch.mp4"
+    },
+    {
+     "em": 3.0,
+     "text": "42.0s"
+    },
+    {
+     "em": 14.4,
+     "text": "Bundled 12 shots in 8.3s"
+    },
+    {
+     "em": 3.6,
+     "text": "$12.4M"
+    },
+    {
+     "em": 3.0,
+     "text": "$5.1M"
+    },
+    {
+     "em": 3.6,
+     "text": "1m 42s"
+    },
+    {
+     "em": 3.0,
+     "text": "const"
+    },
+    {
+     "em": 3.6,
+     "text": "return"
+    },
+    {
+     "em": 19.2,
+     "text": "<img src={props.screenshot} alt="
+    },
+    {
+     "em": 22.2,
+     "text": "<video src={film} autoPlay muted loop"
+    },
+    {
+     "em": 4.2,
+     "text": "poster="
+    },
+    {
+     "em": 3.0,
+     "text": "ships"
+    },
+    {
+     "em": 19.2,
+     "text": "PR #482 · approved · launch film"
+    },
+    {
+     "em": 14.2,
+     "text": "#482 · 3 files · +24 −9"
+    },
+    {
+     "em": 4.8,
+     "text": "landing/"
+    },
+    {
+     "em": 4.2,
+     "text": "(props:"
+    },
+    {
+     "em": 5.4,
+     "text": "HeroProps"
+    },
+    {
+     "em": 4.2,
+     "text": "public/"
+    },
+    {
+     "em": 11.4,
+     "text": "\"launch-poster.jpg\""
     }
    ],
    "summary": "左列黑白相间等高页面卡步进滚动（焦点卡全亮、邻卡离焦压暗）、右侧衬线大词原位接力（名词恒定+动词轮换）——切词瞬间才滚动一格，词块垂直中心与当前页面卡中点精确对齐",
@@ -9392,12 +11464,14 @@
     876
    ],
    "card": "word-relay-geometry",
+   "carries": true,
    "category": "typography",
    "cover": 0.0603,
    "error": null,
    "file": "typography/word-relay-geometry/WordRelayGeometry.tsx",
    "form": "text",
    "frames": 180,
+   "leftover": [],
    "looks": true,
    "slots": [
     {
@@ -9423,6 +11497,10 @@
     {
      "em": 21.0,
      "text": "Launch films that feel studio-made."
+    },
+    {
+     "em": 2.4,
+     "text": "/ 03"
     }
    ],
    "summary": "三个利益词各带一套专属几何接力——虚线大圆减速自转 + 彗星弧飞跑 → 三实线圆 trim 依次生长后收拢咬紧 → 镀铬金属 sheen 扫过后一拍收成纯白；旧词缩到 0.86 淡出，新词描边→填充揭示",
