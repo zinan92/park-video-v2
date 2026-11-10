@@ -400,6 +400,12 @@ def pass_rules(s: dict[str, Any], add: Any) -> None:
         add("shotcraft-unknown", s, f"ShotCraft 清单里没有「{card}」：先 python3 scripts/shotcraft.py sync，再 measure {card}")
         return
     use = st.get("verdict") or st.get("auto")
+    # 11/11 Park：「它不能改数字的话，那它根本就不是一个可用的素材库」。字都换成他的话以后画面上还剩原卡的演示内容
+    # （读数、「5 min to install」这种拼出来的英文），或者还没量过这一项：不能用，换一张能换字的卡，不准退回 pv2 自己的组件
+    if st.get("carries") is not True and use not in ("skip",):
+        left = "、".join(st.get("leftover") or []) or "没量过（先 python3 scripts/shotcraft.py measure " + card + "）"
+        add("shotcraft-demo-bound", s, f"「{card}」上有换不掉的原卡内容：{left}。换一张 carries 的 ShotCraft 卡（pv2.py shotcraft 能看）")
+        return
     if use == "skip":
         add("shotcraft-skip", s, f"「{card}」去掉背景以后什么都不剩（效果就是背景本身），口播里用不了，换一张")
     elif use == "full" and s.get("zone") != "full":

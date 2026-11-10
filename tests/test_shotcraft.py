@@ -63,9 +63,12 @@ def test_slot_loader_wraps_text_without_touching_the_rest(tmp_path):
 # —— 方案里用直通卡 ——
 
 MANIFEST = {"rev": "x", "styles": {
-    "marker-underline-title": {"card": "marker-underline-title", "form": "text", "auto": "side", "verdict": None,
+    "marker-underline-title": {"card": "marker-underline-title", "form": "text", "auto": "side", "verdict": None, "carries": True,
                                "slots": [{"text": "Meet the", "em": 4.8}, {"text": "new", "em": 1.8}]},
-    "word-relay-geometry": {"card": "word-relay-geometry", "form": "text", "auto": "full", "verdict": None, "slots": []},
+    "word-relay-geometry": {"card": "word-relay-geometry", "form": "text", "auto": "full", "verdict": None, "carries": True, "slots": []},
+    "needle-sweep-selftest": {"card": "gauge-needle", "form": "chart", "auto": "side", "verdict": None, "carries": False,
+                              "leftover": ["70", "44", "87"], "slots": [{"text": "Render node health", "em": 10.8}]},
+    "old-unmeasured": {"card": "x", "form": "text", "auto": "side", "verdict": None, "slots": []},
     "aurora-bloom-bg-flip": {"card": "aurora-bloom-bg-flip", "form": "diagram", "auto": "skip", "verdict": None, "slots": []}}}
 BRIEF = {"canvas": [1920, 1080], "face_box": [700, 140, 520, 760], "motion_placement": "overlay-sides"}
 
@@ -119,3 +122,21 @@ def test_pass_layer_render_command_and_placement(tmp_path):
     assert sh["src_rect"] == [718, 394, 606, 302] and sh["panel"] == list(layers.PANEL["dark"])  # 浅色字垫深底
     rp = layers.render_plan({"duration": 60, "shots": [{**s, "zone": "full"}]}, {**BRIEF, "card": "paper"}, base="/v.mov", layer_dir=tmp_path)
     assert "panel" not in rp["shots"][0]  # 全屏不垫底
+
+
+def test_cards_whose_demo_numbers_stay_on_screen_are_refused(manifest):
+    """11/11 Park：「它不能改数字的话，那它根本就不是一个可用的素材库」。表盘读数换不掉的卡、没量过这一项的卡：check 拦住，
+    不准渲成满屏原卡的英文和读数，也不准换成 pv2 自己的组件凑数。"""
+    texts = {"Render node health": "粉丝终于破万了"}
+    assert _rules(_shot(card="needle-sweep-selftest", texts=texts)) == ["shotcraft-demo-bound"]
+    assert _rules(_shot(card="old-unmeasured", texts={})) == ["shotcraft-demo-bound"]
+    assert shotcraft.usable("needle-sweep-selftest") == "demo" and shotcraft.usable("marker-underline-title") == "side"
+
+
+def test_leftover_words_that_are_swappable_strings_become_slots_and_the_rest_block_the_card():
+    """OCR 读到的字：是源码里能换的字符串（拆成词对得上）就补进文字槽；数字、拼出来的英文读到两次以上就是换不掉；
+    只读到一次的乱字（模糊装饰读成 Bees / Seas）、两个字母的（花括号读成 sg）不算。"""
+    swappable = ["Meet the", "new", "// shot recipes for your agent"]
+    add, stuck = shotcraft.leftover(["new", "new", "5", "5", "min", "min", "Bees", "Seas", "sg", "sg", "recipes"], swappable)
+    assert add == ["new", "// shot recipes for your agent"]
+    assert stuck == ["5", "min"]

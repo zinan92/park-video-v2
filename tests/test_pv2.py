@@ -412,3 +412,53 @@ def test_camera_beat_counts_as_done_with_a_slow_push(proj, tmp_path):
     push = {"id": "C08", "beat": 8, "kind": "camera", "move": "slow-push", "start": 1.0, "end": 5.0, "to": 1.14}
     assert pv2.deviations_state(proj, {"shots": [push]})["undone"] == []
     assert pv2.deviations_state(proj, {"shots": [{**push, "kind": None, "component": "TextLines"}]})["undone"] == [8]
+
+
+# —— 11/11：剪辑台的表就是方案；pv2 自己的组件不用；从哪儿调渲染都先过检查 ——
+
+def _worktable(proj, notes):
+    (proj / "analysis").mkdir(exist_ok=True)
+    (proj / "analysis" / "worktable.json").write_text(json.dumps({"schema": "park-video-worktable/v1", "visual_notes": notes},
+                                                                ensure_ascii=False), encoding="utf-8")
+
+
+NOTES = [{"marker": 1, "quote": "粉丝终于破万了", "intent": "开头点题", "pick": {"src": "shotcraft", "id": "marker-underline-title"}},
+         {"marker": 2, "quote": "后台截图", "intent": "", "pick": {"src": "material", "id": "screenshot"}, "file": "后台.png"}]
+
+
+def test_worktable_notes_are_the_plan_and_only_the_picked_card_counts_as_done(proj):
+    """以前 pv2 不读剪辑台存的 visual_notes：53 镜在它眼里等于没有方案，偏离清单不用写、Park 不用批。"""
+    _worktable(proj, NOTES)
+    beats = pv2.plan_beats(proj)
+    assert [(b["n"], b["motion"], b["material"], b["file"]) for b in beats] == [(1, "marker-underline-title", None, None),
+                                                                                (2, "", "screenshot", "后台.png")]
+    same = {"id": "V01", "beat": 1, "component": "ShotCraft", "props": {"card": "marker-underline-title"}}
+    proof = {"id": "V02", "beat": 2, "component": "Proof"}
+    assert pv2.deviations_state(proj, {"shots": [same, proof]})["undone"] == []
+    swapped = {"id": "V01", "beat": 1, "component": "TextLines"}
+    st = pv2.deviations_state(proj, {"shots": [swapped, proof]})
+    assert st["undone"] == [1] and "deviations.json" in st["problem"]
+
+
+def test_with_a_plan_pv2_own_components_are_refused(proj):
+    """11/10 Park：「ParkVideo 现成直接能做的都是特别丑的，把它全都拿掉」。有方案时只用 ShotCraft（直通或改编）、截图卡、运镜。"""
+    _worktable(proj, NOTES)
+    shots = [{"id": "V01", "component": "TextLines"}, {"id": "V02", "component": "ShotCraft"}, {"id": "V03", "component": "Proof"},
+             {"id": "C01", "kind": "camera", "move": "slow-push"}]
+    assert [(r["rule"], r["shot"]) for r in pv2.plan_rules(proj, {"shots": shots})] == [("native-component", "V01")]
+    assert pv2.plan_rules(proj / "nope", {"shots": shots}) == []  # 没有方案的老项目照旧
+
+
+def test_rendering_layers_directly_still_hits_the_check(proj, monkeypatch):
+    """11/11 那条样片：agent 自己写脚本调 render_layers，绕过了 sample 命令里的检查和偏离清单。现在渲染函数自己拦。"""
+    import layers
+
+    _worktable(proj, NOTES)
+    ran = []
+    monkeypatch.setattr(layers.subprocess, "run", lambda *a, **k: ran.append(a))
+    plan = {"duration": 60.0, "shots": [{"id": "V01", "beat": 1, "start": 1.0, "end": 6.0, "zone": "left", "hold": 4.0, "component": "TextLines",
+                                          "props": {"lines": ["粉丝", "终于破万了"]}}]}
+    with pytest.raises(SystemExit) as e:
+        layers.render_layers(plan, {"canvas": [1920, 1080], "face_box": [700, 140, 520, 760], "motion_placement": "overlay-sides"},
+                             v2(proj) / "layers", status=None)
+    assert "native-component" in str(e.value) and ran == []

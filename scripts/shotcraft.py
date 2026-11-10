@@ -7,6 +7,12 @@ SOP（每次 ShotCraft 更新跑一遍，不用一张张重做）：
      列出卡上显示的字（文字槽：方案里用他的原话替换），写进 manifest.json；
   3. Park 看图鉴片段点「要 / 只全屏 / 不要」（manifest 的 verdict），没点过的按自动分类先用。
 
+11/11 Park：「它不能改数字的话，那它根本就不是一个可用的素材库」。直通只换得掉原卡里的字符串，数字（表盘、读数）、
+逐字拼出来的演示句（「5 min to install」）换不掉；以前只看源码列文字槽，漏了这些，渲出来满屏原卡的英文和读数，
+agent 就退回 pv2 自己的卡。现在 measure 多量一件事（carries）：把每段字都换成空的再渲 5 帧，用 OCR 读画面上还剩什么字；
+读到的字在源码里是能换的字符串，就补进文字槽再渲一次；还剩字（数字、拼出来的英文）= 这张卡带着演示内容，
+carries=false，check 拦住、选题工作台的菜单里也不出现。要 tesseract（brew install tesseract）。
+
 用法：
   python3 scripts/shotcraft.py sync               拉最新、生成注册表，报告新增和下架的卡
   python3 scripts/shotcraft.py measure [卡 ...]   量卡写 manifest（不写卡名就量全部；约每张 10 秒）
@@ -31,6 +37,11 @@ MANIFEST = MOTION / "src" / "shotcraft" / "manifest.json"
 LOADER = MOTION / "src" / "shotcraft" / "slot-loader.cjs"
 FRAME = (1920, 1080)
 SIDE = (560, 720)  # 侧边区域里卡片内容大约能用的宽高（1080p）
+OCR_FRAMES = (0.2, 0.4, 0.6, 0.8, 1.0)  # 演示内容常在后半段才出来（「5 min to install」在 60% 以后），整段都看
+OCR_CONF = 60
+DIGIT_CONF = 80
+OCR_SCALES = (1.0, 0.33)
+SEEN_TWICE = 2  # 换不掉的字至少读到两次才算：模糊的装饰每帧读成不一样的乱字（Bees / Seas），原卡的演示内容停在那儿每次都一样
 SIDE_MIN_SCALE = 0.35  # 内容缩进侧边后至少是原来的 0.4 倍，再小字就看不清，只能全屏用
 FORMS = {"typography": "text", "data": "chart", "rhythm": "text", "opening": "text", "outro": "text"}
 CSS_WORDS = re.compile(r"^(absolute|relative|fixed|hidden|visible|nowrap|center|left|right|top|bottom|flex|block|none|auto|inherit|"
@@ -183,6 +194,71 @@ def _bbox(alpha_frames: list[Any]) -> tuple[list[int] | None, float]:
     return [x0, y0, x1 - x0, y1 - y0], round(total * 4 / (w * h), 4)
 
 
+def _ocr(png: Path) -> list[str]:
+    """一帧透明 PNG 上读得出来的字（铺黑底、白底各读一次，白字黑字都读得到）：至少两个字母或数字的词，和读得很清楚的单个数字
+    （表盘上的「5」也是原卡写死的数字）。"""
+    from PIL import Image
+
+    im = Image.open(png).convert("RGBA")
+    words: list[str] = []
+    for bg in ((0, 0, 0), (255, 255, 255)):
+        flat = Image.new("RGB", im.size, bg)
+        flat.paste(im, mask=im.split()[3])
+        for scale in OCR_SCALES:  # 大字（表盘上的「5」）原尺寸读不出来，缩小了才读得到
+            out = png.with_suffix(f".{bg[0]}.{scale}.png")
+            flat.resize((round(im.width * scale), round(im.height * scale)), Image.LANCZOS).save(out)
+            r = subprocess.run(["tesseract", str(out), "-", "--psm", "11", "tsv"], capture_output=True, text=True)
+            if r.returncode != 0:
+                raise RuntimeError("读不了画面上的字：先装 tesseract（brew install tesseract）")
+            for line in r.stdout.splitlines()[1:]:
+                cols = line.split("\t")
+                w = cols[11].strip() if len(cols) >= 12 else ""
+                if w and (sum(ch.isalnum() for ch in w) >= 2 and float(cols[10]) >= OCR_CONF or w.isdigit() and float(cols[10]) >= DIGIT_CONF):
+                    words.append(w)
+    return words
+
+
+def leftover(words: list[str], swappable: list[str]) -> tuple[list[str], list[str]]:
+    """OCR 读到的词里：哪些其实是源码里能换的字符串（补进文字槽），哪些换不掉（数字、拼出来的演示句，读到两次以上的）。"""
+    def toks(t: str) -> set[str]:
+        return {x for x in re.split(r"[^0-9a-z一-鿿]+", t.lower()) if x}
+
+    add, stuck = [], []
+    times = {w: words.count(w) for w in words}
+    for w in dict.fromkeys(words):
+        mine = toks(w)
+        hit = next((t for t in swappable if mine and mine <= toks(t)), None)  # 这个词的每一截都是源码里某段字的词，才算"能换"
+        if hit:
+            add.append(hit)
+        elif times[w] >= SEEN_TWICE and (any(ch.isdigit() for ch in w) or sum(ch.isalpha() for ch in w) >= 3):
+            stuck.append(w)  # 两个字母的（花括号读成 sg）多半是图形读错了，不算
+    return list(dict.fromkeys(add)), stuck
+
+
+def carries(bundle: Path, tmp: Path, st: dict[str, Any], file: Path) -> tuple[list[dict[str, Any]], bool, list[str]]:
+    """这张卡能不能只放他的话：所有文字槽换成空的，整段渲 5 帧读字。返回（补全后的文字槽、能不能用、换不掉的字）。"""
+    slot_list = list(st["slots"])
+    swappable = [t.strip() for t in _strings(file) if t.strip()] + brand_text_cached()
+    for _ in range(2):  # 第一次读到的能换的字补进槽，再渲一次确认
+        texts = {x["text"]: "" for x in slot_list}
+        words = []
+        for k in OCR_FRAMES:
+            f = min(st["frames"] - 1, int((st["frames"] - 1) * k))
+            png = tmp / f"{st['key']}-ocr-{f}.png"
+            r = subprocess.run(["npx", "remotion", "still", str(bundle), "ShotcraftPass", str(png), f"--frame={f}", "--image-format=png",
+                                "--props=" + json.dumps({"card": st["key"], "lead": 0, "frames": st["frames"], "texts": texts}), "--log=error"],
+                               cwd=MOTION, capture_output=True, text=True)
+            if r.returncode == 0 and png.is_file():
+                words += _ocr(png)
+        add, stuck = leftover(words, swappable)
+        have = {x["text"] for x in slot_list}
+        new = [t for t in add if t not in have]
+        if not new:
+            return slot_list, not stuck, stuck[:12]
+        slot_list += [{"text": t, "em": em(t)} for t in new]
+    return slot_list, not stuck, stuck[:12]
+
+
 def classify(box: list[int] | None, cover: float) -> str:
     """side：缩进人脸旁边还看得清；full：只能全屏用（短暂盖住人脸）；skip：去底以后什么都不剩（效果就是背景本身）。"""
     if box is None or cover < 0.002:
@@ -215,12 +291,17 @@ def measure(only: list[str] | None = None) -> dict[str, Any]:
             box, cover = _bbox(alphas) if alphas else (None, 0.0)
             src = (repo() / "demos" / s["file"]).read_text(encoding="utf-8")
             old = styles.get(s["key"]) or {}
+            file = repo() / "demos" / s["file"]
+            st = {"key": s["key"], "frames": s["frames"], "slots": slots(file)}
+            slot_list, ok, stuck = carries(bundle, Path(tmp), st, file) if alphas else (st["slots"], False, [])
             styles[s["key"]] = {"card": c["name"], "category": c["category"], "form": FORMS.get(c["category"], "diagram"),
                                 "summary": c["summary"], "file": s["file"], "frames": s["frames"], "box": box, "cover": cover,
                                 "auto": classify(box, cover) if alphas else "skip", "verdict": old.get("verdict"),
-                                "slots": slots(repo() / "demos" / s["file"]), "looks": "_fixtures/Look" in src,
+                                "slots": slot_list, "looks": "_fixtures/Look" in src,
+                                # carries：所有字都换成他的话以后，画面上不剩原卡的演示内容（数字、英文句子）；false 的不能用
+                                "carries": ok, "leftover": stuck,
                                 "error": None if alphas else "渲染失败"}
-            print(s["key"], styles[s["key"]]["auto"], box, flush=True)
+            print(s["key"], styles[s["key"]]["auto"], "carries" if ok else f"demo-bound {stuck}", flush=True)
     MANIFEST.write_text(json.dumps(data, ensure_ascii=False, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     return data
 
@@ -239,8 +320,10 @@ def brand_text_cached() -> list[str]:
 
 
 def usable(key: str) -> str:
-    """这张卡现在能怎么用：Park 点过就听他的，没点过按自动分类。"""
+    """这张卡现在能怎么用：Park 点过就听他的，没点过按自动分类；带着演示内容换不掉的（carries 不是 true）不能用。"""
     st = (manifest().get("styles") or {}).get(key) or {}
+    if st and st.get("carries") is not True and st.get("verdict") not in ("side", "full"):
+        return "demo"
     return st.get("verdict") or st.get("auto") or "unknown"
 
 
@@ -253,6 +336,7 @@ def main(argv: list[str]) -> int:
     else:
         data = measure(argv[2:] or None)
         n = {k: sum(1 for s in data["styles"].values() if s["auto"] == k) for k in ("side", "full", "skip")}
+        n["carries"] = sum(1 for s in data["styles"].values() if s.get("carries") is True and s["auto"] != "skip")
         print(json.dumps({"rev": data["rev"], **n}, ensure_ascii=False))
     return 0
 

@@ -75,6 +75,10 @@ def remotion_cmd(shot: dict[str, Any], zone: dict[str, int], out: Path, look: di
 def render_layers(plan: dict[str, Any], brief: dict[str, Any], layer_dir: Path, *, status: Path | None,
                   only: list[dict[str, Any]] | None = None, weight: tuple[int, int] = (0, 100), public: Path | None = None,
                   scale: float = 1.0) -> list[Path]:
+    if (layer_dir.parent / "project.json").is_file():  # 项目里的层（图鉴、测试的临时目录不算）：渲之前过检查和 Park 的批
+        import pv2  # noqa: PLC0415 - pv2 引用本模块，放这里避免循环引用
+
+        pv2.guard(layer_dir.parent.parent, plan, brief)
     layer_dir.mkdir(parents=True, exist_ok=True)
     shots = [s for s in (only if only is not None else plan["shots"]) if not is_camera(s)]  # 运镜不渲层，合成时直接推原画面
     outs = []
