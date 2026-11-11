@@ -36,6 +36,8 @@ Config.overrideWebpackConfig((config) => ({
     ...(config.plugins ?? []),
     new webpack.NormalModuleReplacementPlugin(/_fixtures\/(Look|Polish|Motion|Brand)$/, (res) => {
       const m = /_fixtures\/(Look|Polish|Motion|Brand)$/.exec(res.request);
+      // PV2_SHOTCRAFT_STAGE=original（B-roll 全屏切出去）：保留原卡自己的舞台（底色、光、颗粒），只去品牌
+      if (m && process.env.PV2_SHOTCRAFT_STAGE === 'original' && m[1] !== 'Brand') return;
       if (m && res.context.startsWith(demos)) res.request = path.join(here, 'src', 'shotcraft', 'shims', `${m[1]}.tsx`);
     }),
   ],

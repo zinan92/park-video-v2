@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -52,22 +53,28 @@ def props_file(layer: Path) -> Path:
     return layer.with_suffix(".props.json")
 
 
-def pass_props(shot: dict[str, Any]) -> dict[str, Any]:
+def is_broll(shot: dict[str, Any], brief: dict[str, Any] | None) -> bool:
+    """B-roll：brief 是 broll、镜头全屏的直通卡——整张原卡切出去，留它自己的底色和质感，不去底、不裁。"""
+    return bool(brief) and brief.get("motion_placement") == "broll" and shot.get("zone") == "full" and shot.get("component") == PASS
+
+
+def pass_props(shot: dict[str, Any], broll: bool = False) -> dict[str, Any]:
     """直通卡的渲染参数：哪张卡、从镜头开头第几帧开始播（他说出这句话的时刻 at）、镜头几帧、字的对照表。"""
     p = shot.get("props") or {}
-    return {"card": p.get("card"), "lead": max(0, round((p.get("at", shot["start"]) - shot["start"]) * 30)),
+    return {**({"strip": False} if broll else {}), "card": p.get("card"), "lead": max(0, round((p.get("at", shot["start"]) - shot["start"]) * 30)),
             "frames": max(1, round((shot["end"] - shot["start"]) * 30)), "texts": p.get("texts") or {},
             **({"look": p["look"]} if p.get("look") else {})}
 
 
 def remotion_cmd(shot: dict[str, Any], zone: dict[str, int], out: Path, look: dict[str, Any] | None = None,
-                 public: Path | None = None, scale: float = 1.0) -> list[str]:
+                 public: Path | None = None, scale: float = 1.0, broll: bool = False) -> list[str]:
     """public：证据截图所在的目录（项目的 v2/evidence/），Proof 卡用 staticFile 从这里读图。
     scale：原片是 canvas 的几倍（4K 是 2）。组件照 canvas 尺寸排版，Remotion 按倍数渲得更大，字不糊。"""
     passing = shot.get("component") == PASS
-    props = pass_props(shot) if passing else layer_props(shot, zone, look)
+    props = pass_props(shot, broll) if passing else layer_props(shot, zone, look)
     return ["npx", "remotion", "render", "src/index.ts", "ShotcraftPass" if passing else "Shot", str(out), "--codec=prores", "--prores-profile=4444",
             "--pixel-format=yuva444p10le", "--image-format=png", "--muted", "--log=error",
+            *(["--bundle-cache=false"] if broll else []),  # 原舞台和透明舞台是两套 webpack 替换，共用缓存会把对方的包读坏
             *([f"--public-dir={public}"] if public else []), *([f"--scale={scale}"] if scale != 1 else []),
             "--props=" + json.dumps(props, ensure_ascii=False)]
 
@@ -82,7 +89,10 @@ def render_layers(plan: dict[str, Any], brief: dict[str, Any], layer_dir: Path, 
         write_status(status, "rendering", i, len(shots), stage="layers", weight=weight, unit="shots")
         out = layer_dir / f"{s['id']}.mov"
         props_file(out).unlink(missing_ok=True)
-        r = subprocess.run(remotion_cmd(s, _zone(s, brief), out, style(brief), public, scale), cwd=MOTION, capture_output=True, text=True)
+        broll = is_broll(s, brief)
+        env = {**os.environ, "PV2_SHOTCRAFT_STAGE": "original"} if broll else None
+        r = subprocess.run(remotion_cmd(s, _zone(s, brief), out, style(brief), public, scale, broll), cwd=MOTION, capture_output=True, text=True,
+                           env=env)
         if r.returncode != 0:
             write_status(status, "failed", i, len(shots), stage="layers", weight=weight, unit="shots")
             raise RuntimeError(f"{s['id']} 渲染失败：{(r.stderr or r.stdout)[-1500:]}")
@@ -160,10 +170,12 @@ def _pass_shot(s: dict[str, Any], z: dict[str, int], brief: dict[str, Any], laye
     pad = 36
     x, y = max(0, x - pad), max(0, y - pad)
     w, h = min(1920 - x, w + 2 * pad), min(1080 - y, h + 2 * pad)
+    if is_broll(s, brief):  # B-roll 整张原卡铺满，不裁
+        x, y, w, h = 0, 0, 1920, 1080
     rect = [round(v * scale) for v in (x, y, w, h)]
     zone = {k: round(v * scale) for k, v in z.items()}
     full = s.get("zone") == "full"
     panel = None if full or brief.get("card") == "none" else list(PANEL["dark" if m.get("ink") == "light" else "light"])
     return {"id": s["id"], "start": s["start"], "end": s["end"], "hold": s.get("hold", s["end"]), "layer": str(layer),
-            "src_rect": [rect[0], rect[1], rect[2] // 2 * 2, rect[3] // 2 * 2], "zone": zone, "glass": None,
+            "src_rect": [rect[0], rect[1], rect[2] // 2 * 2, rect[3] // 2 * 2], "zone": zone, "glass": None, "full": full,
             **({"panel": panel, "radius": round(30 * scale)} if panel else {})}

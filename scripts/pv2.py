@@ -46,6 +46,7 @@ import layers as layers_mod
 import proof as proof_mod
 import qa as qa_mod
 import render as render_mod
+import shotcraft as shotcraft_mod
 
 ROOT = Path(__file__).resolve().parents[1]
 GATES = ("deviations", "sample", "final")
@@ -220,6 +221,11 @@ def beat_done(beat: dict[str, Any], plan: dict[str, Any], cat: dict[str, Any]) -
         comp = s.get("component")
         if beat.get("component") and comp == beat["component"]:
             return True
+        if comp == check_mod.PASS:  # ShotCraft 直通：原卡本身（样式名或它所属的卡名）
+            card = (s.get("props") or {}).get("card", "")
+            style = (shotcraft_mod.manifest().get("styles") or {}).get(card) or {}
+            if _card_names(beat["motion"]) & {card, style.get("card", "")}:
+                return True
         if _card_names(beat["motion"]) & set((cat.get(comp) or {}).get("shotcraft") or []):
             return True
     return False

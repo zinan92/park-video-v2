@@ -10,5 +10,8 @@ const map: Record<string, string> = { ...Object.fromEntries((BRAND_TEXT as strin
 export const seen = new Set<string>();
 export const __scT = (s: string): string => {
   seen.add(s);
-  return map[s] ?? s;
+  if (map[s] !== undefined) return map[s];
+  // JSX 文字紧挨着 {表达式} 时带着空格（"made with "），量出来的槽是去掉空格的：按去空格的原文换，空格留着
+  const k = s.trim();
+  return k !== s && map[k] !== undefined ? s.replace(k, map[k]) : s;
 };

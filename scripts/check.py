@@ -338,6 +338,11 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
                 add("unknown-benchmark", x, f"标杆库（{bench_mod.path()}）里没有「{name}」")
     if b.get("effort", "a") != "a":
         for a, c in zip(by_time, by_time[1:]):
+            # B-roll 全屏切出去的直通卡，每张都是一整支不同的镜头：只拦同一张卡连着用
+            if b.get("motion_placement") == "broll" and PASS == a.get("component") == c.get("component"):
+                if (a.get("props") or {}).get("card") == (c.get("props") or {}).get("card"):
+                    add("same-form", c, f"和前一张 {a['id']} 是同一张 ShotCraft 卡，换一张")
+                continue
             if _form(a) and _form(a) == _form(c):
                 add("same-form", c, f"和前一张 {a['id']} 都是「{_form(c)}」形式，相邻两张换一种")
         want = EFFORT[b["effort"]]
@@ -355,7 +360,7 @@ def run(plan: dict[str, Any], words: dict[str, Any], b: dict[str, Any], evidence
                         "detail": f"动效占 {got:.0%}，这条视频要 {lo:.0%}–{hi:.0%}（密度 {b.get('density')}）"})
     usable = plan["duration"] - sum(z - a for a, z in b.get("no_motion") or [])
     full = sum(x["end"] - x["start"] for x in shots if x.get("zone") == "full")
-    if usable > 0 and full > FULL_SHARE * usable + 1e-9:
+    if b.get("motion_placement") != "broll" and usable > 0 and full > FULL_SHARE * usable + 1e-9:
         out.append({"rule": "too-much-fullscreen", "shot": "plan",
                     "detail": f"全屏镜头一共 {round(full, 1)}s，盖住人脸的时间最多占 {FULL_SHARE:.0%}（{round(FULL_SHARE * usable, 1)}s）：多的换到侧边或删掉"})
     gap = b.get("min_gap") or 0
@@ -459,7 +464,8 @@ def style_rules(s: dict[str, Any], b: dict[str, Any], ws: list[dict[str, Any]], 
     for name in _icons(props):
         if ICON_DIR.is_dir() and not (ICON_DIR / f"{name}.mjs").is_file():
             add("unknown-icon", s, f"图标库里没有「{name}」（lucide 的短横线名字，见 https://lucide.dev/icons）")
-    if entry and "effort" in b and EFFORT[entry["effort"]] > EFFORT[b["effort"]]:
+    # effort_exception：Park 点名这一镜破例用高一档（写他的原话），只放过这一条
+    if entry and "effort" in b and EFFORT[entry["effort"]] > EFFORT[b["effort"]] and not str(s.get("effort_exception", "")).strip():
         add("effort-too-high", s, f"{s.get('component')} 是努力程度 {entry['effort']} 的组件，这条视频定的是 {b['effort']}")
     if b.get("rewrite") == "trim-only" and not proof:
         for t in _texts(props):

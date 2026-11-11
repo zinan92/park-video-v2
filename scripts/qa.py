@@ -79,6 +79,8 @@ def placement_checks(plan: dict[str, Any], b: dict[str, Any]) -> list[dict[str, 
     band = [round(v * k) for v in b["caption_band"]] if b.get("caption_band") else None
     face = [round(v * k) for v in b["face_box"]] if b.get("face_box") and b.get("motion_placement") == "overlay-sides" else None
     for s in plan.get("shots") or []:
+        if s.get("full"):  # 全屏镜头（B-roll）本来就盖住整个画面，时长由 check 管
+            continue
         _x, _y, w, h = s["src_rect"]
         p = fit((w, h), s["zone"])
         if band and p["y"] < band[1] and band[0] < p["y"] + p["h"]:
