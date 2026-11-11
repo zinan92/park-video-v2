@@ -190,15 +190,29 @@ def _beat_list(data: Any) -> list[dict[str, Any]]:
     return [r for r in rows if isinstance(r, dict)]
 
 
+WORKTABLE = Path("analysis") / "worktable.json"
+
+
 def plan_beats(project: Path) -> list[dict[str, Any]]:
-    """Park 看过的方案里的每一镜：渲染包（v2/pack-beats.json）+ 工作台「AI 排动效」（v2/motion-picks.json）。
-    每镜 {n, line, motion, component}：n 是镜头号（没有就按顺序数），motion 是 ShotCraft 卡名。"""
+    """Park 看过的方案里的每一镜：渲染包（v2/pack-beats.json）+ 工作台「AI 排动效」（v2/motion-picks.json）；
+    都没有就是选题工作台剪辑台存的 analysis/worktable.json 的 visual_notes（11/11：以前这里不读它，剪辑台标好的 53 镜
+    在 pv2 眼里等于没有方案，偏离清单和 Park 的批都没拦住）。
+    每镜 {n, line, motion, component, material, file}：n 是镜头号，motion 是 ShotCraft 卡名，material 是截图 / B-roll / 录屏。"""
     d = _v2(project)
     out = []
     for name in (PACK_BEATS, "motion-picks.json"):
         for i, r in enumerate(_beat_list(_json(d / name)), start=1):
             out.append({"n": r.get("n", i), "line": r.get("line", ""), "motion": r.get("motion") or r.get("shotcraft") or "",
                         "component": r.get("component") or None, "from": name})
+    if out:
+        return out
+    for i, n in enumerate((_json(Path(project) / WORKTABLE, {}) or {}).get("visual_notes") or [], start=1):
+        if not isinstance(n, dict):
+            continue
+        pick = n.get("pick") or {}
+        out.append({"n": n.get("marker", i), "line": n.get("quote", ""), "motion": pick.get("id", "") if pick.get("src") == "shotcraft" else "",
+                    "component": None, "material": pick.get("id") if pick.get("src") == "material" else None, "file": n.get("file"),
+                    "intent": n.get("intent", ""), "from": str(WORKTABLE)})
     return out
 
 
@@ -220,6 +234,10 @@ def beat_done(beat: dict[str, Any], plan: dict[str, Any], cat: dict[str, Any]) -
         comp = s.get("component")
         if beat.get("component") and comp == beat["component"]:
             return True
+        if comp == check_mod.PASS and (s.get("props") or {}).get("card") in _card_names(beat["motion"]):
+            return True  # 直通：用的就是方案挑的那张 ShotCraft 卡
+        if beat.get("material") == "screenshot" and comp == "Proof":
+            return True  # 截图：他文件夹里那张图放进截图卡
         if _card_names(beat["motion"]) & set((cat.get(comp) or {}).get("shotcraft") or []):
             return True
     return False
@@ -568,9 +586,41 @@ def _load(project: Path) -> tuple[Path, dict[str, Any], dict[str, Any], dict[str
     return d, b, plan, meta
 
 
+ALLOWED_WITH_PLAN = (check_mod.PASS, "Proof")
+
+
+def plan_rules(project: Path, plan: dict[str, Any]) -> list[dict[str, str]]:
+    """有 Park 看过的方案（剪辑台的表、渲染包）时：只用 ShotCraft（直通，或登记了从哪张 ShotCraft 卡改编的组件）、
+    截图卡和运镜。pv2 自己的组件不用——11/10 Park：「这个 ParkVideo 现成直接能做的都是特别丑的，把它全都拿掉」；
+    11/11 那条 20 秒样片就是卡换不上字、退回了这些组件。"""
+    if not plan_beats(project):
+        return []
+    cat = check_mod._catalog()
+    out = []
+    for s in plan.get("shots") or []:
+        comp = s.get("component")
+        if check_mod.is_camera(s) or comp in ALLOWED_WITH_PLAN or (cat.get(comp) or {}).get("shotcraft"):
+            continue
+        out.append({"rule": "native-component", "shot": s.get("id", "?"),
+                    "detail": f"{comp} 是 pv2 自己的组件，Park 不要：照方案用 ShotCraft 卡（换不上字就换一张 carries 的卡，写进偏离清单给他看）"})
+    return out
+
+
+def guard(project: Path, plan: dict[str, Any], b: dict[str, Any]) -> None:
+    """渲染前最后一道：程序检查 + 照方案（偏离清单 Park 批过）。render_layers 自己调它——11/11 那次 agent 自己写脚本
+    直接调渲染函数，绕过了 sample 命令里的检查；现在不管从哪进来，渲之前都过这一道。"""
+    d = _v2(project)
+    found = check_mod.run(plan, _json(d / "words.json", {}), b, proof_mod.load(d)) + plan_rules(project, plan)
+    if found:
+        raise SystemExit("程序检查没过，不渲染：\n" + json.dumps(found, ensure_ascii=False, indent=2))
+    problem = deviations_state(project, plan)["problem"]
+    if problem:
+        raise SystemExit(problem)
+
+
 def _checked(project: Path) -> tuple[Path, dict[str, Any], dict[str, Any], dict[str, Any]]:
     d, b, plan, meta = _load(project)
-    found = check_mod.run(plan, _json(d / "words.json", {}), b, proof_mod.load(d))
+    found = check_mod.run(plan, _json(d / "words.json", {}), b, proof_mod.load(d)) + plan_rules(project, plan)
     if found:
         print(json.dumps(found, ensure_ascii=False, indent=2))
         raise SystemExit("程序检查没过，先改 plan.json")

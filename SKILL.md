@@ -64,6 +64,15 @@ Park 问进度时跑 `status`，报 `step` / `percent` / `waiting_for`，不要�
 7. **整条**：`python3 scripts/pv2.py render <项目> --detach`（层 → 合成 → 终检，`status` 里有真实百分比）。完成后把 `v2/final.mp4`、`v2/contact.jpg` 给 Park。
 8. Park 确认：`python3 scripts/pv2.py approve <项目> final -m "<Park 原话>"`。
 
+## 从选题工作台剪辑台来的（analysis/worktable.json）：表就是方案，只用 ShotCraft
+
+11/11 Park：「It's not important that we do it right this time. It's important that we do it right every time.」那次样片的三处漏洞，现在都由代码拦，不靠记得：
+
+1. **剪辑台的表就是方案。** `analysis/worktable.json` 的 `visual_notes` 每一条就是一镜（`marker` = 镜头号，`pick.id` = ShotCraft 卡名；`pick.src` 是 `material`、`id` 是 `screenshot` 的，用 `file` 写的那张图放进截图卡 `Proof`）。没有渲染包时 `deviations` 读它，下面「有渲染包时」的规矩全部照样适用：没照做的每一镜进偏离清单，Park 批了才出样片。
+2. **只用 ShotCraft。** 有方案时，镜头只能是 ShotCraft 直通卡、登记了 `shotcraft`（从哪张卡改编）的组件、截图卡 `Proof`、运镜。pv2 自己的组件（TextLines、IconPoint、Flow……）一律不用，check 拦 `native-component`。
+3. **卡换不上他的话就换一张能换的卡，不准退回自带组件。** 每张卡在 manifest 里有 `carries`：所有字都换成他的话以后，画面上还剩不剩原卡的演示内容（表盘读数、「5 min to install」这种拼出来的英文）。`carries` 不是 true 的卡 check 拦 `shotcraft-demo-bound`。方案挑的卡被拦了：从同一类里挑一张 carries 的卡，写进偏离清单（`{"beat": 3, "motion": "needle-sweep-selftest", "instead": "<新卡>", "why": "表盘读数是原卡写死的"}`），Park 批了再出样片。
+4. **渲染之前一定过检查。** `render_layers` 自己先跑 check 和偏离清单（`pv2.guard`），不管是 `sample` / `render` 命令还是自己写的脚本调它，没过就不渲。不要绕开它自己调 Remotion。
+
 ## 有渲染包时：渲染包就是方案，不是参考
 
 渲染包是用户在选题工作台看过、挑过的镜头表（每镜 `line` 原句 / `motion` ShotCraft 卡 / `why` / `preview`）。`init --pack` 把它放进 `v2/pack-beats.json`，`settings.json` 里的密度、努力合进 brief（`density: mid` 按 `medium` 读）。`v2/motion-picks.json` 同样对待。
@@ -167,7 +176,7 @@ ShotCraft（github.com/Vincentwei1021/video-shotcraft）是调校过很多轮的
 
 **ShotCraft 更新时（谁都能跑，不用 Park）：**
 1. `python3 scripts/pv2.py shotcraft-sync`：拉原仓库最新到本机缓存（`~/.cache/park-video-v2/video-shotcraft`），生成注册表，报告新增和下架的卡。
-2. `python3 scripts/pv2.py shotcraft-measure [卡 ...]`：每张卡在透明画布上渲几帧，自动量出：内容占画面哪一块、去底以后还剩不剩东西、能不能缩进侧边（`auto`：side 侧边 / full 只能全屏 / skip 用不了）、卡上有哪几段字可以换（`slots`）。写进 `motion/src/shotcraft/manifest.json`（进库）。
+2. `python3 scripts/pv2.py shotcraft-measure [卡 ...]`：每张卡在透明画布上渲几帧，自动量出：内容占画面哪一块、去底以后还剩不剩东西、能不能缩进侧边（`auto`：side 侧边 / full 只能全屏 / skip 用不了）、卡上有哪几段字可以换（`slots`），以及**能不能只放他的话**（`carries`）：所有字换成空的再渲 5 帧，用 OCR（tesseract，`brew install tesseract`）读画面上还剩什么；读到的是源码里能换的字就补进 `slots`，还剩数字、拼出来的英文就是 `carries: false`，剩下的字记在 `leftover`。写进 `motion/src/shotcraft/manifest.json`（进库）。选题工作台的动效菜单只放 carries 的卡（它从这份 manifest 同步）。
 3. Park 看图鉴片段，在 manifest 的 `verdict` 里改成 side / full / skip（不改就按 `auto`）。
 
 **原卡是怎么变成侧边动效的（`motion/src/shotcraft/`，原卡源码一行不改）：**
@@ -185,7 +194,7 @@ ShotCraft（github.com/Vincentwei1021/video-shotcraft）是调校过很多轮的
 ```
 - `card` 是 manifest 里的样式名（`pv2.py shotcraft` 里每张卡的 `pass` 列出它的样式和能怎么用）。
 - `texts`：卡上**每一段**原文（manifest 的 `slots`）都要换成他的原话，不要的写空字符串；video-shotcraft 这类品牌字（字标往往就是标题）也可以拿来当标题槽。换上去的字不能比原文长太多（原卡版式是定死的）。
-- check 会拦：清单里没有（shotcraft-unknown）、用不了（shotcraft-skip）、只能全屏却放侧边（shotcraft-full-only）、字没换完（shotcraft-text-left）、换的字太长（shotcraft-text-long）、卡上没有这段字（shotcraft-slot）。
+- check 会拦：清单里没有（shotcraft-unknown）、带着换不掉的演示内容或没量过（shotcraft-demo-bound）、用不了（shotcraft-skip）、只能全屏却放侧边（shotcraft-full-only）、字没换完（shotcraft-text-left）、换的字太长（shotcraft-text-long）、卡上没有这段字（shotcraft-slot）。
 - **全屏镜头（`zone: full`，盖住人脸）一共不超过可加动效时长的 10%**（too-much-fullscreen），人脸要大部分时间在画面上。
 - 直通卡算 b 档、形式按原卡分类；字号、原话删减、禁用词这些规矩照样查。
 
